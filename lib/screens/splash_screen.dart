@@ -10,134 +10,95 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  // Variabel untuk mengontrol efek fade-in logo
+  bool _showLogo = false;
+
   @override
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-      );
-    });
+    Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        _showLogo = true;
+      });
+    }); //startAnimation
+
+    Timer(const Duration(milliseconds: 4000), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
+      }
+    }); //navigateToNextScreen
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0A4ED4),
-              Color(0xFF0E63FF),
-            ],
+      return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -120,
-              left: -140,
-              child: Container(
-                width: 500,
-                height: 500,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.06),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -120,
-              left: -100,
-              child: Transform.rotate(
-                angle: -0.6,
-                child: Container(
-                  width: 320,
-                  height: 320,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(40),
+          
+          SafeArea(
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  // LOGO MAJADIGI (Dengan Animasi Fade)
+                  AnimatedOpacity(
+                    opacity: _showLogo ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 800),
+                    child: Image.asset(
+                      'assets/images/logo_majadigi.png',
+                      width: 120, // Ukuran disesuaikan
+                    ),
                   ),
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                child: Column(
-                  children: [
-                    const Spacer(flex: 3),
-                    Center(
-                      child: Container(
-                        width: 102,
-                        height: 102,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(24),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 16,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Image.asset(
-                              'assets/images/logo_majadigi.png',
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.bubble_chart_rounded,
-                                  size: 52,
-                                  color: Color(0xFF0E63FF),
-                                );
-                              },
+                  const Spacer(),
+                  // FOOTER: Powered By (Teks statis di bawah)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: AnimatedOpacity(
+                      opacity: _showLogo ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 1000),
+                      child: const Column(
+                        children: [
+                          Text(
+                            "Powered by",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
                             ),
                           ),
-                        ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Pemerintah Provinsi Jawa Timur",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const Spacer(flex: 4),
-                    const Column(
-                      children: [
-                        Text(
-                          'Powered by',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Pemerintah Provinsi Jawa Timur',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 48),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
