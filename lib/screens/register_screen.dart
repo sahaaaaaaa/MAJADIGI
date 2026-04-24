@@ -20,13 +20,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController birthDateController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   final TextEditingController searchController = TextEditingController();
 
   String? selectedCity;
   String? selectedDistrict;
+  String? selectedGender;
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
 
@@ -48,17 +48,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final List<String> genders = ['Laki-laki', 'Perempuan'];
 
-  final List<ServiceItem> services = [
-    ServiceItem(title: 'Klinik Hoaks'),
-    ServiceItem(title: 'Destinasi Wisata', selected: true),
-    ServiceItem(title: 'Open Data', selected: true),
-    ServiceItem(title: 'Harga Bahan Pokok'),
-    ServiceItem(title: 'RSUD Haji Jatim'),
-    ServiceItem(title: 'Transjatim AJAIB 2.0'),
-    ServiceItem(title: 'Point Jatim'),
-    ServiceItem(title: 'Islamic Center'),
-  ];
-
   @override
   void dispose() {
     firstNameController.dispose();
@@ -76,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void nextStep() {
-    if (currentStep < 3) {
+    if (currentStep < 2) {
       setState(() {
         currentStep++;
       });
@@ -100,20 +89,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
       initialDate: DateTime(now.year - 20),
       firstDate: DateTime(1950),
       lastDate: now,
+    
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF0065FF), // Warna header & lingkaran tanggal terpilih (Biru Majadigi)
+              onPrimary: Colors.white,    // Warna teks di atas primary
+              onSurface: Color(0xFF2F2F2F), // Warna teks tanggal
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF0065FF), // Warna tombol OK/Cancel
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      }
     );
-
-    if (picked != null) {
+      if (picked != null) {
       setState(() {
         birthDateController.text =
             '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
       });
     }
-  }
-
-  void toggleService(int index) {
-    setState(() {
-      services[index].selected = !services[index].selected;
-    });
   }
 
   @override
@@ -329,13 +329,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildStepIndicator() {
     return Row(
-      children: List.generate(3, (index) {
+      children: List.generate(2, (index) {
         final stepNumber = index + 1;
         final isActive = stepNumber <= currentStep;
 
         return Expanded(
           child: Container(
-            margin: EdgeInsets.only(right: index == 2 ? 0 : 8),
+            margin: EdgeInsets.only(right: index == 1 ? 0 : 8),
             height: 5,
             decoration: BoxDecoration(
               color: isActive
@@ -353,7 +353,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        'Langkah $currentStep dari 3',
+        'Langkah $currentStep dari 2',
         style: const TextStyle(
           fontSize: 14,
           color: Color(0xFF555555),
@@ -389,6 +389,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 30),
+
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: ElevatedButton(
+              onPressed: nextStep,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0E63FF),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            child: const Text(
+              'Selanjutnya',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+            ), 
+          ),
+          const SizedBox(height: 16),
           _buildLoginRedirect(),
         ],
       );
@@ -397,7 +417,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (currentStep == 2) {
       return Column(
         children: [
-          _buildTextField(controller: addressController, hintText: 'Alamat'),
+          _buildTextField(
+            controller: addressController, 
+            hintText: 'Alamat'),
           const SizedBox(height: 18),
           _buildDropdownField(
             value: selectedCity,
@@ -455,30 +477,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ],
       );
     }
-
-    return Column(
-      children: [
-        _buildSearchField(),
-        const SizedBox(height: 14),
-        _buildPhaseThreeFilters(),
-        const SizedBox(height: 18),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: services.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            mainAxisExtent: 132,
-          ),
-          itemBuilder: (context, index) {
-            final item = services[index];
-            return _buildServiceCard(item, index);
-          },
-        ),
-      ],
-    );
+    return const SizedBox();
   }
 
   Widget _buildTextField({
@@ -517,20 +516,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required ValueChanged<String?> onChanged,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E2E2), width: 1.2),
+        border: Border.all(color: const Color(0xFFE8E8E8), width: 1),
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
           hint: Text(
             hintText,
-            style: const TextStyle(color: Color(0xFFA0A0A0), fontSize: 16),
+            style: const TextStyle(
+              fontFamily: 'Onest',
+              color: Color(0xFFA0A0A0), 
+              fontWeight: FontWeight.w400,
+              fontSize: 16),
           ),
+          dropdownColor: const Color(0xFFFFFFFF),
           icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
             color: Color(0xFF8C8C8C),
@@ -542,7 +546,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               value: item,
               child: Text(
                 item,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF3C3C3C)),
+                style: const TextStyle(
+                  fontFamily: 'Onest',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400, 
+                  color: Color(0xFF2F2F2F)),
               ),
             );
           }).toList(),
@@ -568,7 +576,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: const Color(0xFFFFFFFF),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 20,
@@ -664,186 +672,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildSearchField() {
-    return TextField(
-      controller: searchController,
-      decoration: InputDecoration(
-        hintText: 'Cari Layanan',
-        hintStyle: const TextStyle(color: Color(0xFFA0A0A0), fontSize: 16),
-        prefixIcon: const Icon(
-          Icons.search,
-          color: Color(0xFF575757),
-          size: 28,
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 18,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 1.2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPhaseThreeFilters() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(18),
-                bottomLeft: Radius.circular(18),
-              ),
-              border: Border.all(color: const Color(0xFFE2E2E2), width: 1.2),
-            ),
-            child: const Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Kota/Kabupat...',
-                    style: TextStyle(fontSize: 16, color: Color(0xFF555555)),
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF8C8C8C),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(18),
-                bottomRight: Radius.circular(18),
-              ),
-              border: Border.all(color: const Color(0xFFE2E2E2), width: 1.2),
-            ),
-            child: const Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Kategori',
-                    style: TextStyle(fontSize: 16, color: Color(0xFF555555)),
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF8C8C8C),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceCard(ServiceItem item, int index) {
-    return InkWell(
-      onTap: () => toggleService(index),
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: item.selected ? const Color(0xFFF5F9FF) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: item.selected
-                ? const Color(0xFF0E63FF)
-                : const Color(0xFFE2E2E2),
-            width: item.selected ? 1.5 : 1.1,
-          ),
-        ),
-        child: Stack(
-          children: [
-            if (item.selected)
-              const Positioned(
-                top: 0,
-                right: 0,
-                child: Icon(
-                  Icons.check_rounded,
-                  color: Color(0xFF0E63FF),
-                  size: 24,
-                ),
-              ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEAF2FF),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.apps_rounded,
-                    color: Color(0xFF0E63FF),
-                    size: 24,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  item.title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.3,
-                    color: Color(0xFF333333),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildBottomButtons() {
-    if (currentStep == 1) {
-      return Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: nextStep,
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: const Color(0xFF0E63FF),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: const Text(
-                'Selanjutnya',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Row(
+    if (currentStep == 2) {
+      return Row(
       children: [
         Expanded(
           child: SizedBox(
@@ -871,22 +702,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                if (currentStep == 3) {
-                  final selectedServices = services
-                      .where((service) => service.selected)
-                      .length;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Pendaftaran selesai. Layanan dipilih: $selectedServices',
-                      ),
-                    ),
-                  );
-                  return;
-                }
-
-                nextStep();
+                print("Pendaftaran Selesai");
               },
               style: ElevatedButton.styleFrom(
                 elevation: 0,
@@ -897,23 +713,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               child: Text(
-                currentStep == 3 ? 'Selesai' : 'Selanjutnya',
+                'Selanjutnya',
                 style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w600,),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );    
+    }
+  return const SizedBox.shrink();
   }
-}
-
-class ServiceItem {
-  final String title;
-  bool selected;
-
-  ServiceItem({required this.title, this.selected = false});
 }
