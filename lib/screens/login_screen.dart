@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/main_navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -366,67 +367,64 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLoginButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
-        onPressed: () {
+  return SizedBox(
+    width: double.infinity,
+    height: 56,
+    child: ElevatedButton(
+      onPressed: () {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (_) => const MainNavigation()),
+  );
+},
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: const Color(0xFF0E63FF),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+      ),
+      child: const Text(
+        "Masuk",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+  );
+}
+
+  Widget _buildRegisterText() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const Text(
+        'Belum punya akun? ',
+        style: TextStyle(
+          fontSize: 15,
+          color: Color(0xFF555555),
+        ),
+      ),
+      GestureDetector(
+        onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Email: ${emailController.text.isEmpty ? "-" : emailController.text}',
-              ),
+            const SnackBar(
+              content: Text('Halaman daftar belum dibuat'),
             ),
           );
         },
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: const Color(0xFF0E63FF),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
         child: const Text(
-          'Masuk',
+          'Daftar dulu',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 15,
+            color: Color(0xFF0E63FF),
             fontWeight: FontWeight.w600,
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildRegisterText() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Belum punya akun? ',
-          style: TextStyle(
-            fontSize: 15,
-            color: Color(0xFF555555),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Halaman daftar belum dibuat'),
-              ),
-            );
-          },
-          child: const Text(
-            'Daftar dulu',
-            style: TextStyle(
-              fontSize: 15,
-              color: Color(0xFF0E63FF),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+    ],
+  );
+}
 }

@@ -61,6 +61,23 @@ flutter:
   assets:
     - assets/images/logo_majadigi.png
     - assets/images/welcome_hero.png
+    - assets/images/welcome_hero2.jpg
+    - assets/images/welcome_hero3.jpg
+    - assets/images/cak_durasim.png
+    - assets/images/destinasi_wisata.png
+    - assets/images/islamic_center.png
+    - assets/images/khas_jatim.png
+    - assets/images/klinik_hoax.png
+    - assets/images/nganjuk_smartcity.png
+    - assets/images/open_data.png
+    - assets/images/point_jatim.png
+    - assets/images/rsud_haji.png
+    - assets/images/rsud_saifulanwar.png
+    - assets/images/transjatim_ajaib.png
+    - assets/images/grid_lainnya.png
+    - assets/images/icon_ekonomi.png
+    - assets/images/icon_penduduk.png
+    - assets/images/icon_user.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
