@@ -1,13 +1,102 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart';
+import 'edit_akun_screen.dart';
+import 'bahasa_screen.dart';
+import 'ubah_password_screen.dart';
 
 class AkunScreen extends StatelessWidget {
   const AkunScreen({super.key});
 
+  // 🔥 POPUP HAPUS AKUN
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Hapus Akun",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "Apakah anda yakin untuk menghapus akunmu?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+
+                Row(
+                  children: [
+                    // 🔹 BATAL
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFFE0E0E0)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          "Batal",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // 🔹 HAPUS
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const LoginScreen()),
+                            (route) => false,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF2D55),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          "Hapus",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
-
+      backgroundColor: const Color(0xFFF5F5F5),
       body: Stack(
         children: [
           // 🔵 HEADER
@@ -17,7 +106,6 @@ class AkunScreen extends StatelessWidget {
               color: Color(0xFF0D57E7),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40),
               ),
             ),
           ),
@@ -25,27 +113,37 @@ class AkunScreen extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                // 🔹 TITLE
+                // 🔹 TITLE + EDIT
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      SizedBox(width: 24),
-                      Text(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 24),
+                      const Text(
                         "Akun",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Icon(Icons.edit, color: Colors.white),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const EditAkunScreen()),
+                          );
+                        },
+                        icon: const Icon(Icons.edit, color: Colors.white),
+                      ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
                 // 🔹 PROFILE
                 const CircleAvatar(
@@ -98,14 +196,40 @@ class AkunScreen extends StatelessWidget {
 
                         const SizedBox(height: 16),
 
-                        _item(Icons.language, "Bahasa"),
+                        _item(
+                          Icons.language,
+                          "Bahasa",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const BahasaScreen()),
+                            );
+                          },
+                        ),
+
                         _divider(),
+
                         _item(Icons.notifications, "Notifikasi"),
+
                         _divider(),
-                        _item(Icons.wb_sunny, "Theme",
-                            trailing: _chip()),
+
+                        _item(Icons.wb_sunny, "Theme", trailing: _chip()),
+
                         _divider(),
-                        _item(Icons.lock, "Ubah Pin"),
+
+                        _item(
+                          Icons.lock,
+                          "Ubah Kata Sandi",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      const UbahPasswordScreen()),
+                            );
+                          },
+                        ),
 
                         const SizedBox(height: 24),
 
@@ -120,11 +244,28 @@ class AkunScreen extends StatelessWidget {
 
                         const SizedBox(height: 16),
 
-                        _item(Icons.delete, "Hapus Akun",
-                            textColor: Colors.red,
-                            iconColor: Colors.red),
+                        _item(
+                          Icons.delete,
+                          "Hapus Akun",
+                          textColor: Colors.red,
+                          iconColor: Colors.red,
+                          onTap: () => _showDeleteDialog(context),
+                        ),
+
                         _divider(),
-                        _item(Icons.logout, "Logout"),
+
+                        _item(
+                          Icons.logout,
+                          "Logout",
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -138,9 +279,16 @@ class AkunScreen extends StatelessWidget {
   }
 
   // 🔹 ITEM LIST
-  static Widget _item(IconData icon, String title,
-      {Widget? trailing, Color? textColor, Color? iconColor}) {
+  static Widget _item(
+    IconData icon,
+    String title, {
+    Widget? trailing,
+    Color? textColor,
+    Color? iconColor,
+    VoidCallback? onTap,
+  }) {
     return ListTile(
+      onTap: onTap,
       contentPadding: EdgeInsets.zero,
       leading: Icon(icon, color: iconColor ?? Colors.black54),
       title: Text(
@@ -159,9 +307,10 @@ class AkunScreen extends StatelessWidget {
 
   static Widget _chip() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.2),
+        color: Colors.blue.withOpacity(0.15),
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Text(

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'layanan_lain.dart'; // 🔥 TAMBAH INI
+import 'layanan_lain.dart';
+import '../widgets/layanan_item.dart';
+import 'destinasi_wisata_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFFF2F2F2),
       body: Stack(
         children: [
-          // 🔵 HEADER
+          // HEADER
           Container(
             height: 300,
             decoration: const BoxDecoration(
@@ -62,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SafeArea(
             child: Column(
               children: [
-                // 🔹 HEADER
+                // HEADER TOP
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
@@ -97,16 +99,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 20),
 
-                // 🔹 SLIDER
+                // SLIDER
                 SizedBox(
                   height: 180,
                   child: PageView.builder(
                     controller: _controller,
                     itemCount: banners.length,
                     onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                      });
+                      setState(() => _currentPage = index);
                     },
                     itemBuilder: (context, index) {
                       return _bannerImage(banners[index]);
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 10),
 
-                // 🔹 DOT
+                // DOT
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 20),
 
-                // 🔹 CONTENT
+                // CONTENT
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(20),
@@ -148,18 +148,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: ListView(
                       children: [
-                        // 🔸 LAYANAN
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Layanan",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
-                            ),
-
-                            // 🔥 CLICKABLE
+                            const Text("Layanan",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -169,10 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           const LayananLainScreen()),
                                 );
                               },
-                              child: const Text(
-                                "Semua layanan",
-                                style: TextStyle(color: Colors.grey),
-                              ),
+                              child: const Text("Semua layanan",
+                                  style: TextStyle(color: Colors.grey)),
                             ),
                           ],
                         ),
@@ -184,25 +177,58 @@ class _HomeScreenState extends State<HomeScreen> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
-                            const _ServiceItem("Klinik Hoaks",
-                                "assets/images/klinik_hoax.png"),
-                            const _ServiceItem("Destinasi Wisata",
-                                "assets/images/destinasi_wisata.png"),
-                            const _ServiceItem(
-                                "Open Data", "assets/images/open_data.png"),
-                            const _ServiceItem(
-                                "Harga", "assets/images/khas_jatim.png"),
-                            const _ServiceItem(
-                                "RSUD Haji", "assets/images/rsud_haji.png"),
-                            const _ServiceItem("Transjatim",
-                                "assets/images/transjatim_ajaib.png"),
-                            const _ServiceItem("RSSA",
-                                "assets/images/rsud_saifulanwar.png"),
+                            LayananItem(
+                              title: "Klinik Hoaks",
+                              image: "assets/images/klinik_hoax.png",
+                              onTap: () {},
+                            ),
 
-                            // 🔥 LAINNYA (CLICKABLE)
-                            _ServiceItem(
-                              "Lainnya",
-                              "assets/images/grid_lainnya.png",
+                            LayananItem(
+                              title: "Destinasi Wisata",
+                              image: "assets/images/destinasi_wisata.png",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const DestinasiWisataScreen()),
+                                );
+                              },
+                            ),
+
+                            LayananItem(
+                              title: "Open Data",
+                              image: "assets/images/open_data.png",
+                              onTap: () {},
+                            ),
+
+                            LayananItem(
+                              title: "Harga",
+                              image: "assets/images/khas_jatim.png",
+                              onTap: () {},
+                            ),
+
+                            LayananItem(
+                              title: "RSUD Haji",
+                              image: "assets/images/rsud_haji.png",
+                              onTap: () {},
+                            ),
+
+                            LayananItem(
+                              title: "Transjatim",
+                              image: "assets/images/transjatim_ajaib.png",
+                              onTap: () {},
+                            ),
+
+                            LayananItem(
+                              title: "RSSA",
+                              image: "assets/images/rsud_saifulanwar.png",
+                              onTap: () {},
+                            ),
+
+                            LayananItem(
+                              title: "Lainnya",
+                              image: "assets/images/grid_lainnya.png",
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -217,12 +243,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         const SizedBox(height: 24),
 
-                        // 🔸 STAT
-                        const Text(
-                          "Jatim Dalam Angka",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
+                        const Text("Jatim Dalam Angka",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
 
                         const SizedBox(height: 16),
 
@@ -276,34 +299,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// 🔹 SERVICE ITEM (UPDATED BISA CLICK)
-class _ServiceItem extends StatelessWidget {
-  final String title;
-  final String image;
-  final VoidCallback? onTap;
-
-  const _ServiceItem(this.title, this.image, {this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Image.asset(image, width: 50, height: 50),
-          const SizedBox(height: 6),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// 🔹 STAT CARD (NO CHANGE)
 class _StatCard extends StatelessWidget {
   final String value;
   final String label;
@@ -319,30 +314,18 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFE8E8E8),
-          width: 1,
-        ),
+        border: Border.all(color: Color(0xFFE8E8E8)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(icon, width: 24, height: 24),
+          Image.asset(icon, width: 24),
           const SizedBox(height: 12),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+          Text(value,
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const SizedBox(height: 4),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ),
+          Expanded(child: Text(label)),
         ],
       ),
     );

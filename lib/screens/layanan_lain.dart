@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'destinasi_wisata_screen.dart';
+import '../widgets/layanan_item.dart';
 
 class LayananLainScreen extends StatefulWidget {
   const LayananLainScreen({super.key});
@@ -14,10 +16,9 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
-
       body: Column(
         children: [
-          // 🔵 HEADER
+          // 🔵 HEADER (TETAP)
           Container(
             height: 140,
             padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
@@ -58,7 +59,6 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
               ),
               child: ListView(
                 children: [
-                  // 🔸 FEATURED
                   const Text(
                     "Featured",
                     style:
@@ -72,7 +72,6 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
                   const SizedBox(height: 20),
                   const Divider(),
 
-                  // 🔸 PARIWISATA
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -115,46 +114,126 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
     );
   }
 
-  // 🔹 GRID FEATURED
+  // 🔥 FEATURED (PAKAI WIDGET)
   Widget _gridFeatured() {
     return GridView.count(
       crossAxisCount: 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      children: const [
-        _Item("Klinik Hoaks", "assets/images/klinik_hoax.png"),
-        _Item("Destinasi Wisata", "assets/images/destinasi_wisata.png"),
-        _Item("Open Data", "assets/images/open_data.png"),
-        _Item("Harga", "assets/images/khas_jatim.png"),
-        _Item("RSUD Haji", "assets/images/rsud_haji.png"),
-        _Item("Transjatim", "assets/images/transjatim_ajaib.png"),
-        _Item("RSSA", "assets/images/rsud_saifulanwar.png"),
-        _Item("Nomor Darurat", "assets/images/klinik_hoax.png"),
-        _Item("Point Jatim", "assets/images/point_jatim.png"),
-        _Item("Islamic Center", "assets/images/islamic_center.png"),
+      children: [
+        LayananItem(
+          title: "Klinik Hoaks",
+          image: "assets/images/klinik_hoax.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Destinasi Wisata",
+          image: "assets/images/destinasi_wisata.png",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const DestinasiWisataScreen()),
+            );
+          },
+        ),
+        LayananItem(
+          title: "Open Data",
+          image: "assets/images/open_data.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Harga",
+          image: "assets/images/khas_jatim.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "RSUD Haji",
+          image: "assets/images/rsud_haji.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Transjatim",
+          image: "assets/images/transjatim_ajaib.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "RSSA",
+          image: "assets/images/rsud_saifulanwar.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Nomor Darurat",
+          image: "assets/images/klinik_hoax.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Point Jatim",
+          image: "assets/images/point_jatim.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Islamic Center",
+          image: "assets/images/islamic_center.png",
+          onTap: () {},
+        ),
       ],
     );
   }
 
-  // 🔹 GRID PARIWISATA
+  // 🔥 PARIWISATA (PAKAI WIDGET)
   Widget _gridPariwisata() {
     return GridView.count(
       crossAxisCount: 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      children: const [
-        _Item("Nganjuk Smart City", "assets/images/nganjuk_smartcity.png"),
-        _Item("Pusaka Jatim", "assets/images/klinik_hoax.png"),
-        _Item("Paket Kunjungan", "assets/images/klinik_hoax.png"),
-        _Item("Khas Jatim", "assets/images/khas_jatim.png"),
-        _Item("Cak Durasim", "assets/images/cak_durasim.png"),
-        _Item("Virtual Tour", "assets/images/klinik_hoax.png"),
-        _Item("Destinasi Wisata", "assets/images/destinasi_wisata.png"),
+      children: [
+        LayananItem(
+          title: "Nganjuk Smart City",
+          image: "assets/images/nganjuk_smartcity.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Pusaka Jatim",
+          image: "assets/images/klinik_hoax.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Paket Kunjungan",
+          image: "assets/images/klinik_hoax.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Khas Jatim",
+          image: "assets/images/khas_jatim.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Cak Durasim",
+          image: "assets/images/cak_durasim.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Virtual Tour",
+          image: "assets/images/klinik_hoax.png",
+          onTap: () {},
+        ),
+        LayananItem(
+          title: "Destinasi Wisata",
+          image: "assets/images/destinasi_wisata.png",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const DestinasiWisataScreen()),
+            );
+          },
+        ),
       ],
     );
   }
 
-  // 🔹 SIMPLE LIST
+  // 🔹 LIST (NO CHANGE)
   Widget _simpleItem(String title) {
     return Column(
       children: [
@@ -163,29 +242,6 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
           trailing: const Icon(Icons.expand_more),
         ),
         const Divider(),
-      ],
-    );
-  }
-}
-
-// 🔹 GRID ITEM
-class _Item extends StatelessWidget {
-  final String title;
-  final String image;
-
-  const _Item(this.title, this.image);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Image.asset(image, width: 50, height: 50),
-        const SizedBox(height: 6),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 11),
-        ),
       ],
     );
   }
