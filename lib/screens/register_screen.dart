@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'recommendation_screen.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -421,27 +423,102 @@ class _RegisterScreenState extends State<RegisterScreen> {
             controller: addressController, 
             hintText: 'Alamat'),
           const SizedBox(height: 18),
-          _buildDropdownField(
+          
+          DropdownButtonFormField<String>(
+            dropdownColor: Colors.white,
             value: selectedCity,
-            hintText: 'Kabupaten / Kota',
-            items: cities,
+            isExpanded: true,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF6B6B6B)),
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xFFA0A0A0), // warna teks utama
+              fontFamily: 'Onest',
+            ),
+            hint: const Text(
+              'Kabupaten / Kota',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFFA0A0A0), // abu sama kayak TextField
+                fontFamily: 'Onest',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18), // Radius 18 sama dengan Tanggal Lahir
+                borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 1.2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
+              ),
+            ),
+            items: cities.map((String city) {
+              return DropdownMenuItem<String>(
+                value: city,
+                child: Text(
+                  city, 
+                  style: const TextStyle(color: Color(0xFF2F2F2F)),)
+              );
+            }).toList(),
             onChanged: (value) {
               setState(() {
                 selectedCity = value;
               });
             },
-          ),
+         ),
+          
           const SizedBox(height: 18),
-          _buildDropdownField(
+          DropdownButtonFormField<String>(
+            dropdownColor: Colors.white,
             value: selectedDistrict,
-            hintText: 'Kecamatan',
-            items: districts,
+            isExpanded: true,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF6B6B6B)),
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xFFA0A0A0), // warna teks utama
+              fontFamily: 'Onest',
+            ),
+            hint: const Text(
+              'Kecamatan',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFFA0A0A0), // abu sama kayak TextField
+                fontFamily: 'Onest',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18), // Radius 18 sama dengan Tanggal Lahir
+                borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 1.2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
+              ),
+            ),
+            items: districts.map((String district) {
+              return DropdownMenuItem<String>(
+                value: district,
+                child: Text(
+                  district,
+                  style: const TextStyle(color: Color(0xFF2F2F2F)),
+                ),
+              );
+            }).toList(),
             onChanged: (value) {
               setState(() {
                 selectedDistrict = value;
               });
             },
-          ),
+         ),
           const SizedBox(height: 18),
           _buildTextField(
             controller: nikController,
@@ -566,7 +643,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       readOnly: true,
       onTap: pickBirthDate,
       decoration: InputDecoration(
-        hintText: 'Tgl lahir',
+        hintText: 'Tanggal lahir',
         hintStyle: const TextStyle(color: Color(0xFFA0A0A0), fontSize: 16),
         suffixIcon: IconButton(
           onPressed: pickBirthDate,
@@ -594,19 +671,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildGenderField() {
-    return _buildDropdownField(
+    return DropdownButtonFormField<String>(
+      dropdownColor: Colors.white,
       value: genders.contains(genderController.text)
           ? genderController.text
           : null,
-      hintText: 'Jenis kelamin',
-      items: genders,
-      onChanged: (value) {
-        setState(() {
-          genderController.text = value ?? '';
-        });
-      },
-    );
-  }
+      isExpanded: true,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Color(0xFFA0A0A0), 
+        fontFamily: 'Onest',
+      ),
+      hint: const Text(
+        'Jenis Kelamin',
+        style: TextStyle(
+          fontSize: 16,
+          color: Color(0xFFA0A0A0), 
+          fontFamily: 'Onest',
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF6B6B6B)),
+    decoration: InputDecoration(
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(18), // Radius 18 agar membulat rapi
+        borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 1.2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(18),
+        borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
+      ),
+    ),
+    items: genders.map((String gender) {
+      return DropdownMenuItem<String>(
+        value: gender,
+        child: Text(
+          gender,
+          style: const TextStyle(fontSize: 16, color: Color(0xFF2F2F2F)),
+        ),
+      );
+    }).toList(),
+    onChanged: (value) {
+      setState(() {
+        genderController.text = value ?? '';
+      });
+    },
+  );
+}
 
   Widget _buildPasswordField({
     required TextEditingController controller,
@@ -657,7 +771,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
+              ),
+            );
           },
           child: const Text(
             'Masuk',
@@ -702,7 +821,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                print("Pendaftaran Selesai");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RecommendationScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 elevation: 0,
