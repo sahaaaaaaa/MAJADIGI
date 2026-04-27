@@ -62,6 +62,14 @@ flutter:
     - assets/images/logo_majadigi.png
     - assets/images/welcome_hero.png
     - assets/images/latar_belakang.png
+    - assets/images/kategori/ekonomi_&_bisnis.png
+    - assets/images/kategori/infrastuktur.png
+    - assets/images/kategori/kependudukan.png
+    - assets/images/kategori/kesehatan.png
+    - assets/images/kategori/ketenagakerjaan.png
+    - assets/images/kategori/pendidikan.png
+    - assets/images/kategori/pariwisata_&_kebudayaan.png
+    - assets/images/kategori/multisektor.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -90,6 +98,28 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+
+  fonts:
+    - family: Onest
+      fonts:
+        - asset: assets/fonts/Onest-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Onest-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Onest-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Onest-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Onest-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Onest-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Onest-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Onest-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Onest-Black.ttf
+          weight: 900
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
