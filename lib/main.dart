@@ -14,7 +14,7 @@ class MajadigiApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Majadigi',
       theme: ThemeData(
-        fontFamily: 'SF Pro Display',
+        fontFamily: 'Onest',
         scaffoldBackgroundColor: Colors.white,
       ),
       home: const SplashScreen(),
