@@ -426,7 +426,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           
           DropdownButtonFormField<String>(
             dropdownColor: Colors.white,
-            value: selectedCity,
+            initialValue: selectedCity,
             isExpanded: true,
             icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF6B6B6B)),
             style: const TextStyle(
@@ -474,7 +474,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(height: 18),
           DropdownButtonFormField<String>(
             dropdownColor: Colors.white,
-            value: selectedDistrict,
+            initialValue: selectedDistrict,
             isExpanded: true,
             icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF6B6B6B)),
             style: const TextStyle(
@@ -673,7 +673,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildGenderField() {
     return DropdownButtonFormField<String>(
       dropdownColor: Colors.white,
-      value: genders.contains(genderController.text)
+      initialValue: genders.contains(genderController.text)
           ? genderController.text
           : null,
       isExpanded: true,
@@ -823,7 +823,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RecommendationScreen()),
+                  MaterialPageRoute(builder: (context) => RecommendationScreen(data: [])),
                 );
               },
               style: ElevatedButton.styleFrom(

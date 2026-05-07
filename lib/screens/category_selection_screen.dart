@@ -11,7 +11,7 @@ class PilihKategori extends StatefulWidget {
 }
 
 class _PilihKategori extends State<PilihKategori> {
-  Set<int> _selectedIds = {};
+  final Set<int> _selectedIds = {};
 
   @override
   Widget build(BuildContext context) {

@@ -410,10 +410,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         GestureDetector(
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Halaman daftar belum dibuat'),
-              ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const RegisterScreen()),
             );
           },
           child: const Text(

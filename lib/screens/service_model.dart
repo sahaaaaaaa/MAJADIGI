@@ -15,6 +15,36 @@ class Recommendation {
   });
 }
 
+class NewsArticle {
+  final int id;
+  final String title;
+  final String content;
+  final String date;
+  final String imageUrl;
+  final String category; // Contoh: Hoaks, Fakta, Disinformasi
+
+  NewsArticle({
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.date,
+    required this.imageUrl,
+    required this.category,
+  });
+}
+
+List<NewsArticle> dummyNews = [
+  NewsArticle(
+    id: 1,
+    title: "Dubes AS & Gus Yahya Ajak Umat Islam Kecam Tindakan Iran",
+    date: "08 April 2026",
+    category: "Hoaks",
+    imageUrl: "assets/news1.png",
+    content: "Beredar unggahan di media sosial yang menampilkan pertemuan antara Duta Besar Amerika Serikat dan Ketua Umum PBNU...",
+  ),
+  // Tambahkan berita lainnya sesuai desain
+];
+
 final List<Recommendation> recommendations = [
   Recommendation(
     id: 1, 
@@ -55,7 +85,7 @@ final List<Recommendation> recommendations = [
     id: 6, 
     title: 'Klinik Hoaks', 
     description: 'Verifikasi informasi dan cek fakta digital', 
-    logo: 'klinik_hoaks.png', 
+    logo: 'klinik_hoak.png', 
     kategori: 'Multisektor (Khusus)'
   ),
   Recommendation(

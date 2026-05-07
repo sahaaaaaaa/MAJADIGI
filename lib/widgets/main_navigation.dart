@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/recommendation_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/layanan_screen.dart';
 import '../screens/tersimpan_screen.dart';
 import '../screens/akun_screen.dart';
+import '../screens/service_model.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -14,11 +16,14 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomeScreen(),
+  final List<Widget> _pages = [
+    const HomeScreen(),
     LayananScreen(),
-    TersimpanScreen(),
-    AkunScreen(),
+    TersimpanScreen(
+      selectedIds: {1,2,3,4,5,6,7,8}, // Set kosong untuk sementara
+      allData: recommendations, // List kosong untuk sementara
+    ),
+    const AkunScreen(),
   ];
 
   @override

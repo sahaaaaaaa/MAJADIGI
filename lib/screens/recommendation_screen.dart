@@ -1,34 +1,19 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import 'category_selection_screen.dart';
-
-class Recommendation {
-  final int id; // Tambahkan ID agar unik
-  final String title;
-  final String description;
-  final String logo;
-
-  Recommendation({required this.id,required this.title, required this.description, required this.logo});
-}
-
-// List contoh data (variabel yang mudah diotak-atik)
-final List<Recommendation> recommendations = [
-  Recommendation(id: 1, title: 'RSUD Dr. Saiful...', description: 'Koleksi khas semua tentang Jawa Timur', logo: 'rsud.png'),
-  Recommendation(id: 2, title: 'Islamic Center', description: 'Koleksi khas semua tentang Jawa Timur', logo: 'islamic_center.png'),
-  Recommendation(id: 3, title: 'Open Data', description: 'Koleksi khas semua tentang Jawa Timur', logo: 'open_data.png'),
-  Recommendation(id: 4, title: 'Point Jatim', description: 'Koleksi khas semua tentang Jawa Timur', logo: 'point_jatim.png'),
-  Recommendation(id: 5, title: 'Klinik Hoaks', description: 'Koleksi khas semua tentang Jawa Timur', logo: 'klinik_hoaks.png'),
-];
+import 'service_model.dart';
 
 class RecommendationScreen extends StatefulWidget {
-  const RecommendationScreen({super.key});
+  final List<Recommendation> data; 
+
+  const RecommendationScreen({super.key, required this.data});
 
   @override
   State<RecommendationScreen> createState() => _RecommendationScreenState();
 }
 
 class _RecommendationScreenState extends State<RecommendationScreen> {
-  Set<int> _selectedIds = {};
+  final Set<int> _selectedIds = {};
   
   @override
   Widget build(BuildContext context) {
