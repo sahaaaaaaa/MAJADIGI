@@ -81,7 +81,7 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
   // 2. Bagian Gambar Tas dan Judul Kategori
   Widget _buildHeaderSection() {
     String fileName = widget.kategori.toLowerCase().replaceAll(' ', '_');
-    print("$fileName");
+    print(fileName);
     return Column(
       children: [
         const SizedBox(height: 8),
