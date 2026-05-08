@@ -87,6 +87,7 @@ flutter:
     - assets/images/bromo2.png
     - assets/images/bromo3.png
     - assets/images/maps.png
+    - assets/images/sidita.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

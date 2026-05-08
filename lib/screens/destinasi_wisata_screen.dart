@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'detail_wisata_screen.dart';
+import 'informasi_screen.dart';
 
 class DestinasiWisataScreen extends StatefulWidget {
   const DestinasiWisataScreen({super.key});
@@ -201,7 +202,17 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                       const Icon(Icons.bookmark_border,
                           color: Colors.white),
                       const SizedBox(width: 10),
-                      const Icon(Icons.info_outline, color: Colors.white),
+                      GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const InformasiScreen(),
+      ),
+    );
+  },
+  child: const Icon(Icons.info_outline, color: Colors.white),
+),
                     ],
                   ),
                 ),
