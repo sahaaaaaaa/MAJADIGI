@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:majadigi/screens/recommendation_screen.dart';
-import '../screens/home_screen.dart';
-import '../screens/layanan_screen.dart';
-import '../screens/tersimpan_screen.dart';
-import '../screens/akun_screen.dart';
+import 'package:majadigi/screens/onboarding/recommendation_screen.dart';
+import '../screens/beranda/home_screen.dart';
+import '../screens/layanan/layanan_screen.dart';
+import '../screens/tersimpan/tersimpan_screen.dart';
+import '../screens/akun/akun_screen.dart';
 import '../screens/service_model.dart';
 
 class MainNavigation extends StatefulWidget {

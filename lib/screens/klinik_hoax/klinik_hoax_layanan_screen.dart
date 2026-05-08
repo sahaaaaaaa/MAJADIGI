@@ -11,10 +11,30 @@ class KlinikHoaksLayananScreen extends StatefulWidget {
 class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
   late int activeTab;
 
+  final TextEditingController namaUser = TextEditingController();
+  final TextEditingController emailUser = TextEditingController();
+  final TextEditingController phoneUser = TextEditingController();
+  final TextEditingController laporanKlinikHoaks = TextEditingController(); // Ini yang kamu minta
+  final TextEditingController linkBukti = TextEditingController();
+  final TextEditingController captchaInput = TextEditingController();
+  final TextEditingController tiketLacak = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     activeTab = widget.initialTab;
+  }
+
+  @override
+  void dispose() {
+    namaUser.dispose();
+    emailUser.dispose();
+    phoneUser.dispose();
+    laporanKlinikHoaks.dispose();
+    linkBukti.dispose();
+    captchaInput.dispose();
+    tiketLacak.dispose();
+    super.dispose();
   }
 
   @override
@@ -118,17 +138,46 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
     );
   }
 
-  // --- UI FORM LAPORAN ---
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Color(0xFFA0A0A0), fontSize: 16),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 1.2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
+          ),
+        ),
+      ),
+    );
+  }
+ 
   Widget _buildFormLaporan() {
     return Column(
       children: [
-        _buildTextField(label: "Nama Anda"),
-        _buildTextField(label: "Email"),
-        _buildTextField(label: "No handphone"),
-        _buildTextField(label: "Isi Laporan...", maxLines: 4),
-        _buildTextField(label: "Link Bukti / Website"),
-        
-        // Simulasikan Captcha (seperti di image_6c2eb1.png)
+        _buildTextField(controller: namaUser, hintText: "Nama Anda"),
+        _buildTextField(controller: emailUser, hintText: "Email", keyboardType: TextInputType.emailAddress),
+        _buildTextField(controller: phoneUser, hintText: "No handphone", keyboardType: TextInputType.phone),
+        _buildTextField(controller: laporanKlinikHoaks, hintText: "Isi Laporan...", maxLines: 4),
+        _buildTextField(controller: linkBukti, hintText: "Link Bukti / Website"),
+       // Simulasikan Captcha (seperti di image_6c2eb1.png)     
         Row(
           children: [
             Container(
@@ -140,7 +189,12 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
               child: Image.asset('assets/images/captcha_dummy.png', height: 40, errorBuilder: (c, e, s) => const Icon(Icons.image)),
             ),
             const SizedBox(width: 15),
-            Expanded(child: _buildTextField(label: "Kode Captcha")),
+            Expanded(
+              child: _buildTextField(
+                controller: captchaInput, 
+                hintText: "Kode Captcha"
+                ),
+              ),
           ],
         ),
         const SizedBox(height: 30),
@@ -149,48 +203,51 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
     );
   }
 
+
   // --- UI FORM LACAK ---
   Widget _buildFormLacak() {
-    return Column(
-      children: [
-        _buildTextField(label: "No Tiket"),
-        const SizedBox(height: 20),
-        _buildSubmitButton("Lacak"),
-      ],
-    );
-  }
-
-  // --- HELPER WIDGETS ---
-  Widget _buildTextField({required String label, int maxLines = 1}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextField(
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          hintText: label,
-          hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade200),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF0D57E7)),
-          ),
+  return Column(
+    children: [
+      // Desain ala kartu tiket
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFF),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFDCE7F8), width: 1.5),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.confirmation_number_outlined, size: 40, color: Color(0xFF0D57E7)),
+            const SizedBox(height: 12),
+            const Text(
+              "Nomor Tiket Laporan",
+              style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0D1B4C)),
+            ),
+            const SizedBox(height: 20),
+            // Inputan tiket
+            _buildTextField(
+              controller: tiketLacak, 
+              hintText: "Contoh: MJD-12345",
+              keyboardType: TextInputType.text,
+            ),
+          ],
         ),
       ),
-    );
-  }
+      const SizedBox(height: 24),
+      _buildSubmitButton("Cek Status Tiket"),
+    ],
+  );
+}
 
   Widget _buildSubmitButton(String text) {
     return SizedBox(
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF0D57E7),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),

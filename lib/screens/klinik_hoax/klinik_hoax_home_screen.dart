@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'klinik_hoaks_layanan_screen.dart';
+import 'klinik_hoax_layanan_screen.dart';
+import 'klinik_hoax_detail_screen.dart';
+import 'klinik_hoax_info_screen.dart';
 
 class KlinikHoaksHomeScreen extends StatefulWidget {
   const KlinikHoaksHomeScreen({super.key});
@@ -156,7 +158,20 @@ class _KlinikHoaksHomeScreenState extends State<KlinikHoaksHomeScreen> {
             children: [
               Icon(Icons.bookmark_outline_rounded, color: Colors.white.withOpacity(0.9)),
               const SizedBox(width: 15),
-              Icon(Icons.info_outline_rounded, color: Colors.white.withOpacity(0.9)),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const KlinikHoaksInformasiScreen(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.info_outline_rounded,
+                  color: Colors.white.withOpacity(0.9),
+                ),
+              ),
             ],
           )
         ],
@@ -313,53 +328,115 @@ class _KlinikHoaksHomeScreenState extends State<KlinikHoaksHomeScreen> {
   }
 
   Widget _buildNewsList() {
-    return Column(
-      children: List.generate(3, (index) => Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade100),
-        ),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.asset(
-                newsImages[index],
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                alignment: Alignment.center, // Fokus ke tengah gambar
-              ),
+  return Column(
+    children: List.generate(
+      3,
+      (index) => GestureDetector(
+
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const KlinikHoaksDetailScreen(),
             ),
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Dubes AS & Gus Yahya Ajak Umat Islam Kecam Tindakan Iran", 
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("08 April 2026", style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(border: Border.all(color: Colors.red), borderRadius: BorderRadius.circular(5)),
-                        child: const Text("Hoaks", style: TextStyle(color: Colors.red, fontSize: 10, fontWeight: FontWeight.bold)),
-                      )
-                    ],
-                  )
-                ],
+          );
+        },
+
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.shade100),
+          ),
+
+          child: Column(
+            children: [
+
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+
+                child: Image.asset(
+                  newsImages[index],
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
-            )
-          ],
+
+              Padding(
+                padding: const EdgeInsets.all(15),
+
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
+                  children: [
+
+                    const Text(
+                      "Dubes AS & Gus Yahya Ajak Umat Islam Kecam Tindakan Iran",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+
+                      children: [
+
+                        Text(
+                          "08 April 2026",
+                          style: TextStyle(
+                            color: Colors.grey.shade400,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        Container(
+                          padding:
+                              const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.red,
+                            ),
+
+                            borderRadius:
+                                BorderRadius.circular(5),
+                          ),
+
+                          child: const Text(
+                            "Hoaks",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      )),
-    );
-  }
+      ),
+    ),
+  );
+}
 
   Widget _buildLargeMoreButton() {
     return SizedBox(

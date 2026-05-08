@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'service_model.dart';
+import '../service_model.dart';
 
 class LayananSheetContent extends StatefulWidget {
   final String kategori;
@@ -188,7 +188,7 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Image.asset(item.logo, errorBuilder: (c, e, s) => const Icon(Icons.image)),
+                  child: Image.asset('assets/images/${item.logo}', errorBuilder: (c, e, s) => const Icon(Icons.image)),
                 ),
                 const SizedBox(height: 14),
                 Text(

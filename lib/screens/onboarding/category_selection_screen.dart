@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'bottom_sheet_screen.dart';
-import 'service_model.dart';
+import '../service_model.dart';
 import 'loading_screen.dart';
 
 class PilihKategori extends StatefulWidget {
@@ -377,7 +377,10 @@ class _PilihKategori extends State<PilihKategori> {
         child: _buildButton(
           text: 'Lewati', 
           isPrimary: false, 
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LoadingLayanan()),
+          ),
          ),
       ),
       const SizedBox(width: 12),
@@ -393,26 +396,6 @@ class _PilihKategori extends State<PilihKategori> {
                 context,
                 MaterialPageRoute(builder: (context) => const LoadingLayanan()),
               );
-              Future.delayed(const Duration(seconds: 3), () {
-                if (context.mounted) {
-                //   Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(builder: (context) => const MainDashboard()), // Ganti ke halaman tujuanmu
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text(
-                      'Onboarding done',
-                      style: TextStyle(fontFamily: 'Onest', fontWeight: FontWeight.w500),
-                    ),
-                    backgroundColor: const Color(0xFF0E63FF), // Warna biru Majadigi
-                    behavior: SnackBarBehavior.floating, // Membuatnya melayang
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    duration: const Duration(seconds: 2),
-                    ),
-                  );
-                }
-              });
             }
           },
         ),

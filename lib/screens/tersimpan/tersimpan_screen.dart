@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'service_model.dart';
-import 'klinik_hoaks_home_screen.dart';
+import '../service_model.dart';
+import '../klinik_hoax/klinik_hoax_home_screen.dart';
+import '../destinasi_wisata/destinasi_wisata_screen.dart';
 
 class TersimpanScreen extends StatefulWidget {
   final Set<int>? selectedIds;
@@ -219,7 +220,7 @@ class _TersimpanScreenState extends State<TersimpanScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Image.asset(
-              'assets/${item.logo}',
+              'assets/images/${item.logo}',
               height: 40,
               width: 40,
               errorBuilder: (context, error, stackTrace) =>
@@ -314,7 +315,7 @@ class _TersimpanScreenState extends State<TersimpanScreen> {
             const SizedBox(height: 20),
             
             // Logo & Info
-            Image.asset('assets/${item.logo}', height: 64, errorBuilder: (c, e, s) => const Icon(Icons.apps, size: 64)),
+            Image.asset('assets/images/${item.logo}', height: 64, errorBuilder: (c, e, s) => const Icon(Icons.apps, size: 64)),
             const SizedBox(height: 16),
             Text(item.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
@@ -336,7 +337,18 @@ class _TersimpanScreenState extends State<TersimpanScreen> {
                       builder: (context) => const KlinikHoaksHomeScreen(),
                     ),
                   );
-                } else {
+                } 
+
+                if (item.title == "Destinasi Wisata") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DestinasiWisataScreen(),
+                    )
+                  );
+                }
+
+                  else {
                   // Navigasi ke halaman detail umum lainnya jika ada
                   print("Membuka detail untuk: ${item.title}");
                 }

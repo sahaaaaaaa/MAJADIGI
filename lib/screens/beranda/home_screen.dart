@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'layanan_lain.dart';
-import '../widgets/layanan_item.dart';
-import 'destinasi_wisata_screen.dart';
+import '../../widgets/layanan_item.dart';
+import '../destinasi_wisata/destinasi_wisata_screen.dart';
+import '../klinik_hoax/klinik_hoax_home_screen.dart';
+import '../open_data/open_data_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -180,7 +182,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             LayananItem(
                               title: "Klinik Hoaks",
                               image: "assets/images/klinik_hoax.png",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const KlinikHoaksHomeScreen()),
+                                );
+                              },
                             ),
 
                             LayananItem(
@@ -199,7 +208,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             LayananItem(
                               title: "Open Data",
                               image: "assets/images/open_data.png",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const OpenDataScreen()),
+                                );
+                              },
                             ),
 
                             LayananItem(

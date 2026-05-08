@@ -50,7 +50,7 @@ final List<Recommendation> recommendations = [
     id: 1, 
     title: 'RSUD Dr. Saiful Anwar', 
     description: 'Layanan kesehatan rujukan utama Jawa Timur', 
-    logo: 'rsud_saiful.png', 
+    logo: 'rsud_saifulanwar.png', 
     kategori: 'Kesehatan'
   ),
   Recommendation(
@@ -64,7 +64,7 @@ final List<Recommendation> recommendations = [
     id: 3, 
     title: 'Destinasi Wisata', 
     description: 'Eksplorasi keindahan alam dan budaya Jatim', 
-    logo: 'wisata.png', 
+    logo: 'destinasi_wisata.png', 
     kategori: 'Pariwisata & Kebudayaan' 
   ),
   Recommendation(
@@ -85,28 +85,28 @@ final List<Recommendation> recommendations = [
     id: 6, 
     title: 'Klinik Hoaks', 
     description: 'Verifikasi informasi dan cek fakta digital', 
-    logo: 'klinik_hoak.png', 
+    logo: 'klinik_hoax.png', 
     kategori: 'Multisektor (Khusus)'
   ),
   Recommendation(
     id: 7, 
     title: 'Harga Bahan Pokok', 
     description: 'Pantau harga pangan pasar secara real-time', 
-    logo: 'harga_pangan.png', 
+    logo: 'klinik_hoax.png', 
     kategori: 'Ekonomi & Bisnis' 
   ),
   Recommendation(
     id: 8, 
-    title: 'Kontak Darurat', 
+    title: 'Nomor Darurat', 
     description: 'Layanan cepat tanggap darurat 24 jam', 
-    logo: 'emergency.png', 
+    logo: 'klinik_hoax.png', 
     kategori: 'Kebencanaan' 
   ),
   Recommendation(
     id: 9, 
     title: 'Transjatim', 
     description: 'Informasi rute transportasi publik Jatim', 
-    logo: 'transjatim.png', 
+    logo: 'transjatim_ajaib.png', 
     kategori: 'Infrastruktur'
   ),
   Recommendation(

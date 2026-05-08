@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'destinasi_wisata_screen.dart';
-import '../widgets/layanan_item.dart';
+import '../destinasi_wisata/destinasi_wisata_screen.dart';
+import '../../widgets/layanan_item.dart';
 
 class LayananLainScreen extends StatefulWidget {
   const LayananLainScreen({super.key});

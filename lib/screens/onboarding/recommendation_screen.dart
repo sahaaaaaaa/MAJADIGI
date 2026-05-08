@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import 'category_selection_screen.dart';
-import 'service_model.dart';
+import '../service_model.dart';
 
 class RecommendationScreen extends StatefulWidget {
   final List<Recommendation> data; 

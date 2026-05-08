@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import '../onboarding/login_screen.dart';
 import 'edit_akun_screen.dart';
 import 'bahasa_screen.dart';
 import 'ubah_password_screen.dart';
