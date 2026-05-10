@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'detail_wisata_screen.dart';
-import 'informasi_screen.dart';
+import 'informasi_wisata.dart';
 
 class DestinasiWisataScreen extends StatefulWidget {
   const DestinasiWisataScreen({super.key});

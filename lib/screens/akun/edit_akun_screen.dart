@@ -84,7 +84,7 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                 decoration: const BoxDecoration(
-                  color: Color(0xFFF5F5F5),
+                  color: Colors.white,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(32),
                   ),

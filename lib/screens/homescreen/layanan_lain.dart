@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'destinasi_wisata_screen.dart';
-import '../widgets/layanan_item.dart';
-
+import '../destinasi/destinasi_wisata_screen.dart';
+import '../../widgets/layanan_item.dart';
+import '../harga_barang/harga_bahan_pokok_screen.dart';
+import '../nomor darurat/nomor_darurat.dart';
 class LayananLainScreen extends StatefulWidget {
   const LayananLainScreen({super.key});
 
@@ -22,9 +23,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
           Container(
             height: 140,
             padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
-            decoration: const BoxDecoration(
-              color: Color(0xFF0D57E7),
-            ),
+            decoration: const BoxDecoration(color: Color(0xFF0D57E7)),
             child: Row(
               children: [
                 IconButton(
@@ -54,15 +53,13 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(30)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: ListView(
                 children: [
                   const Text(
                     "Featured",
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 16),
@@ -84,11 +81,15 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
                         const Text(
                           "Pariwisata & Kebudayaan",
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        Icon(pariwisataOpen
-                            ? Icons.expand_less
-                            : Icons.expand_more),
+                        Icon(
+                          pariwisataOpen
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                        ),
                       ],
                     ),
                   ),
@@ -132,8 +133,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const DestinasiWisataScreen()),
+              MaterialPageRoute(builder: (_) => const DestinasiWisataScreen()),
             );
           },
         ),
@@ -145,7 +145,12 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Harga",
           image: "assets/images/khas_jatim.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HargaBahanPokokScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "RSUD Haji",
@@ -165,7 +170,15 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Nomor Darurat",
           image: "assets/images/klinik_hoax.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) =>
+          const NomorDaruratScreen(),
+    ),
+  );
+          },
         ),
         LayananItem(
           title: "Point Jatim",
@@ -224,8 +237,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const DestinasiWisataScreen()),
+              MaterialPageRoute(builder: (_) => const DestinasiWisataScreen()),
             );
           },
         ),
@@ -237,10 +249,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   Widget _simpleItem(String title) {
     return Column(
       children: [
-        ListTile(
-          title: Text(title),
-          trailing: const Icon(Icons.expand_more),
-        ),
+        ListTile(title: Text(title), trailing: const Icon(Icons.expand_more)),
         const Divider(),
       ],
     );

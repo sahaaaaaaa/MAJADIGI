@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'layanan_lain.dart';
-import '../widgets/layanan_item.dart';
-import 'destinasi_wisata_screen.dart';
+import '../../widgets/layanan_item.dart';
+import '../destinasi/destinasi_wisata_screen.dart';
+import '../harga_barang/harga_bahan_pokok_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -78,21 +79,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Selamat Datang",
-                              style: TextStyle(
-                                  color: Colors.white70, fontSize: 14)),
-                          Text("Arief W.",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600)),
+                          Text(
+                            "Selamat Datang",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            "Arief W.",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ],
                       ),
                       const Spacer(),
                       const Icon(Icons.search, color: Colors.white),
                       const SizedBox(width: 12),
-                      const Icon(Icons.notifications_none,
-                          color: Colors.white),
+                      const Icon(Icons.notifications_none, color: Colors.white),
                     ],
                   ),
                 ),
@@ -143,29 +150,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(30)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(30),
+                      ),
                     ),
                     child: ListView(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text("Layanan",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
+                            const Text(
+                              "Layanan",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) =>
-                                          const LayananLainScreen()),
+                                    builder: (_) => const LayananLainScreen(),
+                                  ),
                                 );
                               },
-                              child: const Text("Semua layanan",
-                                  style: TextStyle(color: Colors.grey)),
+                              child: const Text(
+                                "Semua layanan",
+                                style: TextStyle(color: Colors.grey),
+                              ),
                             ),
                           ],
                         ),
@@ -190,8 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) =>
-                                          const DestinasiWisataScreen()),
+                                    builder: (_) =>
+                                        const DestinasiWisataScreen(),
+                                  ),
                                 );
                               },
                             ),
@@ -205,7 +219,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             LayananItem(
                               title: "Harga",
                               image: "assets/images/khas_jatim.png",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const HargaBahanPokokScreen(),
+                                  ),
+                                );
+                              },
                             ),
 
                             LayananItem(
@@ -233,8 +255,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) =>
-                                          const LayananLainScreen()),
+                                    builder: (_) => const LayananLainScreen(),
+                                  ),
                                 );
                               },
                             ),
@@ -243,9 +265,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         const SizedBox(height: 24),
 
-                        const Text("Jatim Dalam Angka",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text(
+                          "Jatim Dalam Angka",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
 
                         const SizedBox(height: 16),
 
@@ -321,9 +347,10 @@ class _StatCard extends StatelessWidget {
         children: [
           Image.asset(icon, width: 24),
           const SizedBox(height: 12),
-          Text(value,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 4),
           Expanded(child: Text(label)),
         ],
