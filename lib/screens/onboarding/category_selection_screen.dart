@@ -2,16 +2,91 @@ import 'package:flutter/material.dart';
 import 'bottom_sheet_screen.dart';
 import '../service_model.dart';
 import 'loading_screen.dart';
+import '../../services/auth_service.dart';
 
 class PilihKategori extends StatefulWidget {
-  const PilihKategori({super.key});
+  final RegisterRequest? registrationData;
+  final Set<int> initialSelectedIds;
+
+  const PilihKategori({
+    super.key,
+    this.registrationData,
+    this.initialSelectedIds = const <int>{},
+  });
 
   @override
   State<PilihKategori> createState() => _PilihKategori();
 }
 
 class _PilihKategori extends State<PilihKategori> {
+  final AuthService authService = AuthService();
   final Set<int> _selectedIds = {};
+  bool isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIds.addAll(widget.initialSelectedIds);
+  }
+
+  @override
+  void dispose() {
+    authService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _finishSelection({required bool allowEmpty}) async {
+    if (isSubmitting || (!allowEmpty && _selectedIds.isEmpty)) {
+      return;
+    }
+
+    if (widget.registrationData == null) {
+      _goToLoading();
+      return;
+    }
+
+    final selectedIds = _selectedIds.toList()..sort();
+
+    setState(() {
+      isSubmitting = true;
+    });
+
+    try {
+      await authService.register(
+        request: widget.registrationData!,
+        layananIds: selectedIds,
+      );
+
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoadingLayanan()),
+        (route) => false,
+      );
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
+    } finally {
+      if (mounted) {
+        setState(() {
+          isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  void _goToLoading() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoadingLayanan()),
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -371,51 +446,55 @@ class _PilihKategori extends State<PilihKategori> {
 }
 
   Widget _buildBottomButtons() {
-  return Row(
-    children: [
-      Expanded(
-        child: _buildButton(
-          text: 'Lewati', 
-          isPrimary: false, 
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LoadingLayanan()),
+    return Row(
+      children: [
+        Expanded(
+          child: _buildButton(
+            text: isSubmitting ? 'Memproses...' : 'Lewati',
+            isPrimary: false,
+            onPressed: isSubmitting
+                ? null
+                : () => _finishSelection(allowEmpty: true),
           ),
-         ),
-      ),
-      const SizedBox(width: 12),
-      Expanded(
-        child: _buildButton(
-          text: 
-            'Selanjutnya${_selectedIds.isNotEmpty ? " (${_selectedIds.length})" : ""}',
-          isPrimary: true, 
-          onPressed: () {
-            if (_selectedIds.isNotEmpty) {
-              print("Layanan yang dipilih: $_selectedIds");
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LoadingLayanan()),
-              );
-            }
-          },
         ),
-      ),
-    ],
-  );
-}
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildButton(
+            text: isSubmitting
+                ? 'Memproses...'
+                : 'Selanjutnya${_selectedIds.isNotEmpty ? " (${_selectedIds.length})" : ""}',
+            isPrimary: true,
+            onPressed: isSubmitting || _selectedIds.isEmpty
+                ? null
+                : () => _finishSelection(allowEmpty: false),
+          ),
+        ),
+      ],
+    );
+  }
 
-   Widget _buildButton({required String text, required bool isPrimary, required VoidCallback onPressed}) {
+  Widget _buildButton({
+    required String text,
+    required bool isPrimary,
+    required VoidCallback? onPressed,
+  }) {
     return SizedBox(
       height: 56,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: isPrimary ? const Color(0xFF0E63FF) : const Color(0xFFDCE7F8),
+          backgroundColor:
+              isPrimary ? const Color(0xFF0E63FF) : const Color(0xFFDCE7F8),
           foregroundColor: isPrimary ? Colors.white : const Color(0xFF0E63FF),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
         ),
-        child: Text(text, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
       ),
     );
   }

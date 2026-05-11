@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'recommendation_screen.dart';
 import 'login_screen.dart';
+import '../../services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -67,6 +68,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void nextStep() {
+    if (!_validateStepOne()) {
+      return;
+    }
+
     if (currentStep < 2) {
       setState(() {
         currentStep++;
@@ -84,6 +89,124 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  bool _validateStepOne() {
+    final firstName = firstNameController.text.trim();
+    final lastName = lastNameController.text.trim();
+    final phone = phoneController.text.trim();
+    final email = emailController.text.trim();
+
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        phone.isEmpty ||
+        email.isEmpty) {
+      _showMessage('Nama, nomor handphone, dan email wajib diisi.');
+      return false;
+    }
+
+    if (phone.length < 10 || phone.length > 15) {
+      _showMessage('Nomor handphone harus 10-15 digit.');
+      return false;
+    }
+
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+      _showMessage('Format email tidak valid.');
+      return false;
+    }
+
+    return true;
+  }
+
+  RegisterRequest? _buildRegisterRequest() {
+    if (!_validateStepTwo()) {
+      return null;
+    }
+
+    return RegisterRequest(
+      namaDepan: firstNameController.text.trim(),
+      namaBelakang: lastNameController.text.trim(),
+      noHandphone: phoneController.text.trim(),
+      email: emailController.text.trim(),
+      alamat: addressController.text.trim(),
+      kabupatenKota: selectedCity!.trim(),
+      kecamatan: selectedDistrict!.trim(),
+      nik: nikController.text.trim(),
+      tanggalLahir: _birthDateForApi(),
+      jenisKelamin: genderController.text == 'Perempuan' ? 'P' : 'L',
+      password: passwordController.text,
+      ulangiPassword: confirmPasswordController.text,
+    );
+  }
+
+  bool _validateStepTwo() {
+    final address = addressController.text.trim();
+    final nik = nikController.text.trim();
+    final birthDate = birthDateController.text.trim();
+    final gender = genderController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    if (address.isEmpty ||
+        selectedCity == null ||
+        selectedDistrict == null ||
+        nik.isEmpty ||
+        birthDate.isEmpty ||
+        gender.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      _showMessage('Semua data diri wajib diisi.');
+      return false;
+    }
+
+    if (nik.length != 16) {
+      _showMessage('NIK harus 16 digit.');
+      return false;
+    }
+
+    if (password.length < 8) {
+      _showMessage('Kata sandi minimal 8 karakter.');
+      return false;
+    }
+
+    if (password != confirmPassword) {
+      _showMessage('Kata sandi dan ulangi kata sandi tidak cocok.');
+      return false;
+    }
+
+    return true;
+  }
+
+  String _birthDateForApi() {
+    final parts = birthDateController.text.trim().split('/');
+    if (parts.length != 3) {
+      return birthDateController.text.trim();
+    }
+
+    return '${parts[2]}-${parts[1]}-${parts[0]}';
+  }
+
+  void _continueToServiceSelection() {
+    final request = _buildRegisterRequest();
+    if (request == null) {
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecommendationScreen(
+          data: const [],
+          registrationData: request,
+        ),
+      ),
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   Future<void> pickBirthDate() async {
     final now = DateTime.now();
     final picked = await showDatePicker(
@@ -91,26 +214,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       initialDate: DateTime(now.year - 20),
       firstDate: DateTime(1950),
       lastDate: now,
-    
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF0065FF), // Warna header & lingkaran tanggal terpilih (Biru Majadigi)
-              onPrimary: Colors.white,    // Warna teks di atas primary
-              onSurface: Color(0xFF2F2F2F), // Warna teks tanggal
+              primary: Color(0xFF0065FF),
+              onPrimary: Colors.white,
+              onSurface: Color(0xFF2F2F2F),
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF0065FF), // Warna tombol OK/Cancel
+                foregroundColor: const Color(0xFF0065FF),
               ),
             ),
           ),
           child: child!,
         );
-      }
+      },
     );
-      if (picked != null) {
+
+    if (picked != null) {
       setState(() {
         birthDateController.text =
             '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
@@ -794,58 +917,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildBottomButtons() {
     if (currentStep == 2) {
       return Row(
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: 56,
-            child: ElevatedButton(
-              onPressed: previousStep,
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: const Color(0xFFDCE7F8),
-                foregroundColor: const Color(0xFF0E63FF),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 56,
+              child: ElevatedButton(
+                onPressed: previousStep,
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: const Color(0xFFDCE7F8),
+                  foregroundColor: const Color(0xFF0E63FF),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
-              ),
-              child: const Text(
-                'Kembali',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                child: const Text(
+                  'Kembali',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: SizedBox(
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RecommendationScreen(data: [])),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: const Color(0xFF0E63FF),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+          const SizedBox(width: 12),
+          Expanded(
+            child: SizedBox(
+              height: 56,
+              child: ElevatedButton(
+                onPressed: _continueToServiceSelection,
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: const Color(0xFF0E63FF),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
-              ),
-              child: Text(
-                'Selanjutnya',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,),
+                child: const Text(
+                  'Selanjutnya',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
           ),
         ],
-      );    
+      );
     }
-  return const SizedBox.shrink();
+
+    return const SizedBox.shrink();
   }
 }

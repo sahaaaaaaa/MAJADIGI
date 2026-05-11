@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import '../../widgets/main_navigation.dart';
+import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,15 +13,57 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AuthService authService = AuthService();
 
   bool rememberMe = false;
   bool obscurePassword = true;
+  bool isSubmitting = false;
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    authService.dispose();
     super.dispose();
+  }
+
+  Future<void> submitLogin() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      showMessage('Email dan kata sandi wajib diisi.');
+      return;
+    }
+
+    setState(() {
+      isSubmitting = true;
+    });
+
+    try {
+      await authService.login(email: email, password: password);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MainNavigation()),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      showMessage(error.message);
+    } finally {
+      if (mounted) {
+        setState(() {
+          isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  void showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -368,34 +411,38 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLoginButton() {
-  return SizedBox(
-    width: double.infinity,
-    height: 56,
-    child: ElevatedButton(
-      onPressed: () {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (_) => const MainNavigation()),
-  );
-},
-      style: ElevatedButton.styleFrom(
-        elevation: 0,
-        backgroundColor: const Color(0xFF0E63FF),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: isSubmitting ? null : submitLogin,
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: const Color(0xFF0E63FF),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
         ),
+        child: isSubmitting
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.4,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                "Masuk",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
-      child: const Text(
-        "Masuk",
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildRegisterText() {
     return Row(
