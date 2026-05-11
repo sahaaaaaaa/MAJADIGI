@@ -235,7 +235,7 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
         ),
       ),
       const SizedBox(height: 24),
-      _buildSubmitButton("Cek Status Tiket"),
+      _buildSubmitButton("Lacak"),
     ],
   );
 }

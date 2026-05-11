@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class KlinikHoaksInformasiScreen extends StatefulWidget {
-  const KlinikHoaksInformasiScreen({super.key});
+class OpenDataInformasiScreen extends StatefulWidget {
+  const OpenDataInformasiScreen({super.key});
 
   @override
-  State<KlinikHoaksInformasiScreen> createState() =>
-      _KlinikHoaksInformasiScreenState();
+  State<OpenDataInformasiScreen> createState() =>
+      _OpenDataInformasiScreenState();
 }
 
-class _KlinikHoaksInformasiScreenState
-    extends State<KlinikHoaksInformasiScreen> {
+class _OpenDataInformasiScreenState
+    extends State<OpenDataInformasiScreen> {
 
   bool manfaatExpanded = false;
-  bool daftarExpanded = false;
+  bool sistemExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +99,7 @@ class _KlinikHoaksInformasiScreenState
 
                           child: Center(
                             child: Image.asset(
-                              'assets/images/klinik_hoax.png',
+                              'assets/images/open_data.png',
                               height: 80,
                             ),
                           ),
@@ -109,7 +109,7 @@ class _KlinikHoaksInformasiScreenState
 
                         // TENTANG
                         const Text(
-                          "Tentang Klinik Hoaks",
+                          "Tentang Open Data",
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -120,11 +120,11 @@ class _KlinikHoaksInformasiScreenState
                         const SizedBox(height: 12),
 
                         Text(
-                          "Platform layanan publik yang dibangun oleh Dinas "
-                          "Komunikasi dan Informatika Provinsi Jawa Timur "
-                          "untuk membantu masyarakat memverifikasi "
-                          "kebenaran informasi beredar, terutama soal "
-                          "berita hoaks.",
+                          "Layanan Open Data Jawa Timur merupakan platform "
+                          "penyedia data publik yang dikelola oleh Pemerintah "
+                          "Provinsi Jawa Timur untuk mendukung transparansi "
+                          "informasi, pengambilan keputusan berbasis data, "
+                          "dan kolaborasi publik.",
                           style: TextStyle(
                             fontSize: 15,
                             height: 1.7,
@@ -148,7 +148,7 @@ class _KlinikHoaksInformasiScreenState
                         _buildInfoCard(
                           title: "Link Layanan",
                           child: Text(
-                            "https://klinikhoaks.jatimprov.go.id/",
+                            "https://opendata.jatimprov.go.id/",
                             style: TextStyle(
                               color: Colors.blue[700],
                               decoration: TextDecoration.underline,
@@ -159,7 +159,8 @@ class _KlinikHoaksInformasiScreenState
                         _buildInfoCard(
                           title: "Alamat",
                           child: Text(
-                            "Jl. A. Yani 242 - 244, Gayungan, Surabaya.",
+                            "Jl. Ahmad Yani No.242-244, Gayungan, "
+                            "Kec. Gayungan, Surabaya, Jawa Timur 60235",
                             style: TextStyle(
                               color: Colors.grey[700],
                             ),
@@ -227,6 +228,7 @@ class _KlinikHoaksInformasiScreenState
 
                         const SizedBox(height: 18),
 
+                        // MANFAAT
                         _buildExpandTile(
                           title: "Manfaat",
                           isExpanded: manfaatExpanded,
@@ -235,172 +237,124 @@ class _KlinikHoaksInformasiScreenState
                               manfaatExpanded = !manfaatExpanded;
                             });
                           },
-                          content: Padding(
-                            padding: const EdgeInsets.only(left: 1.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "1. Membantu masyarakat memverifikasi informasi ",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                Text(
-                                  "    yang meragukan agar terhindar dari hoaks.",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "2. Melindungi publik dari dampak negatif informasi",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                Text(
-                                  "    palsu yang menyesatkan.",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "3. Meningkatkan kesadaran dan literasi digital masyarakat ",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                Text(
-                                  "    melalui klarifikasi informasi.",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "4. Mendukung terciptanya ruang digital yang sehat",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                Text(
-                                  "   dan bebas hoaks.",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "5. Menyediakan akses transparan terhadap hasil",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                Text(
-                                  "    verifikasi informasi.",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                      
-                        _buildExpandTile(
-                          title: "Pendaftaran Online",
-                          isExpanded: daftarExpanded,
-                          onTap: () {
-                            setState(() {
-                              daftarExpanded = !daftarExpanded;
-                            });
-                          },
+
                           content: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+
                               Text(
-                                "1. Prosedur menggunakan situs Klinik Hoaks:",
+                                "1. Pemerintah hadir lebih transparan "
+                                "dalam menyediakan informasi publik.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
-                              SizedBox(height: 4),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "      a. Akses laman https://klinikhoaks.jatimprov.go.id/",
+                                "2. Data dapat dimanfaatkan untuk "
+                                "pengambilan keputusan yang lebih tepat.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
-                              SizedBox(height: 4),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "      b. Masukkan kata kunci informasi atau berita yang dicari",
+                                "3. Masyarakat lebih mudah memperoleh "
+                                "akses informasi resmi dan terpercaya.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
-                              SizedBox(height: 4),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "      c. Sistem akan menampilkan hasil temuan sesuai kata",
+                                "4. Mendukung inovasi dan kolaborasi "
+                                "berbasis data antar berbagai pihak.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // SISTEM
+                        _buildExpandTile(
+                          title: "Sistem, Mekanisme, dan Prosedur",
+                          isExpanded: sistemExpanded,
+                          onTap: () {
+                            setState(() {
+                              sistemExpanded = !sistemExpanded;
+                            });
+                          },
+
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
                               Text(
-                                "          kunci yang dicari, termasuk status dan penjelasannya.",
+                                "1. Akses website Open Data Jawa Timur "
+                                "melalui https://opendata.jatimprov.go.id/",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
-                              SizedBox(height: 8),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "2. Jika informasi yang dicari tidak ditemukan,",
+                                "2. Cari dataset atau infografik "
+                                "berdasarkan kategori yang tersedia.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "    pengguna bisa ajukan permohonan klarifikasi",
+                                "3. Pengguna dapat melihat detail data "
+                                "dan melakukan unduhan dataset.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "    sebagai berikut:",
+                                "4. Format data tersedia dalam berbagai "
+                                "jenis seperti Excel, CSV, dan API.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
-                              SizedBox(height: 4),
+
+                              const SizedBox(height: 10),
+
                               Text(
-                                "      a. Klik menu di laman Klinik Hoaks",
+                                "5. Seluruh data yang tersedia bersifat "
+                                "terbuka dan dapat digunakan sesuai kebutuhan.",
                                 style: TextStyle(
-                                    color: Colors.grey[700],
+                                  color: Colors.grey[700],
+                                  height: 1.7,
                                 ),
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                "      b. Pilih menu permohonan klarifikasi",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                "      c. Isi formulir data dengan informasi yang diminta,",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                ),
-                              ),
-                              Text(
-                                "          lalu klik tombol kirim",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                ),
-                              ),
-                              SizedBox(height: 4),                       
                             ],
                           ),
                         ),
