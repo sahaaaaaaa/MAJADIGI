@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart';
 import 'category_selection_screen.dart';
 import '../service_model.dart';
+import '../../services/auth_service.dart';
 
 class RecommendationScreen extends StatefulWidget {
-  final List<Recommendation> data; 
+  final List<Recommendation> data;
+  final RegisterRequest? registrationData;
 
-  const RecommendationScreen({super.key, required this.data});
+  const RecommendationScreen({
+    super.key,
+    required this.data,
+    this.registrationData,
+  });
 
   @override
   State<RecommendationScreen> createState() => _RecommendationScreenState();
@@ -282,18 +287,13 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
   Widget _buildBottomButtons() {
-  return Row(
-    children: [
-      Expanded(
+    return Row(
+      children: [
+        Expanded(
           child: SizedBox(
             height: 56,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PilihKategori())
-                );
-              },
+              onPressed: () => _openCategorySelection(includeSelection: false),
               style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor: const Color(0xFFDCE7F8),
@@ -314,13 +314,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           child: SizedBox(
             height: 56,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PilihKategori())
-                );
-                print("Layanan yang dipilih: $_selectedIds");
-              },
+              onPressed: () => _openCategorySelection(includeSelection: true),
               style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor: const Color(0xFF0E63FF),
@@ -333,16 +327,26 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                 'Selanjutnya',
                 style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
-        ],
-      );    
-    }
-  
-  
+        ),
+      ],
+    );
+  }
 
-
+  void _openCategorySelection({required bool includeSelection}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PilihKategori(
+          registrationData: widget.registrationData,
+          initialSelectedIds:
+              includeSelection ? Set<int>.from(_selectedIds) : const <int>{},
+        ),
+      ),
+    );
+  }
 }
