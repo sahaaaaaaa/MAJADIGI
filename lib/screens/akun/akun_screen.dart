@@ -3,6 +3,7 @@ import '../onboarding/login_screen.dart';
 import 'edit_akun_screen.dart';
 import 'bahasa_screen.dart';
 import 'ubah_password_screen.dart';
+import '../../services/auth_service.dart';
 
 class AkunScreen extends StatelessWidget {
   const AkunScreen({super.key});
@@ -63,6 +64,7 @@ class AkunScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
+                          AuthService.clearSession();
 
                           Navigator.pushAndRemoveUntil(
                             context,
@@ -258,6 +260,7 @@ class AkunScreen extends StatelessWidget {
                           Icons.logout,
                           "Logout",
                           onTap: () {
+                            AuthService.clearSession();
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
