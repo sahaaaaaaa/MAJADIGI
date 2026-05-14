@@ -101,7 +101,18 @@ flutter:
     - assets/images/open_data_banner1.png
     - assets/images/open_data_banner2.png
     - assets/images/open_data_banner3.png
-  # To add assets to your application, add an assets section, like this:
+    - assets/images/openData/ekonomi.png
+    - assets/images/openData/infrastruktur.png
+    - assets/images/openData/kemiskinan.png
+    - assets/images/openData/kependudukan.png
+    - assets/images/openData/pendidikan.png
+    - assets/images/openData/kesehatan.png
+    - assets/images/openData/lingkungan.png
+    - assets/images/openData/pemerintah.png
+    - assets/images/openData/tataruang.png
+    - assets/images/openData/sosial.png
+
+        # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'open_data_detail_screen.dart';
 import 'open_data_dummy.dart';
 import 'open_data_info_screen.dart';
+import 'fitur_cari_data.dart';
+import 'fitur_data_set.dart';
 
 class OpenDataScreen extends StatefulWidget {
   const OpenDataScreen({super.key});
@@ -12,6 +14,7 @@ class OpenDataScreen extends StatefulWidget {
 
 class _OpenDataScreenState extends State<OpenDataScreen> {
   late PageController _pageController;
+  final data = dummyOpenData.first;
   int _activePage = 0;
 
   // Data dummy untuk gambar klarifikasi terbaru agar bervariasi
@@ -84,14 +87,30 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
                                 icon: Icons.search_rounded,
                                 title: "Cari Data",
                                 desc: "Silahkan cari data yang Anda butuhkan mulai dari data pendidikan, kependudukan, dan lainnya.",
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const OpenDataCariDataScreen(),
+                                  ),
+                                );
+                                },
                               ),
                               const SizedBox(height: 16),
                               _buildLayananCard(
                                 icon: Icons.storage_rounded,
                                 title: "Data Set",
                                 desc: "Temukan kumpulan data-data mentah yang bisa diolah lebih lanjut di sini.",
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const FiturDataSetScreen(),
+                                  ),
+                                );
+                                },
                               ),
 
                               const SizedBox(height: 35),
@@ -257,12 +276,12 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       children: [
-        _buildStatItem("40.213", "Dataset"),
-        _buildStatItem("64", "Perangkat Daerah"),
-        _buildStatItem("22", "Artikel"),
-        _buildStatItem("99.923", "Pengunjung"),
-        _buildStatItem("506", "Infografik"),
-        _buildStatItem("18", "Publikasi"),
+        _buildStatItem(data.totalDataset, "Dataset"),
+        _buildStatItem(data.totalPerangkatDaerah, "Perangkat Daerah"),
+        _buildStatItem(data.totalArtikel, "Artikel"),
+        _buildStatItem(data.totalPengunjung, "Pengunjung"),
+        _buildStatItem(data.totalInfografik, "Infografik"),
+        _buildStatItem(data.totalPublikasi, "Publikasi"),
       ],
     );
   }
@@ -289,19 +308,17 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
 
   Widget _buildInfografisList() {
   return Column(
-    children: List.generate(newsImages.length, (index) {
-      // Data dummy untuk dikirim ke halaman detail (opsional)
-      String title = index == 0 
-          ? "Realisasi Investasi Jawa Timur Tahun 2025" 
-          : index == 1 
-            ? "Data Kependudukan Berdasarkan Wilayah" 
-            : "Publikasi Indeks Pembangunan Manusia";
+    children: List.generate(dummyOpenData.length, (index) {
+
+      final item = dummyOpenData[index];
 
       return Container(
         margin: const EdgeInsets.only(bottom: 20),
+
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(25),
+
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.02),
@@ -310,9 +327,10 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
             ),
           ],
         ),
-        // Gunakan ClipRRect agar efek InkWell tidak keluar dari border radius
+
         child: ClipRRect(
           borderRadius: BorderRadius.circular(25),
+
           child: InkWell(
             onTap: () {
               // Navigasi ke halaman detail
@@ -320,52 +338,82 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => OpenDataDetailScreen(
-                  data: dummyOpenData[index],
-                ),
-                  // Kalau mau kirim data, tambahkan constructor di OpenDataDetailScreen
-                  // builder: (context) => OpenDataDetailScreen(title: title, image: newsImages[index]),
+                    data: item,
+                  ),
                 ),
               );
             },
+
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
               children: [
-                // Bagian Gambar
+
+                // IMAGE
                 Image.asset(
-                  newsImages[index],
-                  height: 200, 
-                  width: double.infinity, 
+                  item.image,
+                  height: 200,
+                  width: double.infinity,
                   fit: BoxFit.cover,
                 ),
-                
-                // Bagian Teks
+
+                // CONTENT
                 Padding(
                   padding: const EdgeInsets.all(20),
+
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
                     children: [
+
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0D57E7).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
                         ),
-                        child: const Text(
-                          "Statistik", 
-                          style: TextStyle(
-                            color: Color(0xFF0D57E7), 
-                            fontSize: 11, 
-                            fontWeight: FontWeight.bold
+
+                        decoration: BoxDecoration(
+                          color: const Color(
+                            0xFF0D57E7,
+                          ).withOpacity(0.1),
+
+                          borderRadius:
+                              BorderRadius.circular(6),
+                        ),
+
+                        child: Text(
+                          item.category,
+
+                          style: const TextStyle(
+                            color: Color(0xFF0D57E7),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 12),
+
                       Text(
-                        title,
+                        item.title,
+
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold, 
-                          fontSize: 14, 
-                          height: 1.4
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          height: 1.4,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Text(
+                        item.date,
+
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
                         ),
                       ),
                     ],
