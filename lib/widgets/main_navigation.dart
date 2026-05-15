@@ -29,50 +29,155 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: _pages[_currentIndex],
+      
 
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(12),
-        padding: const EdgeInsets.symmetric(vertical: 10),
+      bottomNavigationBar: 
+      SafeArea(child: Container(
+        margin: const EdgeInsets.fromLTRB(
+          20,
+          0,
+          20,
+          20,
+        ),
+
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 10,
+        ),
+
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _navItem(Icons.home, "Beranda", 0),
-            _navItem(Icons.store, "Layanan", 1),
-            _navItem(Icons.bookmark, "Tersimpan", 2),
-            _navItem(Icons.person, "Akun", 3),
+
+          borderRadius:
+              BorderRadius.circular(40),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(
+                0.08,
+              ),
+
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
+
+        child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceAround,
+
+          children: [
+
+            _navItem(
+              Icons.home_filled,
+              "Beranda",
+              0,
+            ),
+
+            _navItem(
+              Icons.storefront_outlined,
+              "Layanan",
+              1,
+            ),
+
+            _navItem(
+              Icons.bookmark_border,
+              "Tersimpan",
+              2,
+            ),
+
+            _navItem(
+              Icons.person_outline,
+              "Akun",
+              3,
+            ),
+          ],
+        ),
+      ),
       ),
     );
   }
 
-  Widget _navItem(IconData icon, String label, int index) {
-    final isActive = _currentIndex == index;
+  Widget _navItem(
+    IconData icon,
+    String label,
+    int index,
+  ) {
+
+    final isActive =
+        _currentIndex == index;
 
     return GestureDetector(
       onTap: () {
+
         setState(() {
           _currentIndex = index;
         });
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isActive ? Colors.blue : Colors.grey),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? Colors.blue : Colors.grey,
-              fontSize: 12,
+
+      child: AnimatedContainer(
+        duration: const Duration(
+          milliseconds: 250,
+        ),
+
+        padding:
+            const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 10,
+        ),
+
+        decoration: BoxDecoration(
+          color: isActive
+              ? const Color(
+                  0xffE9F0FF,
+                )
+              : Colors.transparent,
+
+          borderRadius:
+              BorderRadius.circular(24),
+        ),
+
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+
+          children: [
+
+            Icon(
+              icon,
+
+              color: isActive
+                  ? const Color(
+                      0xff2F61E8,
+                    )
+                  : Colors.grey,
+
+              size: 24,
             ),
-          ),
-        ],
+
+            const SizedBox(height: 4),
+
+            Text(
+              label,
+
+              style: TextStyle(
+                color: isActive
+                    ? const Color(
+                        0xff2F61E8,
+                      )
+                    : Colors.grey,
+
+                fontSize: 13,
+
+                fontWeight: isActive
+                    ? FontWeight.w600
+                    : FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

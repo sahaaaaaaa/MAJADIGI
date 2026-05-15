@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
+import 'package:majadigi/screens/open_data/open_data_screen.dart';
 import '../service_model.dart';
 import '../klinik_hoax/klinik_hoax_home_screen.dart';
 import '../destinasi_wisata/destinasi_wisata_screen.dart';
+import '../point_jatim/point_jatim_home_screen.dart';
 
 class TersimpanScreen extends StatefulWidget {
   final Set<int>? selectedIds;
@@ -348,6 +351,32 @@ class _TersimpanScreenState extends State<TersimpanScreen> {
                   );
                 }
 
+                if (item.title == "Open Data") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OpenDataScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "Point Jatim") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PointJatimHomeScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "Islamic Center") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const IslamicCenterHomeScreen(),
+                    )
+                  );
+                }
                   else {
                   // Navigasi ke halaman detail umum lainnya jika ada
                   print("Membuka detail untuk: ${item.title}");
