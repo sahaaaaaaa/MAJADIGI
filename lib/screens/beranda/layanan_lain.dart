@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
+import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
+import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
 import '../destinasi_wisata/destinasi_wisata_screen.dart';
 import '../../widgets/layanan_item.dart';
+import '../service_model.dart';
 
 class LayananLainScreen extends StatefulWidget {
-  const LayananLainScreen({super.key});
+
+  final String kategori;
+
+  const LayananLainScreen({
+    super.key,
+    required this.kategori,
+  });
 
   @override
   State<LayananLainScreen> createState() => _LayananLainScreenState();
@@ -11,6 +21,18 @@ class LayananLainScreen extends StatefulWidget {
 
 class _LayananLainScreenState extends State<LayananLainScreen> {
   bool pariwisataOpen = true;
+
+  List<Recommendation>
+      get _filteredLayanan {
+
+    return recommendations
+        .where(
+          (item) =>
+              item.kategori ==
+              widget.kategori,
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +53,10 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
                 ),
-                const Expanded(
+                Expanded(
                   child: Center(
                     child: Text(
-                      "Layanan Lain",
+                      widget.kategori,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -59,52 +81,137 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
               ),
               child: ListView(
                 children: [
-                  const Text(
-                    "Featured",
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
 
-                  const SizedBox(height: 16),
+                  GridView.builder(
+                    shrinkWrap: true,
 
-                  _gridFeatured(),
+                    physics:
+                        const NeverScrollableScrollPhysics(),
 
-                  const SizedBox(height: 20),
-                  const Divider(),
+                    itemCount: _filteredLayanan.length,
 
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        pariwisataOpen = !pariwisataOpen;
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Pariwisata & Kebudayaan",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Icon(pariwisataOpen
-                            ? Icons.expand_less
-                            : Icons.expand_more),
-                      ],
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 14,
+                      mainAxisSpacing: 14,
+                      childAspectRatio: 1,
                     ),
+
+                    itemBuilder: (context, index) {
+
+                      final item =
+                          _filteredLayanan[index];
+
+                      return GestureDetector(
+                        onTap: () {
+
+                          if (item.screen != null) {
+
+                            Navigator.push(
+                              context,
+
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    item.screen!,
+                              ),
+                            );
+                          } else {
+
+                            ScaffoldMessenger.of(
+                                    context)
+                                .showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Halaman belum tersedia",
+                                ),
+                              ),
+                            );
+                          }
+                        },
+
+                        child: Container(
+                        padding: const EdgeInsets.all(16),
+
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+
+                          borderRadius:
+                              BorderRadius.circular(18),
+
+                          border: Border.all(
+                            color: const Color(
+                              0xffEAEAEA,
+                            ),
+                          ),
+                        ),
+
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+
+                          children: [
+
+                            Container(
+                              width: 52,
+                              height: 52,
+
+                              padding:
+                                  const EdgeInsets.all(8),
+
+                              decoration: BoxDecoration(
+                                color: const Color(
+                                  0xffF5F7FF,
+                                ),
+
+                                shape: BoxShape.circle,
+                              ),
+
+                              child: Image.asset(
+                                "assets/images/${item.logo}",
+                              ),
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            Text(
+                              item.title,
+
+                              maxLines: 2,
+
+                              overflow:
+                                  TextOverflow.ellipsis,
+
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight:
+                                    FontWeight.w600,
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            Text(
+                              item.description,
+
+                              maxLines: 2,
+
+                              overflow:
+                                  TextOverflow.ellipsis,
+
+                              style: TextStyle(
+                                fontSize: 13,
+
+                                color:
+                                    Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        ),
+                      );
+                    },
                   ),
-
-                  if (pariwisataOpen) ...[
-                    const SizedBox(height: 16),
-                    _gridPariwisata(),
-                  ],
-
-                  const Divider(),
-
-                  _simpleItem("Pendidikan"),
-                  _simpleItem("Ketenagakerjaan"),
-                  _simpleItem("Ekonomi & Bisnis"),
-                  _simpleItem("Kesehatan"),
-                  _simpleItem("Kependudukan"),
                 ],
               ),
             ),
@@ -124,7 +231,13 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Klinik Hoaks",
           image: "assets/images/klinik_hoax.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const KlinikHoaksHomeScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Destinasi Wisata",
@@ -170,12 +283,24 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Point Jatim",
           image: "assets/images/point_jatim.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => PointJatimHomeScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Islamic Center",
           image: "assets/images/islamic_center.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const IslamicCenterHomeScreen()),
+            );
+          },
         ),
       ],
     );
