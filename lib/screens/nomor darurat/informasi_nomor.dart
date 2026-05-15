@@ -4,12 +4,10 @@ class InfoNomorDaruratScreen extends StatefulWidget {
   const InfoNomorDaruratScreen({super.key});
 
   @override
-  State<InfoNomorDaruratScreen> createState() =>
-      _InfoNomorDaruratScreenState();
+  State<InfoNomorDaruratScreen> createState() => _InfoNomorDaruratScreenState();
 }
 
-class _InfoNomorDaruratScreenState
-    extends State<InfoNomorDaruratScreen> {
+class _InfoNomorDaruratScreenState extends State<InfoNomorDaruratScreen> {
   bool manfaatOpen = true;
   bool sistemOpen = true;
 
@@ -21,10 +19,17 @@ class _InfoNomorDaruratScreenState
       body: Stack(
         children: [
           // HEADER
+          // Latar Belakang Biru
           Container(
-            height: 180,
             width: double.infinity,
-            color: const Color(0xFF0047B3),
+            height: 300,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+              ),
+            ),
           ),
 
           SafeArea(
@@ -34,20 +39,14 @@ class _InfoNomorDaruratScreenState
                 // APPBAR
                 // ======================
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       IconButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
                       ),
 
                       const Expanded(
@@ -57,8 +56,7 @@ class _InfoNomorDaruratScreenState
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 22,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -77,14 +75,11 @@ class _InfoNomorDaruratScreenState
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    padding:
-                        const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
 
-                    decoration:
-                        const BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.vertical(
+                      borderRadius: BorderRadius.vertical(
                         top: Radius.circular(32),
                       ),
                     ),
@@ -99,23 +94,17 @@ class _InfoNomorDaruratScreenState
                           width: double.infinity,
 
                           decoration: BoxDecoration(
-                            color:
-                                const Color(0xFFF4F9FF),
-                            borderRadius:
-                                BorderRadius.circular(
-                                    24),
+                            color: const Color(0xFFF4F9FF),
+                            borderRadius: BorderRadius.circular(24),
                           ),
 
                           child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(
-                                    24),
+                            borderRadius: BorderRadius.circular(24),
 
                             child: Image.asset(
                               "assets/images/nomordarurat.png",
                               width: double.infinity,
-                              height:
-                                  double.infinity,
+                              height: double.infinity,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -130,10 +119,8 @@ class _InfoNomorDaruratScreenState
                           "Tentang Nomor Darurat",
                           style: TextStyle(
                             fontSize: 20,
-                            fontWeight:
-                                FontWeight.bold,
-                            color:
-                                Color(0xFF121938),
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF121938),
                           ),
                         ),
 
@@ -157,10 +144,8 @@ class _InfoNomorDaruratScreenState
                           "Operasional",
                           style: TextStyle(
                             fontSize: 18,
-                            fontWeight:
-                                FontWeight.bold,
-                            color:
-                                Color(0xFF121938),
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF121938),
                           ),
                         ),
 
@@ -168,16 +153,14 @@ class _InfoNomorDaruratScreenState
 
                         _infoCard(
                           title: "Alamat",
-                          value:
-                              "Seluruh kota di Jawa Timur",
+                          value: "Seluruh kota di Jawa Timur",
                         ),
 
                         const SizedBox(height: 16),
 
                         _infoCard(
                           title: "Jam Operasional",
-                          value:
-                              "Senin - Minggu (24 Jam)",
+                          value: "Senin - Minggu (24 Jam)",
                         ),
 
                         const SizedBox(height: 36),
@@ -189,10 +172,8 @@ class _InfoNomorDaruratScreenState
                           "Ketentuan Umum",
                           style: TextStyle(
                             fontSize: 20,
-                            fontWeight:
-                                FontWeight.bold,
-                            color:
-                                Color(0xFF121938),
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF121938),
                           ),
                         ),
 
@@ -205,8 +186,7 @@ class _InfoNomorDaruratScreenState
                           isOpen: manfaatOpen,
                           onTap: () {
                             setState(() {
-                              manfaatOpen =
-                                  !manfaatOpen;
+                              manfaatOpen = !manfaatOpen;
                             });
                           },
                         ),
@@ -214,15 +194,13 @@ class _InfoNomorDaruratScreenState
                         const SizedBox(height: 18),
 
                         _accordionCard(
-                          title:
-                              "Sistem, Mekanisme, dan Prosedur",
+                          title: "Sistem, Mekanisme, dan Prosedur",
                           content:
                               "Kontak darurat biasanya lebih pendek atau sedikit dengan tujuan agar mudah diingat. Pastikan Anda menyimpan daftar kontak darurat di ponsel Anda atau tempat yang mudah dijangkau. Terakhir, pastikan Anda memberikan informasi secara jelas mengenai kejadian dan lokasinya agar petugas bisa mengeksekusinya lebih cepat.",
                           isOpen: sistemOpen,
                           onTap: () {
                             setState(() {
-                              sistemOpen =
-                                  !sistemOpen;
+                              sistemOpen = !sistemOpen;
                             });
                           },
                         ),
@@ -240,23 +218,18 @@ class _InfoNomorDaruratScreenState
     );
   }
 
-  Widget _infoCard({
-    required String title,
-    required String value,
-  }) {
+  Widget _infoCard({required String title, required String value}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(22),
 
       decoration: BoxDecoration(
         color: const Color(0xFFF8F8F8),
-        borderRadius:
-            BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18),
       ),
 
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
@@ -269,13 +242,7 @@ class _InfoNomorDaruratScreenState
 
           const SizedBox(height: 18),
 
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-            ),
-          ),
+          Text(value, style: const TextStyle(color: Colors.grey, fontSize: 16)),
         ],
       ),
     );
@@ -291,16 +258,12 @@ class _InfoNomorDaruratScreenState
       padding: const EdgeInsets.all(22),
 
       decoration: BoxDecoration(
-        borderRadius:
-            BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade300),
       ),
 
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -309,10 +272,8 @@ class _InfoNomorDaruratScreenState
                   title,
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight:
-                        FontWeight.bold,
-                    color:
-                        Color(0xFF121938),
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF121938),
                   ),
                 ),
               ),
@@ -321,10 +282,7 @@ class _InfoNomorDaruratScreenState
                 onTap: onTap,
                 child: Text(
                   isOpen ? "—" : "+",
-                  style: const TextStyle(
-                    fontSize: 24,
-                    color: Colors.black,
-                  ),
+                  style: const TextStyle(fontSize: 24, color: Colors.black),
                 ),
               ),
             ],

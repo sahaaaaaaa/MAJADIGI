@@ -42,10 +42,17 @@ class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
       body: Stack(
         children: [
           // HEADER
+          // Latar Belakang Biru
           Container(
-            height: 180,
             width: double.infinity,
-            color: const Color(0xFF0047B3),
+            height: 300,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+              ),
+            ),
           ),
 
           SafeArea(

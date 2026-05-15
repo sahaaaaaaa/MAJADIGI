@@ -13,9 +13,17 @@ class DetailHargaMalangScreen extends StatelessWidget {
       body: Stack(
         children: [
           // 🔵 HEADER
+          // Latar Belakang Biru
           Container(
-            height: 170,
-            decoration: const BoxDecoration(color: Color(0xFF0047B3)),
+            width: double.infinity,
+            height: 300,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+              ),
+            ),
           ),
 
           SafeArea(

@@ -13,15 +13,18 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
+          // 🔵 HEADER BACKGROUND
           Container(
-            height: 160,
+            width: double.infinity,
+            height: 300,
             decoration: const BoxDecoration(
-              color: Color(0xFF0D57E7),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(40),
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
           ),
@@ -36,8 +39,9 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(30)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(30),
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -69,14 +73,14 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -90,9 +94,7 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
         decoration: InputDecoration(
           hintText: hint,
           suffixIcon: const Icon(Icons.visibility),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
         ),
       ),
     );

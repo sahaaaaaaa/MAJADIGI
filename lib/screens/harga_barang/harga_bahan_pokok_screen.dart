@@ -23,13 +23,15 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
       body: Stack(
         children: [
           // HEADER
+          // Latar Belakang Biru
           Container(
-            height: 180,
+            width: double.infinity,
+            height: 300,
             decoration: const BoxDecoration(
-              color: Color(0xFF0047B3),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(32),
-                bottomRight: Radius.circular(32),
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
           ),

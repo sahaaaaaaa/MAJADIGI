@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import '../login_screen.dart';
+
+
+import '../onboarding/login_screen.dart';
+
 import 'edit_akun_screen.dart';
 import 'bahasa_screen.dart';
 import 'ubah_password_screen.dart';
+import '../../services/auth_service.dart';
 
 class AkunScreen extends StatelessWidget {
   const AkunScreen({super.key});
@@ -63,6 +67,7 @@ class AkunScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
+                          AuthService.clearSession();
 
                           Navigator.pushAndRemoveUntil(
                             context,
@@ -100,12 +105,15 @@ class AkunScreen extends StatelessWidget {
       body: Stack(
         children: [
           // 🔵 HEADER
+          // Latar Belakang Biru
           Container(
+            width: double.infinity,
             height: 300,
             decoration: const BoxDecoration(
-              color: Color(0xFF0D57E7),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(40),
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
           ),
@@ -258,6 +266,7 @@ class AkunScreen extends StatelessWidget {
                           Icons.logout,
                           "Logout",
                           onTap: () {
+                            AuthService.clearSession();
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
