@@ -2,14 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'layanan_lain.dart';
 import '../../widgets/layanan_item.dart';
-<<<<<<<< HEAD:lib/screens/beranda/home_screen.dart
+import '../destinasi_wisata/destinasi_wisata_screen.dart';
+import '../harga_barang/harga_bahan_pokok_screen.dart';
+
 import '../destinasi_wisata/destinasi_wisata_screen.dart';
 import '../klinik_hoax/klinik_hoax_home_screen.dart';
 import '../open_data/open_data_screen.dart';
-========
-import '../destinasi/destinasi_wisata_screen.dart';
-import '../harga_barang/harga_bahan_pokok_screen.dart';
->>>>>>>> origin/salma:lib/screens/homescreen/home_screen.dart
+import '../rsud_provjatim/rsud_jatim.dart';
+import '../rssa/rssa_screen.dart';
+import '../transjatim/transjatim_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -53,23 +54,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.transparent,
-
-      body: Container(
-        color: const Color(0xFFF2F2F2),
-
-        child: Stack(
-          children: [
-      
+      backgroundColor: const Color(0xFFF2F2F2),
+      body: Stack(
+        children: [
           // HEADER
+          // Latar Belakang Biru
           Container(
+            width: double.infinity,
             height: 300,
             decoration: const BoxDecoration(
-              color: Color(0xFF0D57E7),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40),
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
           ),
@@ -159,28 +156,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 // CONTENT
                 Expanded(
                   child: Container(
-                    clipBehavior: Clip.none,
                     padding: const EdgeInsets.all(20),
-                  
                     decoration: const BoxDecoration(
-<<<<<<<< HEAD:lib/screens/beranda/home_screen.dart
-                      color: const Color(0xFFF8F8F8),
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(30)),
-========
                       color: Colors.white,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(30),
                       ),
->>>>>>>> origin/salma:lib/screens/homescreen/home_screen.dart
                     ),
                     child: ListView(
-                      padding: const EdgeInsets.fromLTRB(
-                        0,
-                        0,
-                        0,
-                        140,
-                      ),
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -197,15 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-<<<<<<<< HEAD:lib/screens/beranda/home_screen.dart
-                                      builder: (_) =>
-                                          LayananLainScreen(
-                                            kategori: "Pariwisata & Kebudayaan",
-                                          )),
-========
                                     builder: (_) => const LayananLainScreen(),
                                   ),
->>>>>>>> origin/salma:lib/screens/homescreen/home_screen.dart
                                 );
                               },
                               child: const Text(
@@ -230,8 +206,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) =>
-                                          const KlinikHoaksHomeScreen()),
+                                    builder: (_) =>
+                                        const KlinikHoaksHomeScreen(),
+                                  ),
                                 );
                               },
                             ),
@@ -257,8 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) =>
-                                          const OpenDataScreen()),
+                                    builder: (_) => const OpenDataScreen(),
+                                  ),
                                 );
                               },
                             ),
@@ -280,19 +257,40 @@ class _HomeScreenState extends State<HomeScreen> {
                             LayananItem(
                               title: "RSUD Haji",
                               image: "assets/images/rsud_haji.png",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const RsudHajiScreen(),
+                                  ),
+                                );
+                              },
                             ),
 
                             LayananItem(
                               title: "Transjatim",
                               image: "assets/images/transjatim_ajaib.png",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const TransjatimScreen(),
+                                  ),
+                                );
+                              },
                             ),
 
                             LayananItem(
                               title: "RSSA",
                               image: "assets/images/rsud_saifulanwar.png",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const RssaScreen(),
+                                  ),
+                                );
+                              },
                             ),
 
                             LayananItem(
@@ -302,15 +300,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-<<<<<<<< HEAD:lib/screens/beranda/home_screen.dart
-                                      builder: (_) =>
-                                          LayananLainScreen(
-                                            kategori: "Pariwisata & Kebudayaan",
-                                          )),
-========
                                     builder: (_) => const LayananLainScreen(),
                                   ),
->>>>>>>> origin/salma:lib/screens/homescreen/home_screen.dart
                                 );
                               },
                             ),
@@ -364,7 +355,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
       ),
     );
   }
