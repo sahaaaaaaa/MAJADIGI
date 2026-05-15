@@ -48,9 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
-      body: Stack(
-        children: [
+      extendBody: true,
+      backgroundColor: Colors.transparent,
+
+      body: Container(
+        color: const Color(0xFFF2F2F2),
+
+        child: Stack(
+          children: [
+      
           // HEADER
           Container(
             height: 300,
@@ -142,13 +148,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 // CONTENT
                 Expanded(
                   child: Container(
+                    clipBehavior: Clip.none,
                     padding: const EdgeInsets.all(20),
+                  
                     decoration: const BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFFF8F8F8),
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(30)),
                     ),
                     child: ListView(
+                      padding: const EdgeInsets.fromLTRB(
+                        0,
+                        0,
+                        0,
+                        140,
+                      ),
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -163,7 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) =>
-                                          const LayananLainScreen()),
+                                          LayananLainScreen(
+                                            kategori: "Pariwisata & Kebudayaan",
+                                          )),
                                 );
                               },
                               child: const Text("Semua layanan",
@@ -250,7 +266,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) =>
-                                          const LayananLainScreen()),
+                                          LayananLainScreen(
+                                            kategori: "Pariwisata & Kebudayaan",
+                                          )),
                                 );
                               },
                             ),
@@ -300,6 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

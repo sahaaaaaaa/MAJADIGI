@@ -1,10 +1,18 @@
 // service_model.dart
+import 'package:flutter/material.dart';
+import 'package:majadigi/screens/destinasi_wisata/destinasi_wisata_screen.dart';
+import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
+import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
+import 'package:majadigi/screens/open_data/open_data_screen.dart';
+import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
+
 class Recommendation {
   final int id;
   final String title;
   final String description;
   final String logo;
   final String kategori;
+  final Widget? screen;
 
   Recommendation({
     required this.id,
@@ -12,6 +20,7 @@ class Recommendation {
     required this.description,
     required this.logo,
     required this.kategori,
+    this.screen,
   });
 }
 
@@ -65,28 +74,32 @@ final List<Recommendation> recommendations = [
     title: 'Destinasi Wisata', 
     description: 'Eksplorasi keindahan alam dan budaya Jatim', 
     logo: 'destinasi_wisata.png', 
-    kategori: 'Pariwisata & Kebudayaan' 
+    kategori: 'Pariwisata & Kebudayaan' ,
+    screen: const DestinasiWisataScreen(),
   ),
   Recommendation(
     id: 4, 
     title: 'Islamic Center', 
     description: 'Pusat informasi dan kegiatan keagamaan', 
     logo: 'islamic_center.png', 
-    kategori: 'Sosial' 
+    kategori: 'Sosial' ,
+    screen: const IslamicCenterHomeScreen(),
   ),
   Recommendation(
     id: 5, 
     title: 'Open Data', 
     description: 'Transparansi data publik untuk masyarakat', 
     logo: 'open_data.png', 
-    kategori: 'PPID'
+    kategori: 'PPID',
+    screen: const OpenDataScreen(),
   ),
   Recommendation(
     id: 6, 
     title: 'Klinik Hoaks', 
     description: 'Verifikasi informasi dan cek fakta digital', 
     logo: 'klinik_hoax.png', 
-    kategori: 'Multisektor (Khusus)'
+    kategori: 'Multisektor (Khusus)',
+    screen: KlinikHoaksHomeScreen(),
   ),
   Recommendation(
     id: 7, 
@@ -108,12 +121,14 @@ final List<Recommendation> recommendations = [
     description: 'Informasi rute transportasi publik Jatim', 
     logo: 'transjatim_ajaib.png', 
     kategori: 'Infrastruktur'
+
   ),
   Recommendation(
     id: 10, 
     title: 'Point Jatim', 
     description: 'Sistem poin terintegrasi layanan warga', 
     logo: 'point_jatim.png', 
-    kategori: 'Kependudukan'
+    kategori: 'Kependudukan',
+    screen: PointJatimHomeScreen()
   ),
 ];
