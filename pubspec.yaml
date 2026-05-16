@@ -122,7 +122,6 @@ flutter:
     - assets/images/islamicCenter/aula.png
     - assets/images/islamicCenter/masjid.png 
     - assets/images/islamicCenter/asrama.png
-          - assets/images/sidita.png
     - assets/images/bawang_merah.png
     - assets/images/bawang_putih.png
     - assets/images/beras.png
@@ -134,11 +133,52 @@ flutter:
     - assets/images/kayu.png
     - assets/images/kol.png
     - assets/images/siskaperbapo.png
-    - assets/images/ambulans.svg
-    - assets/images/call.svg
-    - assets/images/polda.svg
-    - assets/images/selector.svg
     - assets/images/nomordarurat.png
+    - assets/images/rsud1.png
+    - assets/images/rsud2.png
+    - assets/images/rsud3.png
+    - assets/images/Top_rsudjatim.png
+    - assets/images/Top_rssa.png
+    - assets/images/rssa1.png
+    - assets/images/rssa2.png
+    - assets/images/rssa3.png
+    - assets/images/transjatim1.png
+    - assets/images/transjatim2.png
+    - assets/images/transjatim3.png
+    - assets/images/maps_transjatim.png
+    - assets/images/Top_transjatim.png
+
+    - assets/images/icons/ambulans.svg
+    - assets/images/icons/call.svg
+    - assets/images/icons/polda.svg
+    - assets/images/icons/selector.svg
+    - assets/images/icons/building-07.svg
+    - assets/images/icons/users-check.svg
+    - assets/images/icons/users-up-01.svg
+    - assets/images/icons/bus.svg
+    - assets/images/icons/marker-pin-01.svg
+    - assets/images/icons/route.svg
+    - assets/images/icons/ticket-01.svg
+    - assets/images/icons/users-03.svg
+    - assets/images/icons/clock.svg
+    - assets/images/icons/ellipse.svg
+    - assets/images/icons/switch-horizontal-02.svg
+    - assets/images/icons/switch-vertical-01.svg
+    - assets/images/icons/marker-pin-green.svg
+    - assets/images/icons/marker-pin-02.svg
+    - assets/images/icons/ellipse2.svg
+    - assets/images/icons/clock_white.svg
+    - assets/images/kidungan.jpg
+    - assets/images/SKOPI.png
+    - assets/images/nawa/jatim_agro.png
+    - assets/images/nawa/jatim_akses.png
+    - assets/images/nawa/jatim_berkah.png
+    - assets/images/nawa/jatim_cerdas.png
+    - assets/images/nawa/jatim_harmoni.png
+    - assets/images/nawa/jatim_kerja.png
+    - assets/images/nawa/jatim_lestari.png
+    - assets/images/nawa/jatim_sehat.png
+    - assets/images/nawa/jatim_sejahtera.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

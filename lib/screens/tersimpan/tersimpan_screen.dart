@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/harga_barang/harga_bahan_pokok_screen.dart';
 import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
+import 'package:majadigi/screens/nomor%20darurat/nomor_darurat.dart';
 import 'package:majadigi/screens/open_data/open_data_screen.dart';
+import 'package:majadigi/screens/rssa/rssa_screen.dart';
+import 'package:majadigi/screens/rsud_provjatim/rsud_jatim.dart';
+import 'package:majadigi/screens/transjatim/transjatim_screen.dart';
 import '../service_model.dart';
 import '../klinik_hoax/klinik_hoax_home_screen.dart';
 import '../destinasi_wisata/destinasi_wisata_screen.dart';
@@ -22,7 +27,7 @@ class TersimpanScreen extends StatefulWidget {
 
 class _TersimpanScreenState extends State<TersimpanScreen> {
   bool _isTerinstallActive = true;    
-  Set<int> _favoriteIds = {2, 3, 10};
+  Set<int> _favoriteIds = {3, 9, 10};
 
   @override
   Widget build(BuildContext context) {
@@ -374,6 +379,51 @@ class _TersimpanScreenState extends State<TersimpanScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const IslamicCenterHomeScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "RSUD Haji") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RsudHajiScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "Nomor Darurat") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NomorDaruratScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "RSUD Dr. Saiful Anwar") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RssaScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "Transjatim") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TransjatimScreen(),
+                    )
+                  );
+                }
+
+                if (item.title == "Harga Bahan Pokok") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HargaBahanPokokScreen(),
                     )
                   );
                 }

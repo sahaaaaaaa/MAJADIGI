@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:majadigi/screens/beranda/layanan_lain.dart';
+import 'package:majadigi/screens/layanan/katalog_screen.dart';
+import 'package:majadigi/screens/layanan/kategori_layanan_screen.dart';
+import 'package:majadigi/screens/layanan/nawabhaktisatya_screen.dart';
 import '../service_model.dart';
 
 class LayananScreen extends StatefulWidget {
@@ -19,7 +22,7 @@ class _LayananScreenState
   String searchQuery = '';
 
   int selectedTab = 0;
-
+  
   final List<String> tabs = [
     "Layanan",
     "Nawa Bhakti Satya",
@@ -383,13 +386,12 @@ class _LayananScreenState
                             return Expanded(
                               child: GestureDetector(
                                 onTap: () {
-
                                   setState(() {
-                                    selectedTab =
-                                        index;
+                                    selectedTab = index;
                                   });
-                                },
 
+                                  
+                                },
                                 child:
                                     AnimatedContainer(
                                   duration:
@@ -454,142 +456,21 @@ class _LayananScreenState
 
                     /// GRID
                     Expanded(
-                      child: GridView.builder(
-                        itemCount:
-                            kategoriList.length,
+                      child: Builder(
+                        builder: (context) {
 
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 14,
-                          mainAxisSpacing: 14,
-                          childAspectRatio: 0.82,
-                        ),
+                          // TAB LAYANAN
+                          if (selectedTab == 0) {
+                            return _buildLayananGrid();
+                          }
 
-                        itemBuilder:
-                            (context, index) {
+                          // TAB NAWA BHAKTI
+                          if (selectedTab == 1) {
+                            return const NawaBhaktiScreen();
+                          }
 
-                          final item =
-                              kategoriList[index];
-
-                          return GestureDetector(
-                            onTap: () {
-
-                              Navigator.push(
-                                context,
-
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      LayananLainScreen(
-                                    kategori:
-                                        item["title"],
-                                  ),
-                                ),
-                              );
-                            },
-
-                            child: Container(
-                              padding:
-                                  const EdgeInsets
-                                      .all(16),
-
-                              decoration:
-                                  BoxDecoration(
-                                color: Colors.white,
-
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(22),
-
-                                border: Border.all(
-                                  color:
-                                      const Color(
-                                    0xffEAEAEA,
-                                  ),
-                                ),
-                              ),
-
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
-
-                                children: [
-
-                                  Container(
-                                    width: 58,
-                                    height: 58,
-
-                                    padding:
-                                        const EdgeInsets
-                                            .all(10),
-
-                                    decoration:
-                                        BoxDecoration(
-                                      color:
-                                          const Color(
-                                        0xffF5F7FF,
-                                      ),
-
-                                      shape: BoxShape
-                                          .circle,
-                                    ),
-
-                                    child:
-                                        Image.asset(
-                                      item["image"],
-                                    ),
-                                  ),
-
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-
-                                  Text(
-                                    item["title"],
-
-                                    maxLines: 2,
-
-                                    overflow:
-                                        TextOverflow
-                                            .ellipsis,
-
-                                    style:
-                                        const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight:
-                                          FontWeight
-                                              .w700,
-                                      height: 1.4,
-                                    ),
-                                  ),
-
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-
-                                  Text(
-                                    "Koleksi khas semua tentang Jawa Timur",
-
-                                    maxLines: 3,
-
-                                    overflow:
-                                        TextOverflow
-                                            .ellipsis,
-
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      height: 1.5,
-
-                                      color: Colors
-                                          .grey
-                                          .shade600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          // TAB KATALOG
+                          return const KatalogScreen();
                         },
                       ),
                     ),
@@ -603,5 +484,133 @@ class _LayananScreenState
     ),
   ),
 );
+
   }
+  Widget _buildLayananGrid() {
+
+  return GridView.builder(
+    itemCount: kategoriList.length,
+
+    gridDelegate:
+        const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      crossAxisSpacing: 14,
+      mainAxisSpacing: 14,
+      childAspectRatio: 0.82,
+    ),
+
+    itemBuilder:
+        (context, index) {
+
+      final item = kategoriList[index];
+
+      return GestureDetector(
+        onTap: () {
+
+          Navigator.push(
+            context,
+
+            MaterialPageRoute(
+              builder: (_) =>
+                KategoriLayananScreen(
+              kategori: item["title"],
+            ),
+            ),
+          );
+        },
+
+        child: Container(
+          padding:
+              const EdgeInsets.all(16),
+
+          decoration:
+              BoxDecoration(
+            color: Colors.white,
+
+            borderRadius:
+                BorderRadius.circular(22),
+
+            border: Border.all(
+              color:
+                  const Color(
+                0xffEAEAEA,
+              ),
+            ),
+          ),
+
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
+
+            children: [
+
+              Container(
+                width: 58,
+                height: 58,
+
+                padding:
+                    const EdgeInsets.all(10),
+
+                decoration:
+                    const BoxDecoration(
+                  color: Color(0xffF5F7FF),
+                  shape: BoxShape.circle,
+                ),
+
+                child:
+                    Image.asset(
+                  item["image"],
+                ),
+              ),
+
+              const SizedBox(
+                height: 16,
+              ),
+
+              Text(
+                item["title"],
+
+                maxLines: 2,
+
+                overflow:
+                    TextOverflow.ellipsis,
+
+                style:
+                    const TextStyle(
+                  fontSize: 16,
+                  fontWeight:
+                      FontWeight.w700,
+                  height: 1.4,
+                ),
+              ),
+
+              const SizedBox(
+                height: 10,
+              ),
+
+              Text(
+                "Koleksi khas semua tentang Jawa Timur",
+
+                maxLines: 3,
+
+                overflow:
+                    TextOverflow
+                        .ellipsis,
+
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.5,
+
+                  color: Colors
+                      .grey
+                      .shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
   }

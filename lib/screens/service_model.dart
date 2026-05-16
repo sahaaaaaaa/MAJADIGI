@@ -12,6 +12,7 @@ class Recommendation {
   final String description;
   final String logo;
   final String kategori;
+  final String? nawaBhakti;
   final Widget? screen;
 
   Recommendation({
@@ -20,6 +21,7 @@ class Recommendation {
     required this.description,
     required this.logo,
     required this.kategori,
+    this.nawaBhakti,
     this.screen,
   });
 }
@@ -130,5 +132,138 @@ final List<Recommendation> recommendations = [
     logo: 'point_jatim.png', 
     kategori: 'Kependudukan',
     screen: PointJatimHomeScreen()
+  ),
+  Recommendation(
+    id: 11, 
+    title: 'SKOPI', 
+    description: 'Koleksi khas semua tentang Jawa Timur', 
+    logo: 'SKOPI.png', 
+    kategori: 'Ekonomi & Bisnis',
+    nawaBhakti: 'Jatim Agro',
+  ),
+  Recommendation(
+  id: 12,
+  title: 'Kidungan',
+  description: 'Koleksi khas semua tentang Jawa Timur',
+  logo: 'kidungan.jpg',
+  kategori: 'Pariwisata & Kebudayaan',
+  nawaBhakti: 'Jatim Agro',
+  ),
+
+  Recommendation(
+    id: 13,
+    title: 'Peta potensi tembakau',
+    description: 'Koleksi khas semua tentang Jawa Timur',
+    logo: 'klinik_hoax.png',
+    kategori:'Ekonomi & Bisnis',
+    nawaBhakti: 'Jatim Agro',
+  ),
+
+  Recommendation(
+    id: 14,
+    title: 'Pemesanan Bibit Hortikultura',
+    description: 'Koleksi khas semua tentang Jawa Timur',
+    logo: 'klinik_hoax.png',
+    kategori: 'Ekonomi & Bisnis',
+    nawaBhakti: 'Jatim Agro',
+  ),
+
+  Recommendation(
+    id: 15,
+    title: 'Pusaka Jawatimuran',
+    description:
+        'Koleksi khas semua tentang Jawa Timur',
+
+    logo: 'klinik_hoax.png',
+
+    kategori:
+        'Pariwisata & Kebudayaan',
+  ),
+
+  Recommendation(
+    id: 16,
+    title: 'Paket Kunjungan Agrowisata',
+    description:
+        'Koleksi khas semua tentang Jawa Timur',
+
+    logo: 'klinik_hoax.png',
+
+    kategori:
+        'Pariwisata & Kebudayaan',
+  ),
+
+  Recommendation(
+    id: 17,
+    title: 'Khas Jatim',
+    description:
+        'Koleksi khas semua tentang Jawa Timur',
+
+    logo: 'khas_jatim.png',
+
+    kategori:
+        'Pariwisata & Kebudayaan',
+  ),
+
+  Recommendation(
+    id: 18,
+    title: 'Cak Durasim',
+    description:
+        'Koleksi khas semua tentang Jawa Timur',
+
+    logo: 'cak_durasim.png',
+
+    kategori:
+        'Pariwisata & Kebudayaan',
+  ),
+
+  Recommendation(
+    id: 19,
+    title: 'Virtual Tour 360',
+    description:
+        'Koleksi khas semua tentang Jawa Timur',
+
+    logo: 'klinik_hoax.png',
+
+    kategori:
+        'Pariwisata & Kebudayaan',
+  ),
+
+  Recommendation(
+    id: 20,
+    title: 'RSUD Haji Prov. Jatim',
+    description:
+        'Pelayanan kesehatan berkualitas dan islami',
+
+    logo: 'rsud_haji.png',
+
+    kategori:
+        'Kesehatan',
+  ),
+
+  Recommendation(
+    id: 21,
+    title: 'Transjatim AJAIB 2.0',
+    description:
+        'Informasi rute transportasi publik Jatim',
+
+    logo: 'transjatim_ajaib.png',
+
+    kategori:
+        'Infrastruktur',
+  ),
+
+  Recommendation(
+    id: 22,
+    title: 'Islamic Center',
+    description:
+        'Pusat informasi dan kegiatan keagamaan',
+
+    logo: 'islamic_center.png',
+
+    kategori:
+        'Sosial',
+
+    screen:
+        const IslamicCenterHomeScreen(),
   ),
 ];

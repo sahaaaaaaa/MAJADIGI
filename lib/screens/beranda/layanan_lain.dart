@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
+import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
+import 'package:majadigi/screens/open_data/open_data_detail_screen.dart';
+import 'package:majadigi/screens/open_data/open_data_screen.dart';
+import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
 import '../destinasi_wisata/destinasi_wisata_screen.dart';
 import '../../widgets/layanan_item.dart';
 import '../harga_barang/harga_bahan_pokok_screen.dart';
 import '../nomor darurat/nomor_darurat.dart';
+
+import '../destinasi_wisata/destinasi_wisata_screen.dart';
+import '../../widgets/layanan_item.dart';
+import '../rsud_provjatim/rsud_jatim.dart';
+import '../rssa/rssa_screen.dart';
+import '../transjatim/transjatim_screen.dart';
+
 class LayananLainScreen extends StatefulWidget {
   const LayananLainScreen({super.key});
 
@@ -125,7 +137,12 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Klinik Hoaks",
           image: "assets/images/klinik_hoax.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const KlinikHoaksHomeScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Destinasi Wisata",
@@ -140,7 +157,12 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Open Data",
           image: "assets/images/open_data.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const OpenDataScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Harga",
@@ -155,40 +177,62 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "RSUD Haji",
           image: "assets/images/rsud_haji.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RsudHajiScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Transjatim",
           image: "assets/images/transjatim_ajaib.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TransjatimScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "RSSA",
           image: "assets/images/rsud_saifulanwar.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RssaScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Nomor Darurat",
           image: "assets/images/klinik_hoax.png",
           onTap: () {
             Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) =>
-          const NomorDaruratScreen(),
-    ),
-  );
+              context,
+              MaterialPageRoute(builder: (_) => const NomorDaruratScreen()),
+            );
           },
         ),
         LayananItem(
           title: "Point Jatim",
           image: "assets/images/point_jatim.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PointJatimHomeScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Islamic Center",
           image: "assets/images/islamic_center.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const IslamicCenterHomeScreen()),
+            );
+          },
         ),
       ],
     );
