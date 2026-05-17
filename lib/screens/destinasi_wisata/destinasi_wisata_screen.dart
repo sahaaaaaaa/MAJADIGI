@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'detail_wisata_screen.dart';
+import 'informasi_wisata.dart';
 
 class DestinasiWisataScreen extends StatefulWidget {
   const DestinasiWisataScreen({super.key});
 
   @override
-  State<DestinasiWisataScreen> createState() =>
-      _DestinasiWisataScreenState();
+  State<DestinasiWisataScreen> createState() => _DestinasiWisataScreenState();
 }
 
 class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
@@ -47,8 +47,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                   const SizedBox(height: 20),
                   const Text(
                     "Kategori",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
 
@@ -56,15 +55,13 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                     return Column(
                       children: [
                         Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(child: Text(key)),
                             GestureDetector(
                               onTap: () {
                                 setModalState(() {
-                                  kategori[key] =
-                                      !(kategori[key] ?? false);
+                                  kategori[key] = !(kategori[key] ?? false);
                                 });
                               },
                               child: Container(
@@ -74,8 +71,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                                   color: kategori[key]!
                                       ? const Color(0xFF0E63FF)
                                       : Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
                                     color: kategori[key]!
                                         ? const Color(0xFF0E63FF)
@@ -83,12 +79,14 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                                   ),
                                 ),
                                 child: kategori[key]!
-                                    ? const Icon(Icons.check,
+                                    ? const Icon(
+                                        Icons.check,
                                         size: 16,
-                                        color: Colors.white)
+                                        color: Colors.white,
+                                      )
                                     : null,
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const Divider(),
@@ -110,8 +108,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                           child: TextButton(
                             onPressed: () {
                               setModalState(() {
-                                kategori.updateAll(
-                                    (key, value) => false);
+                                kategori.updateAll((key, value) => false);
                               });
                             },
                             child: const Text(
@@ -147,7 +144,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             );
@@ -163,13 +160,15 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
       backgroundColor: const Color(0xFFF2F2F2),
       body: Stack(
         children: [
+          // Latar Belakang Biru
           Container(
-            height: 230,
+            width: double.infinity,
+            height: 300,
             decoration: const BoxDecoration(
-              color: Color(0xFF0D57E7),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
           ),
@@ -183,8 +182,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon:
-                            const Icon(Icons.arrow_back, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
                       const Expanded(
@@ -192,16 +190,29 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                           child: Text(
                             "Destinasi Wisata",
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                      const Icon(Icons.bookmark_border,
-                          color: Colors.white),
+                      const Icon(Icons.bookmark_border, color: Colors.white),
                       const SizedBox(width: 10),
-                      const Icon(Icons.info_outline, color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const InformasiScreen(),
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -217,8 +228,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                         onChanged: (val) => setState(() => lokasi = val),
                         decoration: InputDecoration(
                           hintText: lokasi,
-                          prefixIcon:
-                              const Icon(Icons.location_on_outlined),
+                          prefixIcon: const Icon(Icons.location_on_outlined),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -237,8 +247,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
@@ -296,10 +305,13 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
 
                       const SizedBox(height: 20),
 
-                      const Text("Semua Wisata",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold)),
+                      const Text(
+                        "Semua Wisata",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 12),
 
                       _cardVertical(
@@ -342,9 +354,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => const DetailWisataScreen(),
-          ),
+          MaterialPageRoute(builder: (_) => const DetailWisataScreen()),
         );
       },
       child: Container(
@@ -358,28 +368,35 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.asset(image,
-                  height: 110, width: double.infinity, fit: BoxFit.cover),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: Image.asset(
+                image,
+                height: 110,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style:
-                          const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 4),
-                  Text(desc,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.grey)),
+                  Text(
+                    desc,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -397,9 +414,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => const DetailWisataScreen(),
-          ),
+          MaterialPageRoute(builder: (_) => const DetailWisataScreen()),
         );
       },
       child: Container(
@@ -414,12 +429,15 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: Image.asset(image,
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: Image.asset(
+                    image,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 Positioned(
                   top: 10,
@@ -430,8 +448,11 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                       color: Colors.black26,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.favorite_border,
-                        color: Colors.white, size: 18),
+                    child: const Icon(
+                      Icons.favorite_border,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                 ),
               ],
@@ -441,27 +462,33 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style:
-                          const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 6),
-                  Text(desc,
-                      style: const TextStyle(
-                          fontSize: 13, color: Colors.grey)),
+                  Text(
+                    desc,
+                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.location_on,
-                          size: 16, color: Color(0xFF0E63FF)),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Color(0xFF0E63FF),
+                      ),
                       const SizedBox(width: 4),
-                      Text(location,
-                          style: const TextStyle(
-                              color: Color(0xFF0E63FF))),
+                      Text(
+                        location,
+                        style: const TextStyle(color: Color(0xFF0E63FF)),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

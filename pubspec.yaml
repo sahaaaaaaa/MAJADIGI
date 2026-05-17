@@ -35,6 +35,7 @@ dependencies:
   intl: ^0.18.1
   image_picker: ^1.0.7
   url_launcher: ^6.2.5
+  fl_chart: ^0.68.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -97,7 +98,57 @@ flutter:
     - assets/images/bromo2.png
     - assets/images/bromo3.png
     - assets/images/maps.png
+    - assets/images/sidita.png
     - assets/images/banner_hoax.png
+    - assets/images/bawang_merah.png
+    - assets/images/bawang_putih.png
+    - assets/images/beras.png
+    - assets/images/besi.png
+    - assets/images/buncis.png
+    - assets/images/cabe.png
+    - assets/images/daging.png
+    - assets/images/ikan.png
+    - assets/images/kayu.png
+    - assets/images/kol.png
+    - assets/images/siskaperbapo.png
+    - assets/images/nomordarurat.png
+    - assets/images/rsud1.png
+    - assets/images/rsud2.png
+    - assets/images/rsud3.png
+    - assets/images/Top_rsudjatim.png
+    - assets/images/Top_rssa.png
+    - assets/images/rssa1.png
+    - assets/images/rssa2.png
+    - assets/images/rssa3.png
+    - assets/images/transjatim1.png
+    - assets/images/transjatim2.png
+    - assets/images/transjatim3.png
+    - assets/images/maps_transjatim.png
+    - assets/images/Top_transjatim.png
+
+    - assets/images/icons/ambulans.svg
+    - assets/images/icons/call.svg
+    - assets/images/icons/polda.svg
+    - assets/images/icons/selector.svg
+    - assets/images/icons/building-07.svg
+    - assets/images/icons/users-check.svg
+    - assets/images/icons/users-up-01.svg
+    - assets/images/icons/bus.svg
+    - assets/images/icons/marker-pin-01.svg
+    - assets/images/icons/route.svg
+    - assets/images/icons/ticket-01.svg
+    - assets/images/icons/users-03.svg
+    - assets/images/icons/clock.svg
+    - assets/images/icons/ellipse.svg
+    - assets/images/icons/switch-horizontal-02.svg
+    - assets/images/icons/switch-vertical-01.svg
+    - assets/images/icons/marker-pin-green.svg
+    - assets/images/icons/marker-pin-02.svg
+    - assets/images/icons/ellipse2.svg
+    - assets/images/icons/clock_white.svg
+    # - assets/images/open_data_banner1.png
+    # - assets/images/open_data_banner2.png
+    # - assets/images/open_data_banner3.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
