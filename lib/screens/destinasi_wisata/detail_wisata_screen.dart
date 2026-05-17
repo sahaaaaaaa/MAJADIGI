@@ -4,8 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 class DetailWisataScreen extends StatelessWidget {
   const DetailWisataScreen({super.key});
 
-  final String mapsUrl =
-      "https://maps.app.goo.gl/CNFKMwNEB9RgyXB89";
+  final String mapsUrl = "https://maps.app.goo.gl/CNFKMwNEB9RgyXB89";
 
   void _openMaps() async {
     final Uri url = Uri.parse(mapsUrl);
@@ -21,13 +20,15 @@ class DetailWisataScreen extends StatelessWidget {
           // 🔥 STICKY HEADER + IMAGE
           Stack(
             children: [
+              // Latar Belakang Biru
               Container(
-                height: 260,
+                width: double.infinity,
+                height: 300,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF0D57E7),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/latar_belakang.png'),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
                   ),
                 ),
               ),
@@ -41,8 +42,10 @@ class DetailWisataScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.arrow_back,
-                                color: Colors.white),
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
                             onPressed: () => Navigator.pop(context),
                           ),
                           const Expanded(
@@ -57,8 +60,10 @@ class DetailWisataScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Icon(Icons.favorite_border,
-                              color: Colors.white),
+                          const Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                          ),
                         ],
                       ),
                     ),
@@ -93,7 +98,7 @@ class DetailWisataScreen extends StatelessWidget {
                             BoxShadow(
                               color: Colors.black.withOpacity(0.05),
                               blurRadius: 10,
-                            )
+                            ),
                           ],
                         ),
                         child: Column(
@@ -102,23 +107,30 @@ class DetailWisataScreen extends StatelessWidget {
                             const Text(
                               "Gunung Bromo",
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             Row(
                               children: const [
-                                Icon(Icons.star,
-                                    color: Colors.orange, size: 16),
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.orange,
+                                  size: 16,
+                                ),
                                 SizedBox(width: 4),
                                 Text("4.8 (100+)"),
                                 SizedBox(width: 12),
-                                Icon(Icons.location_on,
-                                    color: Color(0xFF0E63FF), size: 16),
+                                Icon(
+                                  Icons.location_on,
+                                  color: Color(0xFF0E63FF),
+                                  size: 16,
+                                ),
                                 SizedBox(width: 4),
                                 Text("Kabupaten Probolinggo"),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -137,8 +149,7 @@ class DetailWisataScreen extends StatelessWidget {
                 // FOTO
                 const Text(
                   "Foto",
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
 
@@ -159,8 +170,7 @@ class DetailWisataScreen extends StatelessWidget {
                 // LOKASI
                 const Text(
                   "Lokasi",
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
 
@@ -181,7 +191,9 @@ class DetailWisataScreen extends StatelessWidget {
                           left: 20,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -199,18 +211,16 @@ class DetailWisataScreen extends StatelessWidget {
                 // DETAIL INFO
                 const Text(
                   "Detail Informasi",
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
 
-                _infoCard("Kabupaten/Kota",
-                    "Kabupaten Probolinggo"),
+                _infoCard("Kabupaten/Kota", "Kabupaten Probolinggo"),
                 _infoCard(
-                    "Alamat",
-                    "Cemoro Lawang, Desa Ngadisari, Kec. Sukapura, Kabupaten Probolinggo"),
-                _infoCard("Titik Koordinat",
-                    "-7.9324305, 112.9531326"),
+                  "Alamat",
+                  "Cemoro Lawang, Desa Ngadisari, Kec. Sukapura, Kabupaten Probolinggo",
+                ),
+                _infoCard("Titik Koordinat", "-7.9324305, 112.9531326"),
 
                 // STATUS
                 Container(
@@ -221,27 +231,26 @@ class DetailWisataScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         "Status",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Text(
                           "Buka",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 12),
+                          style: TextStyle(color: Colors.white, fontSize: 12),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -259,11 +268,7 @@ class DetailWisataScreen extends StatelessWidget {
       margin: const EdgeInsets.only(right: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: Image.asset(
-          image,
-          width: 220,
-          fit: BoxFit.cover,
-        ),
+        child: Image.asset(image, width: 220, fit: BoxFit.cover),
       ),
     );
   }
@@ -293,13 +298,7 @@ class DetailWisataScreen extends StatelessWidget {
           const SizedBox(height: 4),
 
           // 🔥 ISI NORMAL
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.grey,
-            ),
-          ),
+          Text(value, style: const TextStyle(fontSize: 13, color: Colors.grey)),
         ],
       ),
     );
