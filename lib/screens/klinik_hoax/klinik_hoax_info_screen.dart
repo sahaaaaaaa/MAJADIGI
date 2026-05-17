@@ -99,7 +99,7 @@ class _KlinikHoaksInformasiScreenState
 
                           child: Center(
                             child: Image.asset(
-                              'assets/images/logo_jatim.png',
+                              'assets/images/klinik_hoax.png',
                               height: 80,
                             ),
                           ),
@@ -158,15 +158,21 @@ class _KlinikHoaksInformasiScreenState
 
                         _buildInfoCard(
                           title: "Alamat",
-                          child: const Text(
+                          child: Text(
                             "Jl. A. Yani 242 - 244, Gayungan, Surabaya.",
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                            ),
                           ),
                         ),
 
                         _buildInfoCard(
                           title: "Jam Operasional",
-                          child: const Text(
+                          child: Text(
                             "Senin - Minggu (24 Jam)",
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                            ),
                           ),
                         ),
 
@@ -182,7 +188,12 @@ class _KlinikHoaksInformasiScreenState
 
                               const SizedBox(width: 6),
 
-                              const Text("Youtube"),
+                              Text(
+                                "Youtube",
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                ),
+                              ),
 
                               const SizedBox(width: 24),
 
@@ -193,7 +204,12 @@ class _KlinikHoaksInformasiScreenState
 
                               const SizedBox(width: 6),
 
-                              const Text("Instagram"),
+                              Text(
+                                "Instagram",
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -219,24 +235,81 @@ class _KlinikHoaksInformasiScreenState
                               manfaatExpanded = !manfaatExpanded;
                             });
                           },
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text("1. Membantu masyarakat memverifikasi informasi."),
-                              SizedBox(height: 8),
-                              Text("2. Melindungi publik dari informasi palsu."),
-                              SizedBox(height: 8),
-                              Text("3. Meningkatkan literasi digital."),
-                              SizedBox(height: 8),
-                              Text("4. Mendukung ruang digital sehat."),
-                              SizedBox(height: 8),
-                              Text("5. Transparansi hasil verifikasi."),
-                            ],
+                          content: Padding(
+                            padding: const EdgeInsets.only(left: 1.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "1. Membantu masyarakat memverifikasi informasi ",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                Text(
+                                  "    yang meragukan agar terhindar dari hoaks.",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "2. Melindungi publik dari dampak negatif informasi",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                Text(
+                                  "    palsu yang menyesatkan.",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "3. Meningkatkan kesadaran dan literasi digital masyarakat ",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                Text(
+                                  "    melalui klarifikasi informasi.",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "4. Mendukung terciptanya ruang digital yang sehat",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                Text(
+                                  "   dan bebas hoaks.",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "5. Menyediakan akses transparan terhadap hasil",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                Text(
+                                  "    verifikasi informasi.",
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-
                         const SizedBox(height: 16),
-
+                      
                         _buildExpandTile(
                           title: "Pendaftaran Online",
                           isExpanded: daftarExpanded,
@@ -247,14 +320,87 @@ class _KlinikHoaksInformasiScreenState
                           },
                           content: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text("1. Akses website Klinik Hoaks."),
+                            children: [
+                              Text(
+                                "1. Prosedur menggunakan situs Klinik Hoaks:",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "      a. Akses laman https://klinikhoaks.jatimprov.go.id/",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "      b. Masukkan kata kunci informasi atau berita yang dicari",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "      c. Sistem akan menampilkan hasil temuan sesuai kata",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              Text(
+                                "          kunci yang dicari, termasuk status dan penjelasannya.",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
                               SizedBox(height: 8),
-                              Text("2. Masukkan kata kunci informasi."),
-                              SizedBox(height: 8),
-                              Text("3. Sistem akan menampilkan hasil."),
-                              SizedBox(height: 8),
-                              Text("4. Jika tidak ditemukan, kirim klarifikasi."),
+                              Text(
+                                "2. Jika informasi yang dicari tidak ditemukan,",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              Text(
+                                "    pengguna bisa ajukan permohonan klarifikasi",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              Text(
+                                "    sebagai berikut:",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "      a. Klik menu di laman Klinik Hoaks",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "      b. Pilih menu permohonan klarifikasi",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "      c. Isi formulir data dengan informasi yang diminta,",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              Text(
+                                "          lalu klik tombol kirim",
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4),                       
                             ],
                           ),
                         ),
@@ -352,6 +498,7 @@ class _KlinikHoaksInformasiScreenState
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
+        color: isExpanded ? Colors.grey[100] : Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: Colors.grey.shade300,

@@ -73,15 +73,13 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
             ),
           ),
 
-          SafeArea(
-            child: Column(
-              children: [
-                // 🔹 HEADER
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(32),
                   ),
                   child: Row(
                     children: [
