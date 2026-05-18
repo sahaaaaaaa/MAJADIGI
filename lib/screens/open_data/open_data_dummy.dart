@@ -32,6 +32,36 @@ class OpenDataModel {
   });
 }
 
+class DetailPeriodeModel {
+
+  final int id;
+  final int idIndex;
+  final String kodeProvinsi;
+
+  final String namaProvinsi;
+  final String kabKota;
+  final int jumlahPosko;
+  final String periodeUpdate;
+  final String satuan;
+  final String tahun;
+  final String kategori;
+
+  DetailPeriodeModel({
+
+    required this.id,
+    required this.idIndex,
+    required this.kodeProvinsi,
+
+    required this.namaProvinsi,
+    required this.kabKota,
+    required this.jumlahPosko,
+    required this.periodeUpdate,
+    required this.satuan,
+    required this.tahun,
+    required this.kategori,
+  });
+}
+
 class HighlightDataModel {
   final String title;
   final String instansi;
@@ -330,5 +360,86 @@ final List<DataTableModel> dummyTableData = [
   DataTableModel(
     id: 8,
     periode: "Juni 2026",
+  ),
+];
+
+final List<DetailPeriodeModel> dummyDetailPeriode = [
+
+  DetailPeriodeModel(
+    id: 1,
+    idIndex: 1,
+    kodeProvinsi: "35",
+    namaProvinsi: "JAWA TIMUR",
+    kabKota: "KABUPATEN SURABAYA",
+    kategori: "I",
+    jumlahPosko: 47,
+    periodeUpdate: "2026-04",
+    satuan: "HARI",
+    tahun: "2026",
+  ),
+
+  DetailPeriodeModel(
+    id: 2,
+    idIndex: 2,
+    kodeProvinsi: "35",
+    namaProvinsi: "JAWA TIMUR",
+    kabKota: "KABUPATEN MALANG",
+    kategori: "II",
+    jumlahPosko: 100,
+    periodeUpdate: "2026-04",
+    satuan: "HARI",
+    tahun: "2026",
+  ),
+
+  DetailPeriodeModel(
+    id: 3,
+    idIndex: 3,
+    kodeProvinsi: "35",
+    namaProvinsi: "JAWA TIMUR",
+    kabKota: "KABUPATEN KEDIRI",
+    kategori: "III",
+    jumlahPosko: 514,
+    periodeUpdate: "2026-04",
+    satuan: "HARI",
+    tahun: "2026",
+  ),
+
+  DetailPeriodeModel(
+    id: 4,
+    idIndex: 4,
+    kodeProvinsi: "35",
+    namaProvinsi: "JAWA TIMUR",
+    kabKota: "",
+    kategori: "KELAS KHUSUS",
+    jumlahPosko: 74,
+    periodeUpdate: "2026-04",
+    satuan: "HARI",
+    tahun: "2026",
+  ),
+
+  DetailPeriodeModel(
+    id: 5,
+    idIndex: 5,
+    kodeProvinsi: "35",
+    namaProvinsi: "JAWA TIMUR",
+    kabKota: "",
+    kategori: "VIP",
+    jumlahPosko: 13,
+    periodeUpdate: "2026-04",
+    satuan: "HARI",
+    tahun: "2026",
+  ),
+
+  DetailPeriodeModel(
+    id: 6,
+    idIndex: 6,
+    kodeProvinsi: "35",
+    namaProvinsi: "JAWA TIMUR",
+    kabKota: "",
+    kategori: "VVIP",
+    jumlahPosko: 0,
+    periodeUpdate: "2026-04",
+    satuan: "HARI",
+    tahun: "2026",
   ),
 ];
