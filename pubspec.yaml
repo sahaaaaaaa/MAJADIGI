@@ -125,6 +125,13 @@ flutter:
     - assets/images/transjatim3.png
     - assets/images/maps_transjatim.png
     - assets/images/Top_transjatim.png
+    - assets/images/mpp.png
+    - assets/images/rs.png
+    - assets/images/sma.png
+    - assets/images/mapsjatim.png
+    - assets/images/berita1.png
+    - assets/images/berita2.png
+    - assets/images/berita3.png
 
     - assets/images/icons/ambulans.svg
     - assets/images/icons/call.svg
