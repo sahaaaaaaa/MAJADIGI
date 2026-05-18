@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/open_data/fitur_detail_periode_screen.dart';
 import 'package:majadigi/screens/open_data/open_data_dummy.dart';
 
 class FiturDetailDataSetScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class FiturDetailDataSetScreen extends StatefulWidget {
 
 class _FiturDetailDataSetScreenState extends State<FiturDetailDataSetScreen> {
   int currentPage  = 1;
+  bool isDetailMode = false;
+  String selectedPeriode = "";
 
   final int itemPerPage = 5;
   int get totalPage =>
@@ -108,7 +111,18 @@ class _FiturDetailDataSetScreenState extends State<FiturDetailDataSetScreen> {
                               InkWell(
 
                                 onTap: () {
-                                  Navigator.pop(context);
+
+                                  if (isDetailMode) {
+
+                                    setState(() {
+
+                                      isDetailMode = false;
+                                    });
+
+                                  } else {
+
+                                    Navigator.pop(context);
+                                  }
                                 },
 
                                 child: const Row(
@@ -495,53 +509,77 @@ class _FiturDetailDataSetScreenState extends State<FiturDetailDataSetScreen> {
 
                 children: [
 
-                  const Text(
-                    "Data",
+                  // DATA 
+                    if (!isDetailMode)
 
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF171725),
-                    ),
-                  ),
+                      Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
 
-                  const SizedBox(height: 18),
+                          children: [
 
-                  Container(
+                            const Text(
+                              "Data",
 
-                    decoration: BoxDecoration(
-                      color: Colors.white,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF171725),
+                              ),
+                            ),
 
-                      borderRadius:
-                          BorderRadius.circular(18),
+                            const SizedBox(height: 18),
 
-                      border: Border.all(
-                        color: Colors.grey.shade200,
+                            Container(
+
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+
+                                borderRadius:
+                                    BorderRadius.circular(18),
+
+                                border: Border.all(
+                                  color: Colors.grey.shade200,
+                                ),
+                              ),
+
+                              child: Column(
+                                children: [
+
+                                  _buildTableHeader(),
+
+                                  ...paginatedData.map(
+                                    (data) =>
+                                        _buildTableItem(
+                                      data.id,
+                                      data.periode,
+                                    ),
+                                  ).toList(),
+
+                                  _buildPagination(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      
+
+                    if (isDetailMode)
+
+                      FiturDetailPeriodeScreen(
+                        periode: selectedPeriode,
+
+                        onBack: () {
+
+                          setState(() {
+                            isDetailMode = false;
+                          });
+                        },
                       ),
-                    ),
-
-                    child: Column(
-                      children: [
-
-                        _buildTableHeader(),
-
-                        ...paginatedData.map(
-                          (data) =>
-                            _buildTableItem(
-                            data.id,
-                            data.periode,
-                          )
-                        ).toList(),
-
-                        _buildPagination(),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 40),
+                    const SizedBox(height: 40),
           ],
         ),
       ),
@@ -666,28 +704,41 @@ class _FiturDetailDataSetScreenState extends State<FiturDetailDataSetScreen> {
 
               children: [
 
-                Container(
+                GestureDetector(
 
-                  padding:
-                      const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 7,
-                  ),
+                  onTap: () {
 
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE9F0FF),
+                    setState(() {
 
-                    borderRadius:
-                        BorderRadius.circular(10),
-                  ),
+                      isDetailMode = true;
 
-                  child: const Text(
-                    "Detail",
+                      selectedPeriode = periode;
+                    });
+                  },
 
-                    style: TextStyle(
-                      color: Color(0xFF3366FF),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                  child: Container(
+
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 7,
+                    ),
+
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE9F0FF),
+
+                      borderRadius:
+                          BorderRadius.circular(10),
+                    ),
+
+                    child: const Text(
+                      "Detail",
+
+                      style: TextStyle(
+                        color: Color(0xFF3366FF),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
