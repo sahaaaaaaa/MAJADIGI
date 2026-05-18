@@ -98,30 +98,8 @@ flutter:
     - assets/images/bromo2.png
     - assets/images/bromo3.png
     - assets/images/maps.png
+    - assets/images/sidita.png
     - assets/images/banner_hoax.png
-    - assets/images/open_data_banner1.png
-    - assets/images/open_data_banner2.png
-    - assets/images/open_data_banner3.png
-    - assets/images/openData/ekonomi.png
-    - assets/images/openData/infrastruktur.png
-    - assets/images/openData/kemiskinan.png
-    - assets/images/openData/kependudukan.png
-    - assets/images/openData/pendidikan.png
-    - assets/images/openData/kesehatan.png
-    - assets/images/openData/lingkungan.png
-    - assets/images/openData/pemerintah.png
-    - assets/images/openData/tataruang.png
-    - assets/images/openData/sosial.png
-    - assets/images/pointJatim/pasar_agrobis.png
-    - assets/images/pointJatim/biofarmaka.png
-    - assets/images/pointJatim/pengembangan_susu_sapi.png
-    - assets/images/pointJatim/peternakan_sapi_perah_terintegrasi.png
-    - assets/images/pointJatim/rsud_kajuruhan.png
-    - assets/images/pointJatim/infomemo_peternakan_sapi1.png
-    - assets/images/pointJatim/infomemo_peternakan_sapi2.png
-    - assets/images/islamicCenter/aula.png
-    - assets/images/islamicCenter/masjid.png 
-    - assets/images/islamicCenter/asrama.png
     - assets/images/bawang_merah.png
     - assets/images/bawang_putih.png
     - assets/images/beras.png
@@ -168,17 +146,9 @@ flutter:
     - assets/images/icons/marker-pin-02.svg
     - assets/images/icons/ellipse2.svg
     - assets/images/icons/clock_white.svg
-    - assets/images/kidungan.jpg
-    - assets/images/SKOPI.png
-    - assets/images/nawa/jatim_agro.png
-    - assets/images/nawa/jatim_akses.png
-    - assets/images/nawa/jatim_berkah.png
-    - assets/images/nawa/jatim_cerdas.png
-    - assets/images/nawa/jatim_harmoni.png
-    - assets/images/nawa/jatim_kerja.png
-    - assets/images/nawa/jatim_lestari.png
-    - assets/images/nawa/jatim_sehat.png
-    - assets/images/nawa/jatim_sejahtera.png
+    # - assets/images/open_data_banner1.png
+    # - assets/images/open_data_banner2.png
+    # - assets/images/open_data_banner3.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
