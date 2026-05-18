@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../services/rsud_haji_service.dart';
 import 'informasi_rsud_jatim.dart';
+
 class RsudHajiScreen extends StatefulWidget {
   const RsudHajiScreen({super.key});
 
@@ -10,7 +13,9 @@ class RsudHajiScreen extends StatefulWidget {
 
 class _RsudHajiScreenState extends State<RsudHajiScreen> {
   final PageController _pageController = PageController();
+  final RsudHajiService _rsudHajiService = RsudHajiService();
   int currentPage = 1;
+  RsudHajiOccupancy? _occupancy;
 
   final List<String> images = [
     'assets/images/rsud1.png',
@@ -18,78 +23,99 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
     'assets/images/rsud3.png',
   ];
 
-  final List<Map<String, dynamic>> ruangData = [
-    {
-      "warna": const Color(0xFF27AE60),
-      "ruang": "HCU",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFF1565FF),
-      "ruang": "ICCU/ICVCU Dengan Ventilator",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFFA142F4),
-      "ruang": "ICCU/ICVCU Tanpa Ventilator",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFFF5A623),
-      "ruang": "ICU Dengan Ventilator",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFF149CE6),
-      "ruang": "ISOLASI",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFF1565FF),
-      "ruang": "Intermediate Ward (IGD)",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFF149CE6),
-      "ruang": "Isolasi Tekanan Negatif",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFF27AE60),
-      "ruang": "KELAS I",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFFFF0054),
-      "ruang": "KELAS IIKELAS II",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
-    {
-      "warna": const Color(0xFF149CE6),
-      "ruang": "KELAS III",
-      "kapasitas": "10",
-      "terisi": "10",
-      "tersedia": "0",
-    },
+  static const List<Color> _roomColors = [
+    Color(0xFF27AE60),
+    Color(0xFF1565FF),
+    Color(0xFFA142F4),
+    Color(0xFFF5A623),
+    Color(0xFF149CE6),
+    Color(0xFFFF0054),
+    Color(0xFF0050C8),
   ];
+
+  static const RsudHajiOccupancy _fallbackOccupancy = RsudHajiOccupancy(
+    summary: RsudHajiSummary(
+      total: 306,
+      occupied: 230,
+      available: 76,
+      lastUpdate: '2026-04-06 11:55:55',
+    ),
+    rooms: [
+      RsudHajiRoom(name: 'HCU', total: 10, occupied: 10, available: 0),
+      RsudHajiRoom(
+        name: 'ICCU/ICVCU Dengan Ventilator',
+        total: 10,
+        occupied: 10,
+        available: 0,
+      ),
+      RsudHajiRoom(
+        name: 'ICCU/ICVCU Tanpa Ventilator',
+        total: 10,
+        occupied: 10,
+        available: 0,
+      ),
+      RsudHajiRoom(
+        name: 'ICU Dengan Ventilator',
+        total: 10,
+        occupied: 10,
+        available: 0,
+      ),
+      RsudHajiRoom(name: 'ISOLASI', total: 10, occupied: 10, available: 0),
+      RsudHajiRoom(
+        name: 'Intermediate Ward (IGD)',
+        total: 10,
+        occupied: 10,
+        available: 0,
+      ),
+      RsudHajiRoom(
+        name: 'Isolasi Tekanan Negatif',
+        total: 10,
+        occupied: 10,
+        available: 0,
+      ),
+      RsudHajiRoom(name: 'KELAS I', total: 10, occupied: 10, available: 0),
+      RsudHajiRoom(name: 'KELAS II', total: 10, occupied: 10, available: 0),
+      RsudHajiRoom(name: 'KELAS III', total: 10, occupied: 10, available: 0),
+    ],
+  );
+
+  RsudHajiSummary get _summary {
+    return _occupancy?.summary ?? _fallbackOccupancy.summary;
+  }
+
+  List<RsudHajiRoom> get _rooms {
+    final rooms = _occupancy?.rooms ?? const [];
+    return rooms.isEmpty ? _fallbackOccupancy.rooms : rooms;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRoomOccupancy();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _rsudHajiService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadRoomOccupancy() async {
+    try {
+      final occupancy = await _rsudHajiService.getRoomOccupancy();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _occupancy = occupancy;
+      });
+    } catch (_) {}
+  }
+
+  Color _roomColor(int index) {
+    return _roomColors[index % _roomColors.length];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -298,9 +324,9 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                       8,
                                     ),
                                   ),
-                                  child: const Text(
-                                    "2026-04-06 11:55:55",
-                                    style: TextStyle(
+                                  child: Text(
+                                    _summary.lastUpdate,
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       color:
                                           Colors.grey,
@@ -337,13 +363,14 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                         MainAxisAlignment
                                             .spaceBetween,
                                     children: [
-                                      const Column(
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment
                                                 .start,
                                         children: [
                                           Text(
-                                            "306",
+                                            _summary.total
+                                                .toString(),
                                             style:
                                                 TextStyle(
                                               fontSize:
@@ -357,7 +384,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                             ),
                                           ),
 
-                                          Text(
+                                          const Text(
                                             "Total Kamar Rawat",
                                             style:
                                                 TextStyle(
@@ -384,7 +411,9 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                   children: [
                                     Expanded(
                                       child: _smallCard(
-                                        value: "76",
+                                        value: _summary
+                                            .available
+                                            .toString(),
                                         label:
                                             "Tersedia",
                                         icon:
@@ -401,7 +430,9 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
 
                                     Expanded(
                                       child: _smallCard(
-                                        value: "230",
+                                        value: _summary
+                                            .occupied
+                                            .toString(),
                                         label:
                                             "Terisi",
                                         icon:
@@ -434,29 +465,15 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
 
                                 // 🔥 BAR WARNA
                                 Row(
-                                  children: [
-                                    _barColor(
-                                        const Color(
-                                            0xFF27AE60)),
-                                    _barColor(
-                                        const Color(
-                                            0xFF1565FF)),
-                                    _barColor(
-                                        const Color(
-                                            0xFFA142F4)),
-                                    _barColor(
-                                        const Color(
-                                            0xFFF5A623)),
-                                    _barColor(
-                                        const Color(
-                                            0xFF149CE6)),
-                                    _barColor(
-                                        const Color(
-                                            0xFFFF0054)),
-                                    _barColor(
-                                        const Color(
-                                            0xFF0050C8)),
-                                  ],
+                                  children: _rooms
+                                      .asMap()
+                                      .keys
+                                      .map(
+                                        (index) => _barColor(
+                                          _roomColor(index),
+                                        ),
+                                      )
+                                      .toList(),
                                 ),
 
                                 const SizedBox(
@@ -515,9 +532,16 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                         ),
                                       ],
 
-                                      rows:
-                                          ruangData.map(
-                                        (item) {
+                                      rows: _rooms
+                                          .asMap()
+                                          .entries
+                                          .map(
+                                        (entry) {
+                                          final item =
+                                              entry.value;
+                                          final color =
+                                              _roomColor(
+                                                  entry.key);
                                           return DataRow(
                                             cells: [
                                               DataCell(
@@ -531,7 +555,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                                       decoration:
                                                           BoxDecoration(
                                                         color:
-                                                            item['warna'],
+                                                            color,
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                           20,
@@ -544,22 +568,23 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                                             12),
 
                                                     Text(
-                                                      item[
-                                                          'ruang'],
+                                                      item.name,
                                                     ),
                                                   ],
                                                 ),
                                               ),
 
                                               DataCell(
-                                                Text(item[
-                                                    'kapasitas']),
+                                                Text(item
+                                                    .total
+                                                    .toString()),
                                               ),
 
                                               DataCell(
                                                 Text(
-                                                  item[
-                                                      'terisi'],
+                                                  item
+                                                      .occupied
+                                                      .toString(),
                                                   style:
                                                       const TextStyle(
                                                     color:
@@ -572,8 +597,9 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
 
                                               DataCell(
                                                 Text(
-                                                  item[
-                                                      'tersedia'],
+                                                  item
+                                                      .available
+                                                      .toString(),
                                                   style:
                                                       const TextStyle(
                                                     color:
