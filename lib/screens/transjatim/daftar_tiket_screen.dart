@@ -1,14 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../services/transjatim_service.dart';
+
 class DaftarTiketScreen
-    extends StatelessWidget {
+    extends StatefulWidget {
   const DaftarTiketScreen({
     super.key,
   });
 
   @override
+  State<DaftarTiketScreen> createState() => _DaftarTiketScreenState();
+}
+
+class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
+  final TransjatimService _transjatimService = TransjatimService();
+
+  TransjatimTariffResponse? _tariffs;
+
+  static const TransjatimTariffResponse _fallbackTariffs =
+      TransjatimTariffResponse(
+    regular: [
+      TransjatimTariff(type: 'Umum', nominal: '5000'),
+      TransjatimTariff(type: 'Pelajar', nominal: '2500'),
+    ],
+    luxury: [
+      TransjatimTariff(type: 'SBY - GSK', nominal: '20000'),
+      TransjatimTariff(type: 'SBY - SDA', nominal: '15000'),
+      TransjatimTariff(type: 'SDA - GSK', nominal: '30000'),
+    ],
+  );
+
+  TransjatimTariffResponse get _availableTariffs {
+    final tariffs = _tariffs;
+    if (tariffs == null ||
+        (tariffs.regular.isEmpty && tariffs.luxury.isEmpty)) {
+      return _fallbackTariffs;
+    }
+    return tariffs;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTariffs();
+  }
+
+  @override
+  void dispose() {
+    _transjatimService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadTariffs() async {
+    try {
+      final tariffs = await _transjatimService.getTariffs();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _tariffs = tariffs;
+      });
+    } catch (_) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final tariffs = _availableTariffs;
+
     return Scaffold(
       backgroundColor:
           Colors.transparent,
@@ -115,25 +174,9 @@ class DaftarTiketScreen
                           const SizedBox(
                               height: 16),
 
-                          _ticketCard(
-                            icon:
-                                'assets/images/icons/users-03.svg',
-                            title:
-                                "Umum",
-                            price:
-                                "Rp5.000",
-                          ),
-
-                          const SizedBox(
-                              height: 12),
-
-                          _ticketCard(
-                            icon:
-                                'assets/images/icons/users-03.svg',
-                            title:
-                                "Pelajar",
-                            price:
-                                "Rp2.500",
+                          ..._ticketCards(
+                            tariffs.regular,
+                            'assets/images/icons/users-03.svg',
                           ),
 
                           const SizedBox(
@@ -156,37 +199,9 @@ class DaftarTiketScreen
                           const SizedBox(
                               height: 16),
 
-                          _ticketCard(
-                            icon:
-                                'assets/images/icons/bus.svg',
-                            title:
-                                "SBY - GSK",
-                            price:
-                                "Rp20.000",
-                          ),
-
-                          const SizedBox(
-                              height: 12),
-
-                          _ticketCard(
-                            icon:
-                                'assets/images/icons/bus.svg',
-                            title:
-                                "SBY - SDA",
-                            price:
-                                "Rp15.000",
-                          ),
-
-                          const SizedBox(
-                              height: 12),
-
-                          _ticketCard(
-                            icon:
-                                'assets/images/icons/bus.svg',
-                            title:
-                                "SDA - GSK",
-                            price:
-                                "Rp30.000",
+                          ..._ticketCards(
+                            tariffs.luxury,
+                            'assets/images/icons/bus.svg',
                           ),
                         ],
                       ),
@@ -199,6 +214,47 @@ class DaftarTiketScreen
         ],
       ),
     );
+  }
+
+  List<Widget> _ticketCards(
+    List<TransjatimTariff> tariffs,
+    String icon,
+  ) {
+    final children = <Widget>[];
+
+    for (var index = 0; index < tariffs.length; index++) {
+      if (index > 0) {
+        children.add(const SizedBox(height: 12));
+      }
+
+      children.add(
+        _ticketCard(
+          icon: icon,
+          title: tariffs[index].type,
+          price: _formatRupiah(tariffs[index].nominal),
+        ),
+      );
+    }
+
+    return children;
+  }
+
+  String _formatRupiah(String value) {
+    final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      return 'Rp0';
+    }
+
+    final buffer = StringBuffer();
+    for (var index = 0; index < digits.length; index++) {
+      final remaining = digits.length - index;
+      buffer.write(digits[index]);
+      if (remaining > 1 && remaining % 3 == 1) {
+        buffer.write('.');
+      }
+    }
+
+    return 'Rp$buffer';
   }
 
   Widget _ticketCard({

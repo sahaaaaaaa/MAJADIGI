@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../services/transjatim_service.dart';
+
 class DetailRuteScreen
     extends StatefulWidget {
   final String code;
@@ -25,15 +27,61 @@ class DetailRuteScreen
 class _DetailRuteScreenState
     extends State<
         DetailRuteScreen> {
-  int selectedHalte = 0;
+  final TransjatimService _transjatimService = TransjatimService();
 
-  final List<String> haltes = [
+  int selectedHalte = 0;
+  TransjatimBusStopResponse? _busStopResponse;
+
+  static const List<String> _fallbackHaltes = [
     "Halte Terminal Porong",
     "Halte Gedang",
     "Halte Tanggulangin",
     "Halte Keramean",
     "Halte Terminal Larangan",
   ];
+
+  List<String> get haltes {
+    final stops = _busStopResponse?.stops ?? const [];
+    if (stops.isEmpty) {
+      return _fallbackHaltes;
+    }
+    return stops.map((item) => item.name).toList();
+  }
+
+  String get _origin {
+    final routes = _busStopResponse?.routes ?? const [];
+    return routes.isNotEmpty ? routes.first : widget.from;
+  }
+
+  String get _destination {
+    final routes = _busStopResponse?.routes ?? const [];
+    return routes.length > 1 ? routes[1] : widget.to;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBusStops();
+  }
+
+  @override
+  void dispose() {
+    _transjatimService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadBusStops() async {
+    try {
+      final busStops = await _transjatimService.getBusStops(widget.code);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _busStopResponse = busStops;
+        selectedHalte = 0;
+      });
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,8 +338,7 @@ class _DetailRuteScreenState
                                     label:
                                         "Dari",
                                     value:
-                                        widget
-                                            .from,
+                                        _origin,
                                     icon:
                                         'assets/images/icons/marker-pin-02.svg',
                                   ),
@@ -309,8 +356,7 @@ class _DetailRuteScreenState
                                         label:
                                             "Ke",
                                         value:
-                                            widget
-                                                .to,
+                                            _destination,
                                         icon:
                                             'assets/images/icons/marker-pin-02.svg',
                                       ),
