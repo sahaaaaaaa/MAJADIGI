@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'api_config.dart';
+import 'auth_service.dart';
 
 class NomorDaruratException implements Exception {
   NomorDaruratException(this.message);
@@ -121,7 +122,7 @@ class NomorDaruratService {
           queryParameters:
               queryParameters.isEmpty ? null : queryParameters,
         ),
-        headers: const {'Accept': 'application/json'},
+        headers: _headers(),
       );
     } catch (_) {
       throw NomorDaruratException(
@@ -164,5 +165,14 @@ class NomorDaruratService {
     }
 
     return const [];
+  }
+
+  Map<String, String> _headers() {
+    final headers = <String, String>{'Accept': 'application/json'};
+    final session = AuthService.currentSession;
+    if (session != null) {
+      headers['Authorization'] = session.authorizationHeader;
+    }
+    return headers;
   }
 }

@@ -1,29 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
-import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
-import 'package:majadigi/screens/open_data/open_data_detail_screen.dart';
-import 'package:majadigi/screens/open_data/open_data_screen.dart';
-import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
-import '../destinasi_wisata/destinasi_wisata_screen.dart';
-import '../../widgets/layanan_item.dart';
-import '../harga_barang/harga_bahan_pokok_screen.dart';
-import '../nomor darurat/nomor_darurat.dart';
 
-import '../destinasi_wisata/destinasi_wisata_screen.dart';
+import '../../services/layanan_service.dart';
 import '../../widgets/layanan_item.dart';
-import '../rsud_provjatim/rsud_jatim.dart';
-import '../rssa/rssa_screen.dart';
-import '../transjatim/transjatim_screen.dart';
+import 'home_service_item.dart';
 
 class LayananLainScreen extends StatefulWidget {
-  const LayananLainScreen({super.key});
+  const LayananLainScreen({super.key, this.services});
+
+  final List<HomeServiceItem>? services;
 
   @override
   State<LayananLainScreen> createState() => _LayananLainScreenState();
 }
 
 class _LayananLainScreenState extends State<LayananLainScreen> {
-  bool pariwisataOpen = true;
+  final LayananService _layananService = LayananService();
+  bool _isLoading = false;
+  List<HomeServiceItem> _services = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final services = widget.services;
+    if (services != null) {
+      _services = services;
+      return;
+    }
+
+    _loadServices();
+  }
+
+  @override
+  void dispose() {
+    _layananService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadServices() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final layanan = await _layananService.getInstalledLayanan();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _services = layanan
+            .map(homeServiceFromLayanan)
+            .whereType<HomeServiceItem>()
+            .toList();
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +70,6 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
       backgroundColor: const Color(0xFFF2F2F2),
       body: Column(
         children: [
-          // 🔵 HEADER (TETAP)
           Container(
             height: 140,
             padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
@@ -45,7 +83,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
                 const Expanded(
                   child: Center(
                     child: Text(
-                      "Layanan Lain",
+                      'Layanan Lain',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -58,8 +96,6 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
               ],
             ),
           ),
-
-          // 🔹 CONTENT
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -70,54 +106,11 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
               child: ListView(
                 children: [
                   const Text(
-                    "Featured",
+                    'Semua layanan',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-
                   const SizedBox(height: 16),
-
-                  _gridFeatured(),
-
-                  const SizedBox(height: 20),
-                  const Divider(),
-
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        pariwisataOpen = !pariwisataOpen;
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Pariwisata & Kebudayaan",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(
-                          pariwisataOpen
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  if (pariwisataOpen) ...[
-                    const SizedBox(height: 16),
-                    _gridPariwisata(),
-                  ],
-
-                  const Divider(),
-
-                  _simpleItem("Pendidikan"),
-                  _simpleItem("Ketenagakerjaan"),
-                  _simpleItem("Ekonomi & Bisnis"),
-                  _simpleItem("Kesehatan"),
-                  _simpleItem("Kependudukan"),
+                  _buildGrid(),
                 ],
               ),
             ),
@@ -127,175 +120,47 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
     );
   }
 
-  // 🔥 FEATURED (PAKAI WIDGET)
-  Widget _gridFeatured() {
+  Widget _buildGrid() {
+    if (_isLoading) {
+      return const SizedBox(
+        height: 120,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    if (_services.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF7F7F7),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE8E8E8)),
+        ),
+        child: const Text(
+          'Belum ada layanan yang dipilih.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return GridView.count(
       crossAxisCount: 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      children: [
-        LayananItem(
-          title: "Klinik Hoaks",
-          image: "assets/images/klinik_hoax.png",
+      children: _services.map((service) {
+        return LayananItem(
+          title: service.title,
+          image: service.image,
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const KlinikHoaksHomeScreen()),
+              MaterialPageRoute(builder: service.builder),
             );
           },
-        ),
-        LayananItem(
-          title: "Destinasi Wisata",
-          image: "assets/images/destinasi_wisata.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const DestinasiWisataScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "Open Data",
-          image: "assets/images/open_data.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const OpenDataScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "Harga",
-          image: "assets/images/khas_jatim.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const HargaBahanPokokScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "RSUD Haji",
-          image: "assets/images/rsud_haji.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RsudHajiScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "Transjatim",
-          image: "assets/images/transjatim_ajaib.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const TransjatimScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "RSSA",
-          image: "assets/images/rsud_saifulanwar.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RssaScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "Nomor Darurat",
-          image: "assets/images/klinik_hoax.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const NomorDaruratScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "Point Jatim",
-          image: "assets/images/point_jatim.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PointJatimHomeScreen()),
-            );
-          },
-        ),
-        LayananItem(
-          title: "Islamic Center",
-          image: "assets/images/islamic_center.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const IslamicCenterHomeScreen()),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  // 🔥 PARIWISATA (PAKAI WIDGET)
-  Widget _gridPariwisata() {
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        LayananItem(
-          title: "Nganjuk Smart City",
-          image: "assets/images/nganjuk_smartcity.png",
-          onTap: () {},
-        ),
-        LayananItem(
-          title: "Pusaka Jatim",
-          image: "assets/images/klinik_hoax.png",
-          onTap: () {},
-        ),
-        LayananItem(
-          title: "Paket Kunjungan",
-          image: "assets/images/klinik_hoax.png",
-          onTap: () {},
-        ),
-        LayananItem(
-          title: "Khas Jatim",
-          image: "assets/images/khas_jatim.png",
-          onTap: () {},
-        ),
-        LayananItem(
-          title: "Cak Durasim",
-          image: "assets/images/cak_durasim.png",
-          onTap: () {},
-        ),
-        LayananItem(
-          title: "Virtual Tour",
-          image: "assets/images/klinik_hoax.png",
-          onTap: () {},
-        ),
-        LayananItem(
-          title: "Destinasi Wisata",
-          image: "assets/images/destinasi_wisata.png",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const DestinasiWisataScreen()),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  // 🔹 LIST (NO CHANGE)
-  Widget _simpleItem(String title) {
-    return Column(
-      children: [
-        ListTile(title: Text(title), trailing: const Icon(Icons.expand_more)),
-        const Divider(),
-      ],
+        );
+      }).toList(),
     );
   }
 }

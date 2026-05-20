@@ -5,6 +5,7 @@ import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart'
 import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
 import 'package:majadigi/screens/open_data/open_data_screen.dart';
 import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
+import 'package:majadigi/services/layanan_service.dart';
 
 class Recommendation {
   final int id;
@@ -25,6 +26,192 @@ class Recommendation {
     this.screen,
   });
 }
+
+Recommendation recommendationFromLayanan(LayananModel layanan) {
+  return Recommendation(
+    id: layanan.id,
+    title: layananDisplayTitle(layanan.name),
+    description: layanan.description,
+    logo: layananLogoAssetName(layanan.name),
+    kategori: layananCategoryName(layanan.name, layanan.categoryName),
+  );
+}
+
+String layananCategoryName(String name, String fallback) {
+  final normalized = name.toLowerCase();
+
+  if (normalized.contains('rsud')) {
+    return 'Kesehatan';
+  }
+  if (normalized.contains('destinasi')) {
+    return 'Pariwisata & Kebudayaan';
+  }
+  if (normalized.contains('islamic')) {
+    return 'Sosial';
+  }
+  if (normalized.contains('open data')) {
+    return 'PPID';
+  }
+  if (normalized.contains('klinik hoaks')) {
+    return 'Multisektor (Khusus)';
+  }
+  if (normalized.contains('harga') || normalized.contains('point jatim')) {
+    return 'Ekonomi & Bisnis';
+  }
+  if (normalized.contains('nomor darurat')) {
+    return 'Kebencanaan';
+  }
+  if (normalized.contains('transjatim')) {
+    return 'Infrastruktur';
+  }
+
+  return fallback.isEmpty ? 'Layanan' : fallback;
+}
+
+String layananDisplayTitle(String name) {
+  final normalized = name.toLowerCase();
+
+  if (normalized.contains('saiful anwar')) {
+    return 'RSUD Dr. Saiful Anwar';
+  }
+  if (normalized.contains('rsud haji')) {
+    return 'RSUD Haji';
+  }
+  if (normalized.contains('transjatim')) {
+    return 'Transjatim';
+  }
+  if (normalized.contains('point jatim')) {
+    return 'Point Jatim';
+  }
+  if (normalized.contains('islamic')) {
+    return 'Islamic Center';
+  }
+
+  return name;
+}
+
+String layananLogoAssetName(String name) {
+  final normalized = name.toLowerCase();
+
+  if (normalized.contains('open data')) {
+    return 'open_data.png';
+  }
+  if (normalized.contains('klinik hoaks')) {
+    return 'klinik_hoax.png';
+  }
+  if (normalized.contains('harga')) {
+    return 'khas_jatim.png';
+  }
+  if (normalized.contains('nomor darurat')) {
+    return 'klinik_hoax.png';
+  }
+  if (normalized.contains('rsud haji')) {
+    return 'rsud_haji.png';
+  }
+  if (normalized.contains('saiful anwar')) {
+    return 'rsud_saifulanwar.png';
+  }
+  if (normalized.contains('transjatim')) {
+    return 'transjatim_ajaib.png';
+  }
+  if (normalized.contains('point jatim')) {
+    return 'point_jatim.png';
+  }
+  if (normalized.contains('islamic')) {
+    return 'islamic_center.png';
+  }
+  if (normalized.contains('destinasi')) {
+    return 'destinasi_wisata.png';
+  }
+
+  return 'klinik_hoax.png';
+}
+
+String layananLogoAssetPath(String logo) {
+  if (logo.startsWith('assets/')) {
+    return logo;
+  }
+
+  return 'assets/images/$logo';
+}
+
+final List<Recommendation> backendLayananFallbackRecommendations = [
+  Recommendation(
+    id: 1,
+    title: 'Open Data',
+    description: 'Transparansi data publik untuk masyarakat',
+    logo: 'open_data.png',
+    kategori: 'Kependudukan',
+    screen: const OpenDataScreen(),
+  ),
+  Recommendation(
+    id: 2,
+    title: 'Klinik Hoaks',
+    description: 'Verifikasi informasi dan cek fakta digital',
+    logo: 'klinik_hoax.png',
+    kategori: 'Kependudukan',
+    screen: const KlinikHoaksHomeScreen(),
+  ),
+  Recommendation(
+    id: 3,
+    title: 'Harga Bahan Pokok',
+    description: 'Pantau harga pangan pasar secara real-time',
+    logo: 'khas_jatim.png',
+    kategori: 'Ekonomi & Bisnis',
+  ),
+  Recommendation(
+    id: 4,
+    title: 'Nomor Darurat',
+    description: 'Layanan cepat tanggap darurat 24 jam',
+    logo: 'klinik_hoax.png',
+    kategori: 'Kependudukan',
+  ),
+  Recommendation(
+    id: 5,
+    title: 'RSUD Haji',
+    description: 'Pelayanan kesehatan berkualitas dan islami',
+    logo: 'rsud_haji.png',
+    kategori: 'Kesehatan',
+  ),
+  Recommendation(
+    id: 6,
+    title: 'RSUD Dr. Saiful Anwar',
+    description: 'Layanan kesehatan rujukan utama Jawa Timur',
+    logo: 'rsud_saifulanwar.png',
+    kategori: 'Kesehatan',
+  ),
+  Recommendation(
+    id: 7,
+    title: 'Transjatim',
+    description: 'Informasi rute transportasi publik Jatim',
+    logo: 'transjatim_ajaib.png',
+    kategori: 'Kependudukan',
+  ),
+  Recommendation(
+    id: 8,
+    title: 'Point Jatim',
+    description: 'Sistem poin terintegrasi layanan warga',
+    logo: 'point_jatim.png',
+    kategori: 'Ekonomi & Bisnis',
+    screen: PointJatimHomeScreen(),
+  ),
+  Recommendation(
+    id: 9,
+    title: 'Islamic Center',
+    description: 'Pusat informasi dan kegiatan keagamaan',
+    logo: 'islamic_center.png',
+    kategori: 'Ekonomi & Bisnis',
+    screen: const IslamicCenterHomeScreen(),
+  ),
+  Recommendation(
+    id: 10,
+    title: 'Destinasi Wisata',
+    description: 'Eksplorasi keindahan alam dan budaya Jatim',
+    logo: 'destinasi_wisata.png',
+    kategori: 'Pariwisata & Kebudayaan',
+    screen: const DestinasiWisataScreen(),
+  ),
+];
 
 class NewsArticle {
   final int id;

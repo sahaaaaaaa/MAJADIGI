@@ -1,16 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'home_service_item.dart';
 import 'layanan_lain.dart';
 import '../../widgets/layanan_item.dart';
-import '../destinasi_wisata/destinasi_wisata_screen.dart';
-import '../harga_barang/harga_bahan_pokok_screen.dart';
-
-import '../destinasi_wisata/destinasi_wisata_screen.dart';
-import '../klinik_hoax/klinik_hoax_home_screen.dart';
-import '../open_data/open_data_screen.dart';
-import '../rsud_provjatim/rsud_jatim.dart';
-import '../rssa/rssa_screen.dart';
-import '../transjatim/transjatim_screen.dart';
+import '../../services/layanan_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,7 +14,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _controller = PageController();
+  final LayananService _layananService = LayananService();
   int _currentPage = 1;
+  Timer? _bannerTimer;
+  bool _hasLoadedLayanan = false;
+  List<LayananModel> _installedLayanan = [];
 
   final List<String> banners = [
     "assets/images/welcome_hero2.jpg",
@@ -32,8 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _loadInstalledLayanan();
 
-    Timer.periodic(const Duration(seconds: 3), (timer) {
+    _bannerTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_controller.hasClients) {
         _currentPage = (_currentPage + 1) % banners.length;
         _controller.animateToPage(
@@ -47,8 +45,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _bannerTimer?.cancel();
     _controller.dispose();
+    _layananService.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadInstalledLayanan() async {
+    try {
+      final layanan = await _layananService.getInstalledLayanan();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _installedLayanan = layanan;
+        _hasLoadedLayanan = true;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _hasLoadedLayanan = true;
+      });
+    }
+  }
+
+  List<HomeServiceItem> get _homeServices {
+    return _installedLayanan
+        .map(homeServiceFromLayanan)
+        .whereType<HomeServiceItem>()
+        .toList();
   }
 
   @override
@@ -177,10 +204,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
+                                final services =
+                                    _hasLoadedLayanan ? _homeServices : null;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const LayananLainScreen(),
+                                    builder: (_) =>
+                                        LayananLainScreen(services: services),
                                   ),
                                 );
                               },
@@ -194,119 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         const SizedBox(height: 20),
 
-                        GridView.count(
-                          crossAxisCount: 4,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            LayananItem(
-                              title: "Klinik Hoaks",
-                              image: "assets/images/klinik_hoax.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        const KlinikHoaksHomeScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "Destinasi Wisata",
-                              image: "assets/images/destinasi_wisata.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        const DestinasiWisataScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "Open Data",
-                              image: "assets/images/open_data.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const OpenDataScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "Harga",
-                              image: "assets/images/khas_jatim.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        const HargaBahanPokokScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "RSUD Haji",
-                              image: "assets/images/rsud_haji.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const RsudHajiScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "Transjatim",
-                              image: "assets/images/transjatim_ajaib.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const TransjatimScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "RSSA",
-                              image: "assets/images/rsud_saifulanwar.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const RssaScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            LayananItem(
-                              title: "Lainnya",
-                              image: "assets/images/grid_lainnya.png",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const LayananLainScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                        _buildLayananSection(),
 
                         const SizedBox(height: 24),
 
@@ -366,6 +284,75 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(20),
         child: Image.asset(path, fit: BoxFit.cover),
       ),
+    );
+  }
+
+  Widget _buildLayananSection() {
+    if (!_hasLoadedLayanan) {
+      return const SizedBox(
+        height: 96,
+        child: Center(
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    }
+
+    final services = _homeServices;
+    if (services.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF7F7F7),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE8E8E8)),
+        ),
+        child: const Text(
+          'Belum ada layanan yang dipilih.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    final hasMoreServices = services.length > 8;
+    final visibleServices =
+        hasMoreServices ? services.take(7).toList() : services;
+    final serviceItems = visibleServices.map((service) {
+      return LayananItem(
+        title: service.title,
+        image: service.image,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: service.builder),
+          );
+        },
+      );
+    }).toList();
+
+    if (hasMoreServices) {
+      serviceItems.add(
+        LayananItem(
+          title: 'Lainnya',
+          image: 'assets/images/grid_lainnya.png',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => LayananLainScreen(services: services),
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    return GridView.count(
+      crossAxisCount: 4,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: serviceItems,
     );
   }
 }

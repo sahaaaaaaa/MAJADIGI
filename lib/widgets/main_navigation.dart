@@ -5,7 +5,6 @@ import '../screens/layanan/layanan_screen.dart';
 import '../screens/tersimpan/tersimpan_screen.dart';
 import '../screens/akun/akun_screen.dart';
 
-import '../screens/onboarding/recommendation_screen.dart';
 import '../screens/service_model.dart';
 
 
@@ -38,6 +37,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
       bottomNavigationBar: 
       SafeArea(child: Container(
+        height: 90,
         margin: const EdgeInsets.fromLTRB(
           20,
           0,
@@ -69,33 +69,38 @@ class _MainNavigationState extends State<MainNavigation> {
         ),
 
         child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceAround,
-
           children: [
 
-            _navItem(
-              Icons.home_filled,
-              "Beranda",
-              0,
+            Expanded(
+              child: _navItem(
+                Icons.home_filled,
+                "Beranda",
+                0,
+              ),
             ),
 
-            _navItem(
-              Icons.storefront_outlined,
-              "Layanan",
-              1,
+            Expanded(
+              child: _navItem(
+                Icons.storefront_outlined,
+                "Layanan",
+                1,
+              ),
             ),
 
-            _navItem(
-              Icons.bookmark_border,
-              "Tersimpan",
-              2,
+            Expanded(
+              child: _navItem(
+                Icons.bookmark_border,
+                "Tersimpan",
+                2,
+              ),
             ),
 
-            _navItem(
-              Icons.person_outline,
-              "Akun",
-              3,
+            Expanded(
+              child: _navItem(
+                Icons.person_outline,
+                "Akun",
+                3,
+              ),
             ),
           ],
         ),
@@ -121,65 +126,72 @@ class _MainNavigationState extends State<MainNavigation> {
         });
       },
 
-      child: AnimatedContainer(
-        duration: const Duration(
-          milliseconds: 250,
-        ),
+      child: SizedBox(
+        height: 70,
+        child: AnimatedContainer(
+          duration: const Duration(
+            milliseconds: 250,
+          ),
 
-        padding:
-            const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 10,
-        ),
+          width: double.infinity,
 
-        decoration: BoxDecoration(
-          color: isActive
-              ? const Color(
-                  0xffE9F0FF,
-                )
-              : Colors.transparent,
+          padding:
+              const EdgeInsets.symmetric(
+            horizontal: 4,
+            vertical: 10,
+          ),
 
-          borderRadius:
-              BorderRadius.circular(24),
-        ),
+          decoration: BoxDecoration(
+            color: isActive
+                ? const Color(
+                    0xffE9F0FF,
+                  )
+                : Colors.transparent,
 
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+            borderRadius:
+                BorderRadius.circular(24),
+          ),
 
-          children: [
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
 
-            Icon(
-              icon,
+            children: [
 
-              color: isActive
-                  ? const Color(
-                      0xff2F61E8,
-                    )
-                  : Colors.grey,
+              Icon(
+                icon,
 
-              size: 24,
-            ),
-
-            const SizedBox(height: 4),
-
-            Text(
-              label,
-
-              style: TextStyle(
                 color: isActive
                     ? const Color(
                         0xff2F61E8,
                       )
                     : Colors.grey,
 
-                fontSize: 13,
-
-                fontWeight: isActive
-                    ? FontWeight.w600
-                    : FontWeight.w400,
+                size: 24,
               ),
-            ),
-          ],
+
+              const SizedBox(height: 4),
+
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+
+                style: TextStyle(
+                  color: isActive
+                      ? const Color(
+                          0xff2F61E8,
+                        )
+                      : Colors.grey,
+
+                  fontSize: 12,
+
+                  fontWeight: isActive
+                      ? FontWeight.w600
+                      : FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

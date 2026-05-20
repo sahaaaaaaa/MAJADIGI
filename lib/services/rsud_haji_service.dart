@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'api_config.dart';
+import 'auth_service.dart';
 
 class RsudHajiException implements Exception {
   RsudHajiException(this.message);
@@ -105,7 +106,7 @@ class RsudHajiService {
     try {
       response = await _client.get(
         Uri.parse('${ApiConfig.baseUrl}/rsud-haji/room-occupancy'),
-        headers: const {'Accept': 'application/json'},
+        headers: _headers(),
       );
     } catch (_) {
       throw RsudHajiException(
@@ -134,6 +135,15 @@ class RsudHajiService {
     } catch (_) {}
 
     return {};
+  }
+
+  Map<String, String> _headers() {
+    final headers = <String, String>{'Accept': 'application/json'};
+    final session = AuthService.currentSession;
+    if (session != null) {
+      headers['Authorization'] = session.authorizationHeader;
+    }
+    return headers;
   }
 }
 
