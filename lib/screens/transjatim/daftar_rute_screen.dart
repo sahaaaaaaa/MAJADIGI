@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../services/transjatim_service.dart';
 import 'detail_rute_screen.dart';
 
 class DaftarRuteScreen extends StatefulWidget {
@@ -10,87 +12,132 @@ class DaftarRuteScreen extends StatefulWidget {
 }
 
 class _DaftarRuteScreenState extends State<DaftarRuteScreen> {
+  final TransjatimService _transjatimService = TransjatimService();
+
   bool isJatim = true;
+  List<TransjatimRouteInfo> _routes = [];
 
-  final List<Map<String, String>> jatimRoutes = [
-    {
-      "code": "JTM1",
-      "from": "Sidoarjo via Surabaya",
-      "to": "Gresik",
-      "time": "05.00-21.00",
-      "color": "0xFF27AE60",
-    },
-    {
-      "code": "JTM2",
-      "from": "Surabaya",
-      "to": "Mojokerto",
-      "time": "04.00-21.00",
-      "color": "0xFF1D9BF0",
-    },
-    {
-      "code": "JTM3",
-      "from": "Mojokerto",
-      "to": "Gresik",
-      "time": "05.00-21.00",
-      "color": "0xFFE67E22",
-    },
-    {
-      "code": "JTM4",
-      "from": "Gresik",
-      "to": "Lamongan",
-      "time": "05.00-21.00",
-      "color": "0xFFC9A227",
-    },
-    {
-      "code": "JTML1",
-      "from": "Gresik",
-      "to": "Sidoarjo via Surabaya",
-      "time": "06.00-18.00",
-      "color": "0xFF8E24AA",
-    },
-    {
-      "code": "JTML2",
-      "from": "Terminal Bunder (OD)",
-      "to": "Terminal Paciran (OD)",
-      "time": "06.00-18.00",
-      "color": "0xFFD946EF",
-    },
-    {
-      "code": "JTM5",
-      "from": "Surabaya",
-      "to": "Bangkalan",
-      "time": "05.00-21.00",
-      "color": "0xFF0B2E83",
-    },
-    {
-      "code": "JTM6",
-      "from": "Sidoarjo",
-      "to": "Mojokerto",
-      "time": "04.00-21.00",
-      "color": "0xFFE7A6C7",
-    },
-    {
-      "code": "JTM7",
-      "from": "Terminal Lamongan",
-      "to": "Terminal Paciran",
-      "time": "04.00-21.00",
-      "color": "0xFF6D4C41",
-    },
+  static const List<TransjatimRouteInfo> _fallbackRoutes = [
+    TransjatimRouteInfo(
+      corridor: 'JTM1',
+      corridorCode: '1',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#36780a',
+      serviceName: 'Trans Jatim',
+      routes: ['Sidoarjo via Surabaya', 'Gresik'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTM2',
+      corridorCode: '2',
+      operationHours: '04:00 - 21:00',
+      colorHex: '#0389d2',
+      serviceName: 'Trans Jatim',
+      routes: ['Surabaya', 'Mojokerto'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTM3',
+      corridorCode: '3',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#E65100',
+      serviceName: 'Trans Jatim',
+      routes: ['Mojokerto', 'Gresik'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTM4',
+      corridorCode: '4',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#bc9e3e',
+      serviceName: 'Trans Jatim',
+      routes: ['Gresik', 'Lamongan'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTM5',
+      corridorCode: '5',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#340c7e',
+      serviceName: 'Trans Jatim',
+      routes: ['Surabaya', 'Bangkalan'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTM6',
+      corridorCode: '6',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#e8a3c2',
+      serviceName: 'Trans Jatim',
+      routes: ['Sidoarjo', 'Mojokerto'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTM7',
+      corridorCode: '7',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#6b4d3d',
+      serviceName: 'Trans Jatim',
+      routes: ['Terminal Lamongan', 'Terminal Paciran'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'MLG1',
+      corridorCode: '1',
+      operationHours: '05:00 - 21:00',
+      colorHex: '#0849c0',
+      serviceName: 'Trans Jatim',
+      routes: ['Terminal Hamid Rusdi', 'Terminal Batu'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTML1',
+      corridorCode: '1',
+      operationHours: '06:00 - 18:00',
+      colorHex: '#870f87',
+      serviceName: 'Trans Jatim',
+      routes: ['Gresik', 'Sidoarjo via Surabaya'],
+    ),
+    TransjatimRouteInfo(
+      corridor: 'JTML4',
+      corridorCode: '4',
+      operationHours: '06:00 - 18:00',
+      colorHex: '#e147c5',
+      serviceName: 'Trans Jatim',
+      routes: ['Terminal Bunder (OD)', 'Terminal Paciran (OD)'],
+    ),
   ];
 
-  final List<Map<String, String>> malangRoutes = [
-    {
-      "code": "MLG1",
-      "from": "Terminal Hamid Rusdi",
-      "to": "Terminal Batu",
-      "time": "05.00-21.00",
-      "color": "0xFF1565FF",
-    },
-  ];
+  List<TransjatimRouteInfo> get _availableRoutes {
+    return _routes.isEmpty ? _fallbackRoutes : _routes;
+  }
+
+  List<TransjatimRouteInfo> get _filteredRoutes {
+    return _availableRoutes.where((route) {
+      final isMalangRoute = route.corridor.toUpperCase().startsWith('MLG');
+      return isJatim ? !isMalangRoute : isMalangRoute;
+    }).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRoutes();
+  }
+
+  @override
+  void dispose() {
+    _transjatimService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadRoutes() async {
+    try {
+      final routes = await _transjatimService.getRoutes();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _routes = routes;
+      });
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
-    final routes = isJatim ? jatimRoutes : malangRoutes;
+    final routes = _filteredRoutes;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -274,11 +321,11 @@ class _DaftarRuteScreenState extends State<DaftarRuteScreen> {
                                 final route = routes[index];
 
                                 return _routeCard(
-                                  code: route["code"]!,
-                                  from: route["from"]!,
-                                  to: route["to"]!,
-                                  time: route["time"]!,
-                                  color: Color(int.parse(route["color"]!)),
+                                  code: route.corridor,
+                                  from: route.origin,
+                                  to: route.destination,
+                                  time: route.operationHours,
+                                  color: _colorFromHex(route.colorHex),
                                 );
                               },
                             ),
@@ -456,5 +503,11 @@ class _DaftarRuteScreenState extends State<DaftarRuteScreen> {
         ),
       ),
     );
+  }
+
+  Color _colorFromHex(String value) {
+    final hex = value.replaceAll('#', '').trim();
+    final normalized = hex.length == 6 ? 'FF$hex' : hex;
+    return Color(int.tryParse(normalized, radix: 16) ?? 0xFF1565FF);
   }
 }
