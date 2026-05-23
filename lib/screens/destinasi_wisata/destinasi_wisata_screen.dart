@@ -6,10 +6,12 @@ class DestinasiWisataScreen extends StatefulWidget {
   const DestinasiWisataScreen({super.key});
 
   @override
-  State<DestinasiWisataScreen> createState() => _DestinasiWisataScreenState();
+  State<DestinasiWisataScreen> createState() =>
+      _DestinasiWisataScreenState();
 }
 
-class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
+class _DestinasiWisataScreenState
+    extends State<DestinasiWisataScreen> {
   String lokasi = "Malang, Jawa Timur";
 
   Map<String, bool> kategori = {
@@ -25,7 +27,9 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -40,55 +44,82 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                       height: 4,
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius:
+                            BorderRadius.circular(10),
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 20),
+
                   const Text(
                     "Kategori",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+
                   const SizedBox(height: 20),
 
                   ...kategori.keys.map((key) {
                     return Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                              MainAxisAlignment
+                                  .spaceBetween,
                           children: [
-                            Expanded(child: Text(key)),
+                            Expanded(
+                              child: Text(key),
+                            ),
+
                             GestureDetector(
                               onTap: () {
                                 setModalState(() {
-                                  kategori[key] = !(kategori[key] ?? false);
+                                  kategori[key] =
+                                      !(kategori[key] ??
+                                          false);
                                 });
                               },
+
                               child: Container(
                                 width: 24,
                                 height: 24,
                                 decoration: BoxDecoration(
                                   color: kategori[key]!
-                                      ? const Color(0xFF0E63FF)
+                                      ? const Color(
+                                          0xFF0E63FF,
+                                        )
                                       : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(6),
+
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                    6,
+                                  ),
+
                                   border: Border.all(
                                     color: kategori[key]!
-                                        ? const Color(0xFF0E63FF)
+                                        ? const Color(
+                                            0xFF0E63FF,
+                                          )
                                         : Colors.grey,
                                   ),
                                 ),
+
                                 child: kategori[key]!
                                     ? const Icon(
                                         Icons.check,
                                         size: 16,
-                                        color: Colors.white,
+                                        color:
+                                            Colors.white,
                                       )
                                     : null,
                               ),
                             ),
                           ],
                         ),
+
                         const Divider(),
                       ],
                     );
@@ -102,42 +133,61 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                         child: Container(
                           height: 50,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE9EEF6),
-                            borderRadius: BorderRadius.circular(30),
+                            color:
+                                const Color(0xFFE9EEF6),
+                            borderRadius:
+                                BorderRadius.circular(
+                              30,
+                            ),
                           ),
+
                           child: TextButton(
                             onPressed: () {
                               setModalState(() {
-                                kategori.updateAll((key, value) => false);
+                                kategori.updateAll(
+                                  (key, value) => false,
+                                );
                               });
                             },
+
                             child: const Text(
                               "Reset",
                               style: TextStyle(
-                                color: Color(0xFF0E63FF),
-                                fontWeight: FontWeight.w600,
+                                color:
+                                    Color(0xFF0E63FF),
+                                fontWeight:
+                                    FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
                       ),
+
                       const SizedBox(width: 12),
+
                       Expanded(
                         child: Container(
                           height: 50,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0E63FF),
-                            borderRadius: BorderRadius.circular(30),
+                            color:
+                                const Color(0xFF0E63FF),
+                            borderRadius:
+                                BorderRadius.circular(
+                              30,
+                            ),
                           ),
+
                           child: TextButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
+
                             child: const Text(
                               "Terapkan",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                                fontWeight:
+                                    FontWeight.w600,
                               ),
                             ),
                           ),
@@ -158,186 +208,307 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
-      body: Stack(
-        children: [
-          // Latar Belakang Biru
-          Container(
-            width: double.infinity,
-            height: 300,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/latar_belakang.png'),
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
+
+      body: CustomScrollView(
+        slivers: [
+
+          // ================= HEADER =================
+          SliverAppBar(
+            pinned: true,
+            automaticallyImplyLeading: false,
+            backgroundColor:
+                const Color(0xFF0B57D0),
+            expandedHeight: 170,
+            toolbarHeight: 70,
+            elevation: 0,
+
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    "assets/images/latar_belakang.png",
+                  ),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                ),
+              ),
+            ),
+
+            titleSpacing: 0,
+
+            title: Padding(
+              padding:
+                  const EdgeInsets.only(right: 16),
+
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        "Destinasi Wisata",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight:
+                              FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const Icon(
+                    Icons.bookmark_border,
+                    color: Colors.white,
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const InformasiScreen(),
+                        ),
+                      );
+                    },
+
+                    child: const Icon(
+                      Icons.info_outline,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            bottom: PreferredSize(
+              preferredSize:
+                  const Size.fromHeight(90),
+
+              child: Padding(
+                padding:
+                    const EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  20,
+                ),
+
+                child: Container(
+                  height: 58,
+
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius.circular(22),
+                  ),
+
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText:
+                          "Malang, Jawa Timur",
+
+                      prefixIcon: const Icon(
+                        Icons
+                            .location_on_outlined,
+                      ),
+
+                      border:
+                          OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(
+                          22,
+                        ),
+
+                        borderSide:
+                            BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
 
-          SafeArea(
+          // ================= CONTENT =================
+          SliverToBoxAdapter(
             child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
               children: [
-                // HEADER
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      const Expanded(
-                        child: Center(
-                          child: Text(
-                            "Destinasi Wisata",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+
+                // KATEGORI
+                Container(
+  decoration: const BoxDecoration(
+    image: DecorationImage(
+      image: AssetImage(
+        "assets/images/latar_belakang.png",
+      ),
+      fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+    ),
+  ),
+
+                  child: Padding(
+                   padding: const EdgeInsets.fromLTRB(
+  16,
+  10,
+  16,
+  20,
+),
+
+                    child: GestureDetector(
+                      onTap: _showKategori,
+
+                      child: Container(
+                        padding:
+                            const EdgeInsets.all(
+                          16,
                         ),
-                      ),
-                      const Icon(Icons.bookmark_border, color: Colors.white),
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const InformasiScreen(),
-                            ),
-                          );
-                        },
-                        child: const Icon(
-                          Icons.info_outline,
+
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                // SEARCH + KATEGORI
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      TextField(
-                        onChanged: (val) => setState(() => lokasi = val),
-                        decoration: InputDecoration(
-                          hintText: lokasi,
-                          prefixIcon: const Icon(Icons.location_on_outlined),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                          borderRadius:
+                              BorderRadius.circular(
+                            22,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      GestureDetector(
-                        onTap: _showKategori,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.grid_view_outlined),
-                                  SizedBox(width: 10),
-                                  Text("Kategori"),
-                                ],
-                              ),
-                              Icon(Icons.keyboard_arrow_down),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
 
-                const SizedBox(height: 20),
+                        child: const Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment
+                                  .spaceBetween,
 
-                // CONTENT
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      // ✅ FIX COLOR DI SINI
-                      const Text(
-                        "Wisata Populer di Malang",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      SizedBox(
-                        height: 200,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
                           children: [
-                            _cardHorizontal(
-                              "Gunung Bromo",
-                              "Gunung Bromo adalah gunung berapi aktif...",
-                              "assets/images/bromo.png",
+                            Row(
+                              children: [
+                                Icon(Icons
+                                    .grid_view_outlined),
+
+                                SizedBox(width: 10),
+
+                                Text(
+                                  "Kategori",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight:
+                                        FontWeight
+                                            .w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                            _cardHorizontal(
-                              "Kawah Ijen",
-                              "Keindahan kawah ijen dengan fenomena...",
-                              "assets/images/kawah_ijen.png",
-                            ),
+
+                            Icon(Icons
+                                .keyboard_arrow_down),
                           ],
                         ),
                       ),
+                    ),
+                  ),
+                ),
 
-                      const SizedBox(height: 20),
+                // CONTENT PUTIH
+                Container(
+                  color:
+                      const Color(0xFFF5F5F5),
 
-                      const Text(
-                        "Semua Wisata",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.all(16),
+
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+
+                      children: [
+
+                        const Text(
+                          "Wisata Populer di Malang",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
 
-                      _cardVertical(
-                        title: "Gunung Bromo",
-                        desc:
-                            "Gunung Bromo adalah gunung Berapi aktif di Jawa Timur, Indonesia.",
-                        location: "Kabupaten Probolinggo",
-                        image: "assets/images/bromo.png",
-                      ),
+                        const SizedBox(height: 14),
 
-                      _cardVertical(
-                        title: "Kawah Ijen",
-                        desc:
-                            "Keindahan Kawah ijen dengan fenomena alam yang mendunia.",
-                        location: "Kabupaten Banyuwangi",
-                        image: "assets/images/kawah_ijen.png",
-                      ),
+                        SizedBox(
+                          height: 230,
 
-                      _cardVertical(
-                        title: "Air Terjun Tumpak Sewu",
-                        desc:
-                            "Air Terjun Tumpak Sewu mudah dijangkau kendaraan pribadi maupun umum.",
-                        location: "Kec. Pronojiwo, Lumajang",
-                        image: "assets/images/tumpak_sewu.png",
-                      ),
-                    ],
+                          child: ListView(
+                            scrollDirection:
+                                Axis.horizontal,
+
+                            children: [
+                              _cardHorizontal(
+                                "Gunung Bromo",
+                                "Gunung Bromo adalah gunung berapi aktif...",
+                                "assets/images/bromo.png",
+                              ),
+
+                              const SizedBox(
+                                  width: 16),
+
+                              _cardHorizontal(
+                                "Kawah Ijen",
+                                "Keindahan kawah ijen dengan fenomena...",
+                                "assets/images/kawah_ijen.png",
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        const Text(
+                          "Semua Wisata",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        _cardVertical(
+                          title: "Gunung Bromo",
+                          desc:
+                              "Gunung Bromo adalah gunung Berapi aktif di Jawa Timur, Indonesia.",
+                          location:
+                              "Kabupaten Probolinggo",
+                          image:
+                              "assets/images/bromo.png",
+                        ),
+
+                        _cardVertical(
+                          title: "Kawah Ijen",
+                          desc:
+                              "Keindahan Kawah ijen dengan fenomena alam yang mendunia.",
+                          location:
+                              "Kabupaten Banyuwangi",
+                          image:
+                              "assets/images/kawah_ijen.png",
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -347,6 +518,7 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
       ),
     );
   }
+
 
   // 🔥 HORIZONTAL CLICKABLE
   Widget _cardHorizontal(String title, String desc, String image) {

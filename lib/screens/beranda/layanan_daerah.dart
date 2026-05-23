@@ -29,64 +29,87 @@ class _SemuaLayananDaerahScreenState
     "Kabupaten Gresik",
   ];
 
+  final List<Map<String, String>> layanan = [
+    {
+      "title": "Paket Kunjungan Agrowisata",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
+    },
+    {
+      "title": "Islamic Center",
+      "image": "assets/images/islamic_center.png",
+      "desc":
+          "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
+    },
+    {
+      "title": "BAPENDA Jawa Timur",
+      "image": "assets/images/open_data.png",
+      "desc":
+          "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
+    },
+    {
+      "title": "SAPA BANSOS",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
+    },
+    {
+      "title": "RS Paru Manguharjo",
+      "image": "assets/images/rsud_haji.png",
+      "desc":
+          "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
+    },
+    {
+      "title": "RS Paru Jember",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
+    },
+    {
+      "title": "Forum Konsultasi Disnak",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
+    },
+    {
+      "title": "Rumah ASN",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
+    },
+    {
+      "title": "RSUD Haji Prov. Jatim",
+      "image": "assets/images/rsud_haji.png",
+      "desc":
+          "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
+    },
+    {
+      "title": "SIMPEL K3",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
+    },
+    {
+      "title": "Beasiswa LPPD Jatim",
+      "image": "assets/images/logo_majadigi.png",
+      "desc":
+          "Informasi dan pendaftaran program beasiswa pendidikan Jawa Timur.",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final layanan = [
-      {
-        "title": "Paket Kunjungan Agrowisata",
-        "image": "assets/images/logo_majadigi.png",
-      },
-      {
-        "title": "Islamic Center",
-        "image": "assets/images/islamic_center.png",
-      },
-      {
-        "title": "BAPENDA Jawa Timur",
-        "image": "assets/images/open_data.png",
-      },
-      {
-        "title": "SAPA BANSOS",
-        "image": "assets/images/logo_majadigi.png",
-      },
-      {
-        "title": "RS Paru Manguharjo",
-        "image": "assets/images/rsud_haji.png",
-      },
-      {
-        "title": "RS Paru Jember",
-        "image": "assets/images/rs_jember.png",
-      },
-      {
-        "title": "Forum Konsultasi Disnak",
-        "image": "assets/images/logo_majadigi.png",
-      },
-      {
-        "title": "Rumah ASN",
-        "image": "assets/images/rumah_asn.png",
-      },
-      {
-        "title": "RSUD Haji Prov. Jatim",
-        "image": "assets/images/rsud_haji.png",
-      },
-      {
-        "title": "SIMPEL K3",
-        "image": "assets/images/logo_majadigi.png",
-      },
-      {
-        "title": "Beasiswa LPPD Jatim",
-        "image": "assets/images/beasiswa.png",
-      },
-    ];
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
 
       body: Stack(
         children: [
-          // HEADER BACKGROUND
+          // BACKGROUND HEADER
           Container(
             width: double.infinity,
             height: 170,
+
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
@@ -125,6 +148,7 @@ class _SemuaLayananDaerahScreenState
                         child: Text(
                           "Semua Layanan",
                           textAlign: TextAlign.center,
+
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 22,
@@ -182,7 +206,8 @@ class _SemuaLayananDaerahScreenState
                                 Icons.keyboard_arrow_down,
                               ),
 
-                              items: daerahList.map((String value) {
+                              items:
+                                  daerahList.map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
@@ -217,50 +242,74 @@ class _SemuaLayananDaerahScreenState
 
                         // LIST LAYANAN
                         ...layanan.map(
-                          (item) => Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 12,
-                            ),
+                          (item) => GestureDetector(
+                            onTap: () {
+                              _showLayananDetail(
+                                context,
+                                item["title"]!,
+                                item["image"]!,
+                                item["desc"]!,
+                              );
+                            },
 
-                            padding: const EdgeInsets.all(16),
-
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.circular(16),
-
-                              border: Border.all(
-                                color: const Color(0xFFE8E8E8),
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.only(
+                                bottom: 12,
                               ),
-                            ),
 
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  item["image"]!,
-                                  width: 42,
-                                  height: 42,
-                                  fit: BoxFit.contain,
+                              padding:
+                                  const EdgeInsets.all(
+                                16,
+                              ),
+
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.circular(
+                                  16,
                                 ),
 
-                                const SizedBox(width: 14),
-
-                                Expanded(
-                                  child: Text(
-                                    item["title"]!,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15,
-                                    ),
+                                border: Border.all(
+                                  color: const Color(
+                                    0xFFE8E8E8,
                                   ),
                                 ),
+                              ),
 
-                                const Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                              ],
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    item["image"]!,
+                                    width: 42,
+                                    height: 42,
+                                    fit: BoxFit.contain,
+                                  ),
+
+                                  const SizedBox(
+                                      width: 14),
+
+                                  Expanded(
+                                    child: Text(
+                                      item["title"]!,
+                                      style:
+                                          const TextStyle(
+                                        fontWeight:
+                                            FontWeight
+                                                .w500,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const Icon(
+                                    Icons
+                                        .arrow_forward_ios,
+                                    size: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -273,6 +322,156 @@ class _SemuaLayananDaerahScreenState
           ),
         ],
       ),
+    );
+  }
+
+  void _showLayananDetail(
+    BuildContext context,
+    String title,
+    String image,
+    String desc,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+
+          decoration: const BoxDecoration(
+            color: Colors.white,
+
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(32),
+            ),
+          ),
+
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+              Container(
+                width: 60,
+                height: 5,
+
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius:
+                      BorderRadius.circular(20),
+                ),
+              ),
+
+              const SizedBox(height: 28),
+
+              Image.asset(
+                image,
+                width: 90,
+                height: 90,
+                fit: BoxFit.contain,
+              ),
+
+              const SizedBox(height: 24),
+
+              Text(
+                title,
+                textAlign: TextAlign.center,
+
+               style: const TextStyle(
+  fontSize: 22,
+  fontWeight: FontWeight.w700,
+  color: Color(0xFF0D1B4C),
+),
+              ),
+
+              const SizedBox(height: 16),
+
+              Text(
+                desc,
+                textAlign: TextAlign.center,
+
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey,
+                  height: 1.5,
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 54,
+
+                      decoration: BoxDecoration(
+                        color: const Color(
+                          0xFFEAF1FF,
+                        ),
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          30,
+                        ),
+                      ),
+
+                      child: const Center(
+                        child: Text(
+                          "Detail Layanan",
+
+                          style: TextStyle(
+                            color:
+                                Color(0xFF1665F5),
+                            fontWeight:
+                                FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 14),
+
+                  Expanded(
+                    child: Container(
+                      height: 54,
+
+                      decoration: BoxDecoration(
+                        color: const Color(
+                          0xFF1665F5,
+                        ),
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          30,
+                        ),
+                      ),
+
+                      child: const Center(
+                        child: Text(
+                          "Install",
+
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight:
+                                FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
     );
   }
 }
