@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
+import 'package:majadigi/widgets/main_navigation.dart';
+
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -100,9 +102,10 @@ class WelcomeScreen extends StatelessWidget {
                             _buildGuestButton(
                               text: 'Masuk tanpa daftar',
                               onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Masuk tanpa daftar ditekan'),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const MainNavigation(),
                                   ),
                                 );
                               },

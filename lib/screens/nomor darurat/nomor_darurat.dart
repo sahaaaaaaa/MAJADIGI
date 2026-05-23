@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../services/nomor_darurat_service.dart';
 import 'informasi_nomor.dart';
 
 class NomorDaruratScreen extends StatefulWidget {
@@ -11,23 +12,109 @@ class NomorDaruratScreen extends StatefulWidget {
 }
 
 class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
-  String selectedLocation = "Jawa Timur";
+  final NomorDaruratService _nomorDaruratService = NomorDaruratService();
 
-  final List<String> locations = [
-    "Jawa Timur",
-    "Surabaya",
-    "Malang",
-    "Sidoarjo",
-    "Kediri",
-    "Jember",
-    "Blitar",
-    "Madiun",
-    "Banyuwangi",
-    "Probolinggo",
+  String selectedLocationId = "";
+  int _numberRequestSerial = 0;
+  bool _hasLoadedNumbers = false;
+  List<KabKotaDarurat> locations = [];
+  List<NomorDaruratItem> emergencyNumbers = [];
+
+  final List<NomorDaruratItem> fallbackEmergencyNumbers = [
+    NomorDaruratItem(
+      id: "ambulans",
+      name: "Ambulans / Keadaan darurat",
+      number: "112",
+      description: "Ambulans seluruh Jawa Timur.",
+      isNational: false,
+      isProvince: true,
+      kabKotaId: "",
+    ),
+    NomorDaruratItem(
+      id: "polda",
+      name: "Polda jatim",
+      number: "(031) 8280748",
+      description: "Polisi daerah Jawa Timur",
+      isNational: false,
+      isProvince: true,
+      kabKotaId: "",
+    ),
+    NomorDaruratItem(
+      id: "call-center",
+      name: "Call Center",
+      number: "1500979",
+      description: "Call center Provinsi Jawa Timur",
+      isNational: false,
+      isProvince: true,
+      kabKotaId: "",
+    ),
   ];
 
+  List<NomorDaruratItem> get visibleEmergencyNumbers {
+    if (_hasLoadedNumbers) {
+      return emergencyNumbers;
+    }
+
+    return fallbackEmergencyNumbers;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchKabKota();
+    _fetchNomorDarurat();
+  }
+
+  @override
+  void dispose() {
+    _nomorDaruratService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchKabKota() async {
+    try {
+      final data = await _nomorDaruratService.getKabKota();
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        locations = data;
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _fetchNomorDarurat() async {
+    final requestSerial = ++_numberRequestSerial;
+    final kabKotaId = selectedLocationId;
+
+    try {
+      final data = await _nomorDaruratService.getNomorDarurat(
+        kabKotaId: kabKotaId.isEmpty ? null : kabKotaId,
+      );
+      if (!mounted || requestSerial != _numberRequestSerial) {
+        return;
+      }
+
+      setState(() {
+        emergencyNumbers = data;
+        _hasLoadedNumbers = true;
+      });
+    } catch (_) {
+      if (!mounted || requestSerial != _numberRequestSerial) {
+        return;
+      }
+
+      setState(() {
+        emergencyNumbers = kabKotaId.isEmpty ? fallbackEmergencyNumbers : [];
+        _hasLoadedNumbers = true;
+      });
+    }
+  }
+
   Future<void> makePhoneCall(String phoneNumber) async {
-    final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+    final cleanedPhoneNumber = phoneNumber.replaceAll(RegExp(r'[^0-9+]'), '');
+    final Uri phoneUri = Uri(scheme: 'tel', path: cleanedPhoneNumber);
 
     if (await canLaunchUrl(phoneUri)) {
       await launchUrl(phoneUri);
@@ -150,12 +237,12 @@ class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
 
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              value: selectedLocation,
+                              value: selectedLocationId,
 
                               isExpanded: true,
 
                               icon: SvgPicture.asset(
-                                "assets/images/selector.svg",
+                                "assets/images/icons/selector.svg",
                                 width: 18,
                                 height: 18,
                               ),
@@ -165,17 +252,30 @@ class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
                                 fontSize: 16,
                               ),
 
-                              items: locations.map((String location) {
-                                return DropdownMenuItem<String>(
-                                  value: location,
-                                  child: Text(location),
-                                );
-                              }).toList(),
+                              items: [
+                                const DropdownMenuItem<String>(
+                                  value: "",
+                                  child: Text("Jawa Timur"),
+                                ),
+                                ...locations.map((location) {
+                                  return DropdownMenuItem<String>(
+                                    value: location.id,
+                                    child: Text(location.name),
+                                  );
+                                }),
+                              ],
 
                               onChanged: (String? value) {
+                                if (value == null) {
+                                  return;
+                                }
+
                                 setState(() {
-                                  selectedLocation = value!;
+                                  selectedLocationId = value;
+                                  emergencyNumbers = [];
+                                  _hasLoadedNumbers = false;
                                 });
+                                _fetchNomorDarurat();
                               },
                             ),
                           ),
@@ -183,41 +283,29 @@ class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
 
                         const SizedBox(height: 18),
 
-                        // ======================
-                        // CARD 1
-                        // ======================
-                        _emergencyCard(
-                          image: "assets/images/ambulans.svg",
-                          title: "AMBULANS / KEADAAN DARURAT",
-                          subtitle: "Ambulans seluruh Jawa Timur.",
-                          buttonText: "CALL CENTER 112",
-                          phoneNumber: "112",
-                        ),
+                        Expanded(
+                          child: ListView.separated(
+                            padding: EdgeInsets.zero,
+                            itemCount: visibleEmergencyNumbers.isEmpty
+                                ? 1
+                                : visibleEmergencyNumbers.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 14),
+                            itemBuilder: (context, index) {
+                              if (visibleEmergencyNumbers.isEmpty) {
+                                return _emptyEmergencyCard();
+                              }
 
-                        const SizedBox(height: 14),
-
-                        // ======================
-                        // CARD 2
-                        // ======================
-                        _emergencyCard(
-                          image: "assets/images/polda.svg",
-                          title: "POLDA JATIM",
-                          subtitle: "Polisi daerah Jawa Timur",
-                          buttonText: "CALL CENTER (031)8280748",
-                          phoneNumber: "0318280748",
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        // ======================
-                        // CARD 3
-                        // ======================
-                        _emergencyCard(
-                          image: "assets/images/call.svg",
-                          title: "CALL CENTER",
-                          subtitle: "Call center Provinsi Jawa Timur",
-                          buttonText: "CALL CENTER 1500979",
-                          phoneNumber: "1500979",
+                              final item = visibleEmergencyNumbers[index];
+                              return _emergencyCard(
+                                image: _iconForEmergencyNumber(item),
+                                title: item.name.toUpperCase(),
+                                subtitle: _subtitleForEmergencyNumber(item),
+                                buttonText: "CALL CENTER ${item.number}",
+                                phoneNumber: item.number,
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -313,5 +401,53 @@ class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
         ],
       ),
     );
+  }
+
+  Widget _emptyEmergencyCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFF8AB6FF)),
+      ),
+      child: const Text(
+        "Nomor darurat belum tersedia untuk wilayah ini.",
+        style: TextStyle(fontSize: 15, color: Colors.grey),
+      ),
+    );
+  }
+
+  String _subtitleForEmergencyNumber(NomorDaruratItem item) {
+    if (item.description.isNotEmpty) {
+      return item.description;
+    }
+
+    if (item.isProvince) {
+      return "Layanan darurat Provinsi Jawa Timur";
+    }
+
+    final selectedLocation = locations.where((location) {
+      return location.id == selectedLocationId;
+    }).toList();
+
+    if (selectedLocation.isNotEmpty) {
+      return "Layanan darurat ${selectedLocation.first.name}";
+    }
+
+    return "Layanan nomor darurat";
+  }
+
+  String _iconForEmergencyNumber(NomorDaruratItem item) {
+    final name = item.name.toLowerCase();
+    if (name.contains('ambulans') || name.contains('ambulance')) {
+      return "assets/images/icons/ambulans.svg";
+    }
+    if (name.contains('polda') ||
+        name.contains('polisi') ||
+        name.contains('polres')) {
+      return "assets/images/icons/polda.svg";
+    }
+    return "assets/images/icons/call.svg";
   }
 }

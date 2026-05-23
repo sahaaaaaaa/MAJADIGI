@@ -55,7 +55,6 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-
       body: Stack(
         children: [
           // 🔵 HEADER BACKGROUND
@@ -79,10 +78,7 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
                 // 🔹 HEADER
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     children: [
                       IconButton(
@@ -112,6 +108,7 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
                   ),
                 ),
 
+                // 🔹 CONTENT
                 Expanded(
                   child: Container(
                     padding:

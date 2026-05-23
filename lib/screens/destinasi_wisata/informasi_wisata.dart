@@ -27,15 +27,13 @@ class _InformasiScreenState extends State<InformasiScreen> {
       body: Stack(
         children: [
           // HEADER
-          // Latar Belakang Biru
           Container(
-            width: double.infinity,
-            height: 300,
+            height: 200,
             decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/latar_belakang.png'),
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
+              color: Color(0xFF0D57E7),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
             ),
           ),

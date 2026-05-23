@@ -234,65 +234,49 @@ class _DestinasiWisataScreenState
               ),
             ),
 
-            titleSpacing: 0,
-
-            title: Padding(
-              padding:
-                  const EdgeInsets.only(right: 16),
-
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  const Expanded(
-                    child: Center(
-                      child: Text(
-                        "Destinasi Wisata",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight:
-                              FontWeight.bold,
-                          fontSize: 18,
+          SafeArea(
+            child: Column(
+              children: [
+                // HEADER
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const Expanded(
+                        child: Center(
+                          child: Text(
+                            "Destinasi Wisata",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-
-                  const Icon(
-                    Icons.bookmark_border,
-                    color: Colors.white,
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const InformasiScreen(),
+                      const Icon(Icons.bookmark_border, color: Colors.white),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const InformasiScreen(),
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
                         ),
-                      );
-                    },
-
-                    child: const Icon(
-                      Icons.info_outline,
-                      color: Colors.white,
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
 
             bottom: PreferredSize(
               preferredSize:

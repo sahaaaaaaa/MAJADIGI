@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
+import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
+import 'package:majadigi/screens/open_data/open_data_detail_screen.dart';
+import 'package:majadigi/screens/open_data/open_data_screen.dart';
+import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
 import '../destinasi_wisata/destinasi_wisata_screen.dart';
 import '../../widgets/layanan_item.dart';
 import '../harga_barang/harga_bahan_pokok_screen.dart';
@@ -132,7 +137,12 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Klinik Hoaks",
           image: "assets/images/klinik_hoax.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const KlinikHoaksHomeScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Destinasi Wisata",
@@ -147,7 +157,12 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Open Data",
           image: "assets/images/open_data.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const OpenDataScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Harga",
@@ -202,12 +217,22 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         LayananItem(
           title: "Point Jatim",
           image: "assets/images/point_jatim.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PointJatimHomeScreen()),
+            );
+          },
         ),
         LayananItem(
           title: "Islamic Center",
           image: "assets/images/islamic_center.png",
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const IslamicCenterHomeScreen()),
+            );
+          },
         ),
       ],
     );

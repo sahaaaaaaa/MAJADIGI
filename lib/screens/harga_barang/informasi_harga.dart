@@ -18,17 +18,10 @@ class _InfoHargaScreenState extends State<InfoHargaScreen> {
       body: Stack(
         children: [
           // HEADER BLUE
-          // Latar Belakang Biru
           Container(
+            height: 180,
             width: double.infinity,
-            height: 300,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/latar_belakang.png'),
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-              ),
-            ),
+            color: const Color(0xFF0047B3),
           ),
 
           SafeArea(
