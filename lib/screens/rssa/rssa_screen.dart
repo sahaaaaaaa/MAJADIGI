@@ -39,85 +39,85 @@ class _RssaScreenState extends State<RssaScreen> {
 
   static const RsudSaifulAnwarOccupancy _fallbackOccupancy =
       RsudSaifulAnwarOccupancy(
-    summary: RsudSaifulAnwarSummary(
-      total: 909,
-      occupied: 666,
-      available: 220,
-      lastUpdate: '2026-04-07 07:13:45',
-    ),
-    rooms: [
-      RsudSaifulAnwarRoom(
-        name: 'HCU',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'ICCU/ICVCU Dengan Ventilator',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'ICCU/ICVCU Tanpa Ventilator',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'ICU Dengan Ventilator',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'ISOLASI',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'Intermediate Ward (IGD)',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'Isolasi Tekanan Negatif',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'KELAS I',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'KELAS II',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-      RsudSaifulAnwarRoom(
-        name: 'KELAS III',
-        type: '',
-        total: 10,
-        occupied: 10,
-        available: 0,
-      ),
-    ],
-  );
+        summary: RsudSaifulAnwarSummary(
+          total: 909,
+          occupied: 666,
+          available: 220,
+          lastUpdate: '2026-04-07 07:13:45',
+        ),
+        rooms: [
+          RsudSaifulAnwarRoom(
+            name: 'HCU',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ICCU/ICVCU Dengan Ventilator',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ICCU/ICVCU Tanpa Ventilator',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ICU Dengan Ventilator',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ISOLASI',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'Intermediate Ward (IGD)',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'Isolasi Tekanan Negatif',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'KELAS I',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'KELAS II',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'KELAS III',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+        ],
+      );
 
   RsudSaifulAnwarSummary get _summary {
     return _occupancy?.summary ?? _fallbackOccupancy.summary;
@@ -183,7 +183,7 @@ class _RssaScreenState extends State<RssaScreen> {
             height: 320,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/latar_belakang.png'),
+                image: AssetImage("assets/images/latar_belakang.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -401,11 +401,7 @@ class _RssaScreenState extends State<RssaScreen> {
                                   children: _rooms
                                       .asMap()
                                       .keys
-                                      .map(
-                                        (index) => _bar(
-                                          _roomColor(index),
-                                        ),
-                                      )
+                                      .map((index) => _bar(_roomColor(index)))
                                       .toList(),
                                 ),
 

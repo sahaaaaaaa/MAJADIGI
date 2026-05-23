@@ -398,7 +398,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 28),
 
                     // LAYANAN DAERAH
-                    // LAYANAN DAERAH
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -475,61 +474,83 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 20),
 
+                    // ================= LAYANAN ITEM =================
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "Paket Kunjungan Agrowisata",
+                      "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/islamic_center.png",
                       "Islamic Center",
+                      "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/open_data.png",
                       "Badan Pendapatan Daerah (BAPENDA) Jawa Timur",
+                      "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "Data Penerima & Info Program Bansos (SAPA BANSOS)",
+                      "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/rsud_haji.png",
                       "RS Paru Manguharjo Provinsi Jawa Timur",
+                      "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "RS Paru Jember",
+                      "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "Forum Konsultasi Disnak Jatim",
+                      "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "Rumah ASN",
+                      "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/rsud_haji.png",
                       "RSUD Haji Prov. Jatim",
+                      "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "SIMPEL K3 (Sistem Pelayanan K3L)",
+                      "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
+                      context,
                       "assets/images/logo_majadigi.png",
                       "Beasiswa LPPD Jatim",
+                      "Informasi dan pendaftaran program beasiswa Pemerintah Provinsi Jawa Timur.",
                     ),
-
                     const SizedBox(height: 20),
 
                     Row(
@@ -823,29 +844,189 @@ Widget _chip(String text, bool active) {
   );
 }
 
-Widget _serviceItem(String image, String title) {
-  return Container(
-    margin: const EdgeInsets.only(bottom: 12),
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: const Color(0xFFE8E8E8)),
-    ),
-    child: Row(
-      children: [
-        Image.asset(image, width: 40, height: 40),
+Widget _serviceItem(
+  BuildContext context,
+  String image,
+  String title,
+  String desc,
+) {
+  return GestureDetector(
+    onTap: () {
+      _showLayananPopup(
+        context: context,
+        title: title,
+        image: image,
+        desc: desc,
+      );
+    },
 
-        const SizedBox(width: 14),
+    child: Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
 
-        Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+
+        border: Border.all(color: const Color(0xFFE8E8E8)),
+      ),
+
+      child: Row(
+        children: [
+          Image.asset(image, width: 40, height: 40),
+
+          const SizedBox(width: 14),
+
+          Expanded(
+            child: Text(
+              title,
+
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
+  );
+}
+
+void _showLayananPopup({
+  required BuildContext context,
+  required String title,
+  required String image,
+  required String desc,
+}) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+
+    builder: (context) {
+      return Container(
+        padding: const EdgeInsets.all(24),
+
+        decoration: const BoxDecoration(
+          color: Colors.white,
+
+          borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
+        ),
+
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+
+          children: [
+            Container(
+              width: 60,
+              height: 5,
+
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            Image.asset(image, height: 90),
+
+            const SizedBox(height: 24),
+
+            Text(
+              title,
+              textAlign: TextAlign.center,
+
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0B1B53),
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            Text(
+              desc,
+              textAlign: TextAlign.center,
+
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey.shade600,
+                height: 1.5,
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 54,
+
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE9EEF9),
+
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+
+                      child: const Text(
+                        "Detail Layanan",
+
+                        style: TextStyle(
+                          color: Color(0xFF0E63FF),
+
+                          fontWeight: FontWeight.w600,
+
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 14),
+
+                Expanded(
+                  child: Container(
+                    height: 54,
+
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0E63FF),
+
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+
+                    child: TextButton(
+                      onPressed: () {},
+
+                      child: const Text(
+                        "Install",
+
+                        style: TextStyle(
+                          color: Colors.white,
+
+                          fontWeight: FontWeight.w600,
+
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      );
+    },
   );
 }
 
