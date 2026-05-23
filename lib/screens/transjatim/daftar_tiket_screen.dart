@@ -3,11 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../services/transjatim_service.dart';
 
-class DaftarTiketScreen
-    extends StatefulWidget {
-  const DaftarTiketScreen({
-    super.key,
-  });
+class DaftarTiketScreen extends StatefulWidget {
+  const DaftarTiketScreen({super.key});
 
   @override
   State<DaftarTiketScreen> createState() => _DaftarTiketScreenState();
@@ -20,16 +17,16 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
 
   static const TransjatimTariffResponse _fallbackTariffs =
       TransjatimTariffResponse(
-    regular: [
-      TransjatimTariff(type: 'Umum', nominal: '5000'),
-      TransjatimTariff(type: 'Pelajar', nominal: '2500'),
-    ],
-    luxury: [
-      TransjatimTariff(type: 'SBY - GSK', nominal: '20000'),
-      TransjatimTariff(type: 'SBY - SDA', nominal: '15000'),
-      TransjatimTariff(type: 'SDA - GSK', nominal: '30000'),
-    ],
-  );
+        regular: [
+          TransjatimTariff(type: 'Umum', nominal: '5000'),
+          TransjatimTariff(type: 'Pelajar', nominal: '2500'),
+        ],
+        luxury: [
+          TransjatimTariff(type: 'SBY - GSK', nominal: '20000'),
+          TransjatimTariff(type: 'SBY - SDA', nominal: '15000'),
+          TransjatimTariff(type: 'SDA - GSK', nominal: '30000'),
+        ],
+      );
 
   TransjatimTariffResponse get _availableTariffs {
     final tariffs = _tariffs;
@@ -69,22 +66,26 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
     final tariffs = _availableTariffs;
 
     return Scaffold(
-      backgroundColor:
-          Colors.transparent,
+      backgroundColor: Colors.transparent,
 
       body: Stack(
         children: [
           // 🔵 HEADER BG
           Container(
             width: double.infinity,
-            height: 240,
-            decoration:
-                const BoxDecoration(
+            height: 320,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+              ),
+
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/latar_belakang.png',
-                ),
+                image: AssetImage("assets/images/latar_belakang.png"),
+
                 fit: BoxFit.cover,
+
+                alignment: Alignment.bottomCenter,
               ),
             ),
           ),
@@ -94,8 +95,7 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
               children: [
                 // 🔹 HEADER
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 10,
                   ),
@@ -114,13 +114,11 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
                       const Expanded(
                         child: Text(
                           "Daftar Tiket",
-                          textAlign:
-                              TextAlign.center,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
-                            fontWeight:
-                                FontWeight.w700,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -132,72 +130,48 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
 
                 Expanded(
                   child: Container(
-                    width:
-                        double.infinity,
-                    decoration:
-                        const BoxDecoration(
-                      color: Color(
-                        0xFFF5F5F5,
-                      ),
-                      borderRadius:
-                          BorderRadius.vertical(
-                        top:
-                            Radius.circular(
-                          34,
-                        ),
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(34),
                       ),
                     ),
 
                     child: Padding(
-                      padding:
-                          const EdgeInsets
-                              .all(16),
+                      padding: const EdgeInsets.all(16),
                       child: ListView(
                         children: [
-                          const SizedBox(
-                              height: 8),
+                          const SizedBox(height: 8),
 
                           const Text(
                             "Umum",
-                            style:
-                                TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
-                              fontWeight:
-                                  FontWeight
-                                      .bold,
-                              color: Color(
-                                0xFF121938,
-                              ),
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF121938),
                             ),
                           ),
 
-                          const SizedBox(
-                              height: 16),
+                          const SizedBox(height: 16),
 
                           ..._ticketCards(
                             tariffs.regular,
                             'assets/images/icons/users-03.svg',
                           ),
 
-                          const SizedBox(
-                              height: 28),
+                          const SizedBox(height: 28),
 
                           const Text(
                             "Luxury",
-                            style:
-                                TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
-                              fontWeight:
-                                  FontWeight
-                                      .bold,
-                              color: Color(
-                                0xFF121938,
-                              ),
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF121938),
                             ),
                           ),
 
-                          const SizedBox(
-                              height: 16),
+                          const SizedBox(height: 16),
 
                           ..._ticketCards(
                             tariffs.luxury,
@@ -216,10 +190,7 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
     );
   }
 
-  List<Widget> _ticketCards(
-    List<TransjatimTariff> tariffs,
-    String icon,
-  ) {
+  List<Widget> _ticketCards(List<TransjatimTariff> tariffs, String icon) {
     final children = <Widget>[];
 
     for (var index = 0; index < tariffs.length; index++) {
@@ -266,19 +237,13 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.grey.shade300),
       ),
 
       child: Row(
         children: [
-          SvgPicture.asset(
-            icon,
-            width: 24,
-          ),
+          SvgPicture.asset(icon, width: 24),
 
           const SizedBox(width: 14),
 
@@ -287,11 +252,8 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
               title,
               style: const TextStyle(
                 fontSize: 18,
-                fontWeight:
-                    FontWeight.w600,
-                color: Color(
-                  0xFF121938,
-                ),
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF121938),
               ),
             ),
           ),
@@ -302,21 +264,15 @@ class _DaftarTiketScreenState extends State<DaftarTiketScreen> {
                 TextSpan(
                   text: price,
                   style: const TextStyle(
-                    color: Color(
-                      0xFF121938,
-                    ),
-                    fontWeight:
-                        FontWeight.bold,
+                    color: Color(0xFF121938),
+                    fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
 
                 const TextSpan(
                   text: " / Tiket",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 15),
                 ),
               ],
             ),

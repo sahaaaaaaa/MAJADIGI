@@ -222,7 +222,10 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
           Container(
             height: 180,
             decoration: const BoxDecoration(
-              color: Color(0xFF0047B3),
+              image: DecorationImage(
+                image: AssetImage("assets/images/latar_belakang.png"),
+                fit: BoxFit.cover,
+              ),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(32),
                 bottomRight: Radius.circular(32),
@@ -356,8 +359,7 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) =>
-                                            DetailHargaMalangScreen(
+                                        builder: (_) => DetailHargaMalangScreen(
                                           items: priceItems,
                                         ),
                                       ),
@@ -580,8 +582,9 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(30),
-                              border:
-                                  Border.all(color: const Color(0xFFE5E7EB)),
+                              border: Border.all(
+                                color: const Color(0xFFE5E7EB),
+                              ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.03),
@@ -757,21 +760,19 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
     final trendColor = item.isFlat
         ? Colors.grey
         : item.isDown
-            ? Colors.green
-            : Colors.pink;
+        ? Colors.green
+        : Colors.pink;
     final trendIcon = item.isFlat
         ? Icons.remove
         : item.isDown
-            ? Icons.arrow_downward
-            : Icons.arrow_upward;
+        ? Icons.arrow_downward
+        : Icons.arrow_upward;
 
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => DetailBawangScreen(item: item),
-          ),
+          MaterialPageRoute(builder: (_) => DetailBawangScreen(item: item)),
         );
       },
       child: Container(
@@ -817,11 +818,7 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(
-                        trendIcon,
-                        color: trendColor,
-                        size: 18,
-                      ),
+                      Icon(trendIcon, color: trendColor, size: 18),
                     ],
                   ),
                 ],

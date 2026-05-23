@@ -6,10 +6,7 @@ import '../../services/harga_pokok_service.dart';
 import 'detail_bawang.dart';
 
 class DetailHargaMalangScreen extends StatelessWidget {
-  const DetailHargaMalangScreen({
-    super.key,
-    this.items = const [],
-  });
+  const DetailHargaMalangScreen({super.key, this.items = const []});
 
   final List<HargaPokokItem> items;
 
@@ -33,7 +30,12 @@ class DetailHargaMalangScreen extends StatelessWidget {
           // 🔵 HEADER
           Container(
             height: 170,
-            decoration: const BoxDecoration(color: Color(0xFF0047B3)),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/latar_belakang.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
 
           SafeArea(
@@ -167,9 +169,8 @@ class DetailHargaMalangScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => DetailBawangScreen(
-                                    item: item,
-                                  ),
+                                  builder: (_) =>
+                                      DetailBawangScreen(item: item),
                                 ),
                               );
                             },
@@ -237,21 +238,19 @@ class DetailHargaMalangScreen extends StatelessWidget {
     );
   }
 
-  Widget _commodityItem({
-    required HargaPokokItem item,
-  }) {
+  Widget _commodityItem({required HargaPokokItem item}) {
     final up = item.isUp;
     final down = item.isDown;
     final trendColor = down
         ? Colors.green
         : up
-            ? Colors.pink
-            : Colors.grey;
+        ? Colors.pink
+        : Colors.grey;
     final trendIcon = down
         ? Icons.arrow_downward
         : up
-            ? Icons.arrow_upward
-            : Icons.remove;
+        ? Icons.arrow_upward
+        : Icons.remove;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -301,11 +300,7 @@ class DetailHargaMalangScreen extends StatelessWidget {
                       ),
                     ),
 
-                    Icon(
-                      trendIcon,
-                      color: trendColor,
-                      size: 18,
-                    ),
+                    Icon(trendIcon, color: trendColor, size: 18),
                   ],
                 ),
               ],
@@ -387,8 +382,8 @@ class DetailHargaMalangScreen extends StatelessWidget {
     final trend = average > 0
         ? "↑"
         : average < 0
-            ? "↓"
-            : "";
+        ? "↓"
+        : "";
 
     return "${_formatGrowth(average.abs())}% $trend".trim();
   }

@@ -54,7 +54,7 @@ class _TransjatimScreenState extends State<TransjatimScreen> {
             height: 320,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/latar_belakang.png'),
+                image: AssetImage("assets/images/latar_belakang.png"),
                 fit: BoxFit.cover,
               ),
             ),

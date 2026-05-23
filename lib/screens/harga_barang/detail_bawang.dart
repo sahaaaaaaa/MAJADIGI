@@ -7,10 +7,7 @@ import 'package:intl/intl.dart';
 import '../../services/harga_pokok_service.dart';
 
 class DetailBawangScreen extends StatefulWidget {
-  const DetailBawangScreen({
-    super.key,
-    this.item,
-  });
+  const DetailBawangScreen({super.key, this.item});
 
   final HargaPokokItem? item;
 
@@ -185,13 +182,13 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
     final trendColor = growthPercent < 0
         ? Colors.green
         : growthPercent > 0
-            ? Colors.pink
-            : Colors.grey;
+        ? Colors.pink
+        : Colors.grey;
     final trendIcon = growthPercent < 0
         ? Icons.arrow_downward
         : growthPercent > 0
-            ? Icons.arrow_upward
-            : Icons.remove;
+        ? Icons.arrow_upward
+        : Icons.remove;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0047B3),
@@ -202,7 +199,12 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
           Container(
             height: 170,
             width: double.infinity,
-            color: const Color(0xFF0047B3),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/latar_belakang.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
 
           SafeArea(
@@ -210,18 +212,14 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
               children: [
                 // APPBAR
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       IconButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
                       ),
 
                       Expanded(
@@ -264,16 +262,11 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                         // DROPDOWN
                         // =========================
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           height: 54,
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(16),
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.grey.shade300),
                           ),
 
                           child: Row(
@@ -290,8 +283,7 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                                   "Malang",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color:
-                                        Color(0xFF121938),
+                                    color: Color(0xFF121938),
                                   ),
                                 ),
                               ),
@@ -312,11 +304,8 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(30),
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: Colors.grey.shade300),
                           ),
 
                           child: Row(
@@ -337,23 +326,18 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                         // PRICE
                         // =========================
                         Row(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     _formatRupiah(selectedPoint.price),
                                     style: const TextStyle(
                                       fontSize: 48,
-                                      fontWeight:
-                                          FontWeight.bold,
-                                      color:
-                                          Color(0xFF121938),
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF121938),
                                     ),
                                   ),
 
@@ -364,11 +348,8 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                                       Text(
                                         "${_formatGrowth(growthPercent)} ",
                                         style: TextStyle(
-                                          color:
-                                              trendColor,
-                                          fontWeight:
-                                              FontWeight
-                                                  .bold,
+                                          color: trendColor,
+                                          fontWeight: FontWeight.bold,
                                           fontSize: 18,
                                         ),
                                       ),
@@ -379,19 +360,17 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                                         size: 18,
                                       ),
 
-                                      const SizedBox(
-                                          width: 10),
+                                      const SizedBox(width: 10),
 
                                       Text(
                                         _selectedHistoryIndex ==
                                                 _historyPoints.length - 1
                                             ? "$_selectedPeriodLabel terakhir"
-                                            : _chartDateFormat
-                                                .format(selectedPoint.date),
+                                            : _chartDateFormat.format(
+                                                selectedPoint.date,
+                                              ),
                                         style: TextStyle(
-                                          color: Colors
-                                              .grey
-                                              .shade700,
+                                          color: Colors.grey.shade700,
                                           fontSize: 18,
                                         ),
                                       ),
@@ -430,85 +409,94 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                           child: LineChart(
                             LineChartData(
                               lineTouchData: LineTouchData(
-                                touchCallback: (
-                                  FlTouchEvent event,
-                                  LineTouchResponse? response,
-                                ) {
-                                  final spots = response?.lineBarSpots;
-                                  if (!event.isInterestedForInteractions ||
-                                      spots == null ||
-                                      spots.isEmpty) {
-                                    return;
-                                  }
+                                touchCallback:
+                                    (
+                                      FlTouchEvent event,
+                                      LineTouchResponse? response,
+                                    ) {
+                                      final spots = response?.lineBarSpots;
+                                      if (!event.isInterestedForInteractions ||
+                                          spots == null ||
+                                          spots.isEmpty) {
+                                        return;
+                                      }
 
-                                  final index = spots.first.spotIndex;
-                                  if (index < 0 ||
-                                      index >= _historyPoints.length ||
-                                      index == _selectedHistoryIndex) {
-                                    return;
-                                  }
+                                      final index = spots.first.spotIndex;
+                                      if (index < 0 ||
+                                          index >= _historyPoints.length ||
+                                          index == _selectedHistoryIndex) {
+                                        return;
+                                      }
 
-                                  setState(() {
-                                    _selectedHistoryIndex = index;
-                                  });
-                                },
-                                getTouchedSpotIndicator: (
-                                  LineChartBarData barData,
-                                  List<int> spotIndexes,
-                                ) {
-                                  return spotIndexes.map((spotIndex) {
-                                    return TouchedSpotIndicatorData(
-                                      FlLine(
-                                        color: trendColor.withOpacity(0.45),
-                                        strokeWidth: 2,
-                                      ),
-                                      FlDotData(
-                                        getDotPainter:
-                                            (spot, percent, barData, index) {
-                                          return FlDotCirclePainter(
-                                            radius: 5,
-                                            color: Colors.white,
-                                            strokeWidth: 3,
-                                            strokeColor: trendColor,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }).toList();
-                                },
+                                      setState(() {
+                                        _selectedHistoryIndex = index;
+                                      });
+                                    },
+                                getTouchedSpotIndicator:
+                                    (
+                                      LineChartBarData barData,
+                                      List<int> spotIndexes,
+                                    ) {
+                                      return spotIndexes.map((spotIndex) {
+                                        return TouchedSpotIndicatorData(
+                                          FlLine(
+                                            color: trendColor.withOpacity(0.45),
+                                            strokeWidth: 2,
+                                          ),
+                                          FlDotData(
+                                            getDotPainter:
+                                                (
+                                                  spot,
+                                                  percent,
+                                                  barData,
+                                                  index,
+                                                ) {
+                                                  return FlDotCirclePainter(
+                                                    radius: 5,
+                                                    color: Colors.white,
+                                                    strokeWidth: 3,
+                                                    strokeColor: trendColor,
+                                                  );
+                                                },
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
                                 touchTooltipData: LineTouchTooltipData(
                                   getTooltipColor: (_) =>
                                       const Color(0xFF121938),
                                   getTooltipItems:
                                       (List<LineBarSpot> touchedSpots) {
-                                    return touchedSpots.map((spot) {
-                                      final index = spot.spotIndex;
-                                      if (index < 0 ||
-                                          index >= _historyPoints.length) {
-                                        return null;
-                                      }
+                                        return touchedSpots.map((spot) {
+                                          final index = spot.spotIndex;
+                                          if (index < 0 ||
+                                              index >= _historyPoints.length) {
+                                            return null;
+                                          }
 
-                                      final point = _historyPoints[index];
-                                      return LineTooltipItem(
-                                        '${_chartDateFormat.format(point.date)}\n',
-                                        const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: _formatRupiah(point.price),
-                                            style: const TextStyle(
+                                          final point = _historyPoints[index];
+                                          return LineTooltipItem(
+                                            '${_chartDateFormat.format(point.date)}\n',
+                                            const TextStyle(
                                               color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList();
-                                  },
+                                            children: [
+                                              TextSpan(
+                                                text: _formatRupiah(
+                                                  point.price,
+                                                ),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }).toList();
+                                      },
                                 ),
                               ),
                               minX: 0,
@@ -517,37 +505,25 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                               maxY: chartMaxY,
 
                               titlesData: FlTitlesData(
-                                topTitles:
-                                    const AxisTitles(
-                                  sideTitles:
-                                      SideTitles(
-                                    showTitles: false,
-                                  ),
+                                topTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
                                 ),
 
-                                rightTitles:
-                                    const AxisTitles(
-                                  sideTitles:
-                                      SideTitles(
-                                    showTitles: false,
-                                  ),
+                                rightTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
                                 ),
 
                                 leftTitles: AxisTitles(
-                                  sideTitles:
-                                      SideTitles(
+                                  sideTitles: SideTitles(
                                     showTitles: true,
                                     interval: 5,
                                     reservedSize: 50,
 
-                                    getTitlesWidget:
-                                        (value, meta) {
+                                    getTitlesWidget: (value, meta) {
                                       return Text(
                                         "${value.toInt()}.000",
-                                        style:
-                                            const TextStyle(
-                                          color:
-                                              Colors.grey,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
                                           fontSize: 12,
                                         ),
                                       );
@@ -555,41 +531,26 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                                   ),
                                 ),
 
-                                bottomTitles:
-                                    AxisTitles(
-                                  sideTitles:
-                                      SideTitles(
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
                                     showTitles: true,
 
-                                    getTitlesWidget:
-                                        (value, meta) {
-                                      final index =
-                                          value.toInt();
+                                    getTitlesWidget: (value, meta) {
+                                      final index = value.toInt();
                                       if (index < 0 ||
-                                          index >=
-                                              _historyPoints
-                                                  .length) {
-                                        return const SizedBox
-                                            .shrink();
+                                          index >= _historyPoints.length) {
+                                        return const SizedBox.shrink();
                                       }
 
                                       return Padding(
-                                        padding:
-                                            const EdgeInsets.only(
-                                          top: 10,
-                                        ),
+                                        padding: const EdgeInsets.only(top: 10),
                                         child: Text(
                                           _chartDateFormat.format(
-                                            _historyPoints[index]
-                                                .date,
+                                            _historyPoints[index].date,
                                           ),
-                                          style:
-                                              const TextStyle(
-                                            color:
-                                                Colors
-                                                    .grey,
-                                            fontSize:
-                                                12,
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12,
                                           ),
                                         ),
                                       );
@@ -604,19 +565,15 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
                                 show: true,
                                 drawVerticalLine: false,
                                 horizontalInterval: 5,
-                                getDrawingHorizontalLine:
-                                    (value) {
+                                getDrawingHorizontalLine: (value) {
                                   return FlLine(
-                                    color: Colors
-                                        .grey.shade300,
+                                    color: Colors.grey.shade300,
                                     dashArray: [4, 4],
                                   );
                                 },
                               ),
 
-                              borderData: FlBorderData(
-                                show: false,
-                              ),
+                              borderData: FlBorderData(show: false),
 
                               lineBarsData: [
                                 LineChartBarData(
@@ -628,28 +585,24 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
 
                                   barWidth: 2,
 
-                                  dotData:
-                                      FlDotData(
+                                  dotData: FlDotData(
                                     show: true,
                                     getDotPainter:
                                         (spot, percent, barData, index) {
-                                      final selected =
-                                          index == _selectedHistoryIndex;
-                                      return FlDotCirclePainter(
-                                        radius: selected ? 5 : 0,
-                                        color: Colors.white,
-                                        strokeWidth: selected ? 3 : 0,
-                                        strokeColor: trendColor,
-                                      );
-                                    },
+                                          final selected =
+                                              index == _selectedHistoryIndex;
+                                          return FlDotCirclePainter(
+                                            radius: selected ? 5 : 0,
+                                            color: Colors.white,
+                                            strokeWidth: selected ? 3 : 0,
+                                            strokeColor: trendColor,
+                                          );
+                                        },
                                   ),
 
-                                  belowBarData:
-                                      BarAreaData(
+                                  belowBarData: BarAreaData(
                                     show: true,
-                                    color: trendColor
-                                        .withOpacity(
-                                            0.08),
+                                    color: trendColor.withOpacity(0.08),
                                   ),
                                 ),
                               ],
@@ -707,36 +660,27 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
             ),
           ),
 
-          if (_isLoadingHistory)
-            const SizedBox.shrink(),
+          if (_isLoadingHistory) const SizedBox.shrink(),
         ],
       ),
     );
   }
 
-  Widget _filterButton(
-    String title,
-    bool active,
-    VoidCallback onTap,
-  ) {
+  Widget _filterButton(String title, bool active, VoidCallback onTap) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           height: 38,
           decoration: BoxDecoration(
-            color: active
-                ? const Color(0xFFDCE9FF)
-                : Colors.transparent,
+            color: active ? const Color(0xFFDCE9FF) : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
             child: Text(
               title,
               style: TextStyle(
-                color: active
-                    ? const Color(0xFF0E63FF)
-                    : Colors.grey.shade700,
+                color: active ? const Color(0xFF0E63FF) : Colors.grey.shade700,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -746,15 +690,9 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
     );
   }
 
-  Widget _statItem(
-    String title,
-    String highlight,
-    Color color,
-    String value,
-  ) {
+  Widget _statItem(String title, String highlight, Color color, String value) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.symmetric(vertical: 14),
       child: Row(
         children: [
           RichText(
@@ -762,17 +700,11 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
               children: [
                 TextSpan(
                   text: title,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
+                  style: const TextStyle(color: Colors.grey, fontSize: 18),
                 ),
                 TextSpan(
                   text: highlight,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 18,
-                  ),
+                  style: TextStyle(color: color, fontSize: 18),
                 ),
               ],
             ),
@@ -794,10 +726,7 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
   }
 
   Widget _divider() {
-    return Divider(
-      color: Colors.grey.shade300,
-      height: 1,
-    );
+    return Divider(color: Colors.grey.shade300, height: 1);
   }
 
   Widget _commodityImage(
@@ -862,10 +791,7 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
 
   List<FlSpot> get _chartSpots {
     return List.generate(_historyPoints.length, (index) {
-      return FlSpot(
-        index.toDouble(),
-        _historyPoints[index].price / 1000,
-      );
+      return FlSpot(index.toDouble(), _historyPoints[index].price / 1000);
     });
   }
 
@@ -939,8 +865,8 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
     final formatted = absoluteValue >= 10
         ? absoluteValue.toStringAsFixed(0)
         : absoluteValue >= 1
-            ? absoluteValue.toStringAsFixed(2)
-            : absoluteValue.toStringAsFixed(2);
+        ? absoluteValue.toStringAsFixed(2)
+        : absoluteValue.toStringAsFixed(2);
     return "$formatted%";
   }
 
@@ -950,10 +876,7 @@ class _DetailBawangScreenState extends State<DetailBawangScreen> {
 }
 
 class _HargaHistoryPoint {
-  const _HargaHistoryPoint({
-    required this.date,
-    required this.price,
-  });
+  const _HargaHistoryPoint({required this.date, required this.price});
 
   final DateTime date;
   final int price;

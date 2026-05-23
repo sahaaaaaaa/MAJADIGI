@@ -78,6 +78,7 @@ class _InformasiTransjatimScreenState
                 Expanded(
                   child: SingleChildScrollView(
                     child: Container(
+                      margin: const EdgeInsets.only(top: 40),
                       width: double.infinity,
                       decoration:
                           const BoxDecoration(
