@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'api_config.dart';
+import 'auth_service.dart';
 
 class TransjatimException implements Exception {
   TransjatimException(this.message);
@@ -224,7 +225,7 @@ class TransjatimService {
           queryParameters:
               queryParameters.isEmpty ? null : queryParameters,
         ),
-        headers: const {'Accept': 'application/json'},
+        headers: _headers(),
       );
     } catch (_) {
       throw TransjatimException(
@@ -253,5 +254,14 @@ class TransjatimService {
     } catch (_) {}
 
     return {};
+  }
+
+  Map<String, String> _headers() {
+    final headers = <String, String>{'Accept': 'application/json'};
+    final session = AuthService.currentSession;
+    if (session != null) {
+      headers['Authorization'] = session.authorizationHeader;
+    }
+    return headers;
   }
 }

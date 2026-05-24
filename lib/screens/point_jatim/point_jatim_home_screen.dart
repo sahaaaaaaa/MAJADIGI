@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/point_jatim_service.dart';
 import 'point_jatim_dummy.dart';
 import 'point_jatim_info_screen.dart';
 import 'layanan_detail_screen.dart';
@@ -12,19 +13,250 @@ class PointJatimHomeScreen extends StatefulWidget {
 }
 
 class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
-  @override
+  final PointJatimService _pointJatimService = PointJatimService();
+  final TextEditingController searchController = TextEditingController();
+
   String selectedKategori = 'Semua';
+  String selectedWilayah = 'Semua';
+  String selectedKomoditi = 'Semua';
+  List<PointJatimProjectModel> _projects = PointJatimDummy.projects;
+  List<PointJatimHighlightModel> _highlights = PointJatimDummy.highlights;
+  List<String> _kategoriList = PointJatimDummy.kategoriList;
+  List<String> _wilayahList = const ['Semua'];
+  List<String> _komoditiList = const ['Semua'];
 
-  TextEditingController searchController =
-      TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _loadPointJatim();
+  }
 
+  @override
+  void dispose() {
+    searchController.dispose();
+    _pointJatimService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadPointJatim() async {
+    try {
+      final results = await Future.wait<dynamic>([
+        _pointJatimService.getSectors(),
+        _pointJatimService.getKomoditi(),
+        _pointJatimService.getRegions(),
+        _pointJatimService.getPotensi(
+          pageNo: 1,
+          pageSize: 100,
+          sortBy: 'id',
+          order: 'DESC',
+          jenis: 'IPRO',
+        ),
+      ]);
+
+      final sectors = results[0] as List<PointJatimSector>;
+      final komoditi = results[1] as List<PointJatimKomoditi>;
+      final regions = results[2] as List<PointJatimRegion>;
+      final potensi = results[3] as PointJatimPotensiResponse;
+      final sectorNames = {
+        for (final sector in sectors) sector.id: sector.description,
+      };
+      final komoditiNames = {
+        for (final item in komoditi) item.id: item.description,
+      };
+      final projects = potensi.items
+          .map((item) => _projectFromPotensi(
+                item,
+                sectorNames,
+                komoditiNames,
+              ))
+          .toList();
+
+      if (!mounted) {
+        return;
+      }
+
+      final categories = <String>{
+        'Semua',
+        ...sectors
+            .where((item) => item.statusActive)
+            .map((item) => item.description)
+            .where((category) => category.trim().isNotEmpty),
+        ...projects
+            .map((item) => item.category)
+            .where((category) => category.trim().isNotEmpty),
+      }.toList();
+      final wilayah = <String>{
+        'Semua',
+        ...regions
+            .where((item) => item.statusActive)
+            .map((item) => item.description)
+            .where((region) => region.trim().isNotEmpty),
+        ...projects
+            .map((item) => item.wilayah)
+            .where((region) => region.trim().isNotEmpty),
+      }.toList();
+      final komoditiList = <String>{
+        'Semua',
+        ...komoditi
+            .where((item) => item.statusActive)
+            .map((item) => item.description)
+            .where((name) => name.trim().isNotEmpty),
+        ...projects
+            .map((item) => item.komoditi)
+            .where((name) => name.trim().isNotEmpty),
+      }.toList();
+
+      final highlightedProjects = projects
+          .where((item) => item.image.trim().isNotEmpty)
+          .take(3)
+          .toList();
+      final highlightSource = highlightedProjects.isNotEmpty
+          ? highlightedProjects
+          : projects.take(3).toList();
+
+      setState(() {
+        _projects = projects;
+        _highlights = highlightSource
+            .map(
+              (item) => PointJatimHighlightModel(
+                image: item.image,
+                title: item.title,
+                subtitle: item.lokasi,
+              ),
+            )
+            .toList();
+        _kategoriList = categories;
+        _wilayahList = wilayah;
+        _komoditiList = komoditiList;
+        if (!_kategoriList.contains(selectedKategori)) {
+          selectedKategori = 'Semua';
+        }
+        if (!_wilayahList.contains(selectedWilayah)) {
+          selectedWilayah = 'Semua';
+        }
+        if (!_komoditiList.contains(selectedKomoditi)) {
+          selectedKomoditi = 'Semua';
+        }
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _projects = PointJatimDummy.projects;
+        _highlights = PointJatimDummy.highlights;
+        _kategoriList = PointJatimDummy.kategoriList;
+        _wilayahList = const ['Semua'];
+        _komoditiList = const ['Semua'];
+      });
+    }
+  }
+
+  PointJatimProjectModel _projectFromPotensi(
+    PointJatimPotensiItem item,
+    Map<int, String> sectorNames,
+    Map<int, String> komoditiNames,
+  ) {
+    final sectorName = sectorNames[item.sectorTypeId]?.trim() ?? '';
+    final komoditiName = komoditiNames[item.komoditiTypeId]?.trim() ?? '';
+    final category = sectorName.isNotEmpty
+        ? sectorName
+        : item.businessField.isNotEmpty
+            ? item.businessField
+            : item.jenis.isNotEmpty
+                ? item.jenis
+                : 'Lainnya';
+    final locationParts = <String>[
+      if (item.district.isNotEmpty) item.district,
+      if (item.city.isNotEmpty) item.city,
+    ];
+    final coordinate = item.lat != 0 || item.lon != 0
+        ? '${_formatCoordinate(item.lat)}, ${_formatCoordinate(item.lon)}'
+        : '-';
+
+    return PointJatimProjectModel(
+      image: item.imageUrl,
+      category: category,
+      title: item.title,
+      lokasi: locationParts.isNotEmpty
+          ? locationParts.join(', ')
+          : item.address.isNotEmpty
+              ? item.address
+              : '-',
+      harga: _formatMoneyCompact(item.investmentValue),
+      tahun: item.year > 0 ? item.year.toString() : '-',
+      infomemoImages: const [],
+      deskripsi: item.description,
+      koordinat: coordinate,
+      irr: item.irr == 0 ? '0%' : '${_formatDecimal(item.irr)}%',
+      npv: _formatMoneyCompact(item.npv),
+      paybackPeriod: item.paybackPeriod == 0
+          ? '-'
+          : '${_formatDecimal(item.paybackPeriod)} Tahun',
+      komoditi: komoditiName,
+      wilayah: item.city,
+      lat: item.lat,
+      lon: item.lon,
+    );
+  }
+
+  String _formatMoneyCompact(double value) {
+    final sign = value < 0 ? '-' : '';
+    final absolute = value.abs();
+
+    if (absolute >= 1000000000000) {
+      return '${sign}Rp ${_formatDecimal(absolute / 1000000000000)} Triliun';
+    }
+    if (absolute >= 1000000000) {
+      return '${sign}Rp ${_formatDecimal(absolute / 1000000000)} Miliar';
+    }
+    if (absolute >= 1000000) {
+      return '${sign}Rp ${_formatDecimal(absolute / 1000000)} Juta';
+    }
+    if (absolute > 0) {
+      return '${sign}Rp ${_formatWholeNumber(absolute.round())}';
+    }
+
+    return 'Rp 0';
+  }
+
+  String _formatDecimal(double value) {
+    return value.toStringAsFixed(2).replaceAll('.', ',');
+  }
+
+  String _formatWholeNumber(int value) {
+    final raw = value.toString();
+    final buffer = StringBuffer();
+    for (var index = 0; index < raw.length; index++) {
+      final remaining = raw.length - index;
+      buffer.write(raw[index]);
+      if (remaining > 1 && remaining % 3 == 1) {
+        buffer.write('.');
+      }
+    }
+    return buffer.toString();
+  }
+
+  String _formatCoordinate(double value) {
+    return value.toStringAsFixed(6);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final filteredProjects =
-        PointJatimDummy.projects.where((item) {
+        _projects.where((item) {
       final matchKategori =
           selectedKategori == 'Semua'
               ? true
               : item.category == selectedKategori;
+      final matchWilayah =
+          selectedWilayah == 'Semua'
+              ? true
+              : item.wilayah == selectedWilayah;
+      final matchKomoditi =
+          selectedKomoditi == 'Semua'
+              ? true
+              : item.komoditi == selectedKomoditi;
 
       final matchSearch = item.title
           .toLowerCase()
@@ -32,7 +264,10 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
             searchController.text.toLowerCase(),
           );
 
-      return matchKategori && matchSearch;
+      return matchKategori &&
+          matchWilayah &&
+          matchKomoditi &&
+          matchSearch;
     }).toList();
 
   return Scaffold(
@@ -205,7 +440,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
 
                                 Expanded(
                                   child: Text(
-                                    'Kategori',
+                                    'Filter',
                                     style: TextStyle(
                                       color: Colors
                                           .grey.shade500,
@@ -262,7 +497,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                             const SizedBox(height: 16),
 
                             SizedBox(
-                              height: 225,
+                              height: 255,
 
                               child: ListView.separated(
                                 scrollDirection:
@@ -278,8 +513,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                                     (context, index) {
 
                                   final item =
-                                      PointJatimDummy
-                                              .highlights[
+                                      _highlights[
                                           index];
 
                                   return _buildHighlightCard(
@@ -294,8 +528,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                                 ),
 
                                 itemCount:
-                                    PointJatimDummy
-                                        .highlights
+                                    _highlights
                                         .length,
                               ),
                             ),
@@ -326,25 +559,40 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                       const SizedBox(height: 18),
 
                       /// PROJECT LIST
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics:
-                            const NeverScrollableScrollPhysics(),
+                      if (filteredProjects.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 20,
+                          ),
+                          child: Text(
+                            'Data tidak ditemukan',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        )
+                      else
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics:
+                              const NeverScrollableScrollPhysics(),
 
-                        itemCount:
-                            filteredProjects.length,
+                          itemCount:
+                              filteredProjects.length,
 
-                        itemBuilder: (context, index) {
+                          itemBuilder: (context, index) {
 
-                          final item =
-                              filteredProjects[index];
+                            final item =
+                                filteredProjects[index];
 
-                          return _buildProjectCard(
-                            context,
-                            item,
-                          );
-                        },
-                      ),
+                            return _buildProjectCard(
+                              context,
+                              item,
+                            );
+                          },
+                        ),
                     ],
                   ),
                 ),
@@ -427,11 +675,86 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
   );
 }
 
+  Widget _buildPointJatimImage(
+    String image, {
+    required double height,
+    required double width,
+    required BoxFit fit,
+  }) {
+    final resolvedImage = image.trim();
+    if (resolvedImage.isEmpty ||
+        resolvedImage == PointJatimAssets.fallbackImage) {
+      return _buildImagePlaceholder(
+        height: height,
+        width: width,
+      );
+    }
+
+    final isNetwork = resolvedImage.startsWith('http://') ||
+        resolvedImage.startsWith('https://');
+
+    if (isNetwork) {
+      return Image.network(
+        resolvedImage,
+        height: height,
+        width: width,
+        fit: fit,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+
+          return _buildImagePlaceholder(
+            height: height,
+            width: width,
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildImagePlaceholder(
+            height: height,
+            width: width,
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      resolvedImage,
+      height: height,
+      width: width,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildImagePlaceholder(
+          height: height,
+          width: width,
+        );
+      },
+    );
+  }
+
+  Widget _buildImagePlaceholder({
+    required double height,
+    required double width,
+  }) {
+    return Container(
+      height: height,
+      width: width,
+      color: const Color(0xffEEF3FF),
+      alignment: Alignment.center,
+      child: Image.asset(
+        PointJatimAssets.fallbackImage,
+        width: 54,
+        height: 54,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
   Widget _buildHighlightCard(
     PointJatimHighlightModel item,
   ) {
     return Container(
-      width: 160,
+      width: 168,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -443,7 +766,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(16),
             ),
-            child: Image.asset(
+            child: _buildPointJatimImage(
               item.image,
               height: 120,
               width: double.infinity,
@@ -459,15 +782,18 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
               children: [
                 Text(
                   item.title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
+                    height: 1.35,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   item.subtitle,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.grey.shade600,
@@ -517,7 +843,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(18),
               ),
-              child: Image.asset(
+              child: _buildPointJatimImage(
                 item.image,
                 height: 180,
                 width: double.infinity,
@@ -601,6 +927,55 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
       ),
     );
   }
+
+  Widget _buildFilterDropdown({
+    required String value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      dropdownColor: Colors.white,
+      style: const TextStyle(
+        color: Color(0xff1D1D1D),
+        fontSize: 16,
+      ),
+      icon: const Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: Color(0xff666666),
+      ),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 18,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(
+            color: Colors.grey.shade300,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(
+            color: Color(0xff2F61E8),
+          ),
+        ),
+      ),
+      items: items.map((item) {
+        return DropdownMenuItem(
+          value: item,
+          child: Text(
+            item,
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }).toList(),
+      onChanged: onChanged,
+    );
+  }
   
   void _showFilterSheet() {
     showModalBottomSheet(
@@ -617,6 +992,8 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
       builder: (context) {
 
         String tempKategori = selectedKategori;
+        String tempWilayah = selectedWilayah;
+        String tempKomoditi = selectedKomoditi;
 
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -655,63 +1032,54 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
 
                   const SizedBox(height: 12),
 
-                  DropdownButtonFormField<String>(
+                  _buildFilterDropdown(
                     value: tempKategori,
-
-                    dropdownColor: Colors.white,
-
-                    style: const TextStyle(
-                      color: Color(0xff1D1D1D),
-                      fontSize: 16,
-                    ),
-
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: Color(0xff666666),
-                    ),
-
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 18,
-                      ),
-
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(18),
-
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(18),
-
-                        borderSide: const BorderSide(
-                          color: Color(0xff2F61E8),
-                        ),
-                      ),
-                    ),
-
-                    items: PointJatimDummy
-                        .kategoriList
-                        .map((item) {
-
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-
+                    items: _kategoriList,
                     onChanged: (value) {
                       setModalState(() {
-                        tempKategori = value!;
+                        tempKategori = value ?? 'Semua';
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  const Text(
+                    'Wilayah',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  _buildFilterDropdown(
+                    value: tempWilayah,
+                    items: _wilayahList,
+                    onChanged: (value) {
+                      setModalState(() {
+                        tempWilayah = value ?? 'Semua';
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  const Text(
+                    'Komoditi',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  _buildFilterDropdown(
+                    value: tempKomoditi,
+                    items: _komoditiList,
+                    onChanged: (value) {
+                      setModalState(() {
+                        tempKomoditi = value ?? 'Semua';
                       });
                     },
                   ),
@@ -730,6 +1098,10 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
 
                             setState(() {
                               selectedKategori =
+                                  'Semua';
+                              selectedWilayah =
+                                  'Semua';
+                              selectedKomoditi =
                                   'Semua';
                             });
 
@@ -767,6 +1139,10 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                               setState(() {
                                 selectedKategori =
                                     tempKategori;
+                                selectedWilayah =
+                                    tempWilayah;
+                                selectedKomoditi =
+                                    tempKomoditi;
                               });
 
                               Navigator.pop(context);

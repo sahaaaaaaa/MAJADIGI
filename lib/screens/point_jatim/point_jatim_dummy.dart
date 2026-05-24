@@ -18,6 +18,15 @@ class PointJatimProjectModel {
   final String harga;
   final String tahun;
   final List<String> infomemoImages;
+  final String deskripsi;
+  final String koordinat;
+  final String irr;
+  final String npv;
+  final String paybackPeriod;
+  final String komoditi;
+  final String wilayah;
+  final double lat;
+  final double lon;
 
   const PointJatimProjectModel({
     required this.image,
@@ -27,6 +36,15 @@ class PointJatimProjectModel {
     required this.harga,
     required this.tahun,
     required this.infomemoImages,
+    this.deskripsi = '',
+    this.koordinat = '',
+    this.irr = '',
+    this.npv = '',
+    this.paybackPeriod = '',
+    this.komoditi = '',
+    this.wilayah = '',
+    this.lat = 0,
+    this.lon = 0,
   });
 }
 

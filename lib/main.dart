@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/onboarding/login_screen.dart';
-import 'widgets/main_navigation.dart';
+import 'screens/onboarding/splash_screen.dart';
 
 void main() {
   runApp(const MajadigiApp());
@@ -21,8 +21,7 @@ class MajadigiApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
 
-      // 🔥 BYPASS LANGSUNG HOME
-      home: const MainNavigation(),
+      home: const SplashScreen(),
 
       routes: {
         '/login': (context) => const LoginScreen(),

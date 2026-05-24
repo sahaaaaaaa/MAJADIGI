@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../services/layanan_service.dart';
+import '../../widgets/layanan_item.dart';
+import 'home_service_item.dart';
 import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
 import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
 import 'package:majadigi/screens/open_data/open_data_screen.dart';
@@ -14,16 +17,65 @@ import '../rssa/rssa_screen.dart';
 import '../transjatim/transjatim_screen.dart';
 
 class LayananLainScreen extends StatefulWidget {
-  const LayananLainScreen({super.key});
+  const LayananLainScreen({super.key, this.services});
+
+  final List<HomeServiceItem>? services;
 
   @override
   State<LayananLainScreen> createState() =>
       _LayananLainScreenState();
 }
 
-class _LayananLainScreenState
-    extends State<LayananLainScreen> {
-  bool pariwisataOpen = true;
+class _LayananLainScreenState extends State<LayananLainScreen> {
+  final LayananService _layananService = LayananService();
+  bool _isLoading = false;
+  List<HomeServiceItem> _services = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final services = widget.services;
+    if (services != null) {
+      _services = services;
+      return;
+    }
+
+    _loadServices();
+  }
+
+  @override
+  void dispose() {
+    _layananService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadServices() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final layanan = await _layananService.getInstalledLayanan();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _services = layanan
+            .map(homeServiceFromLayanan)
+            .whereType<HomeServiceItem>()
+            .toList();
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   // ================= POPUP =================
   void _showLayananPopup({
@@ -259,15 +311,9 @@ class _LayananLainScreenState
               child: ListView(
                 children: [
                   const Text(
-                    "Featured",
-
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight:
-                          FontWeight.bold,
-                    ),
+                    'Semua layanan',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-
                   const SizedBox(height: 16),
 
                   _gridFeatured(),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'api_config.dart';
+import 'auth_service.dart';
 
 class HargaPokokException implements Exception {
   HargaPokokException(this.message);
@@ -156,7 +157,7 @@ class HargaPokokService {
         Uri.parse('${ApiConfig.baseUrl}/harga-pokok').replace(
           queryParameters: params,
         ),
-        headers: const {'Accept': 'application/json'},
+        headers: _headers(),
       );
     } catch (_) {
       throw HargaPokokException(
@@ -185,5 +186,14 @@ class HargaPokokService {
     } catch (_) {}
 
     return {};
+  }
+
+  Map<String, String> _headers() {
+    final headers = <String, String>{'Accept': 'application/json'};
+    final session = AuthService.currentSession;
+    if (session != null) {
+      headers['Authorization'] = session.authorizationHeader;
+    }
+    return headers;
   }
 }

@@ -3,6 +3,7 @@ import 'bottom_sheet_screen.dart';
 import '../service_model.dart';
 import 'loading_screen.dart';
 import '../../services/auth_service.dart';
+import '../../services/layanan_service.dart';
 
 class PilihKategori extends StatefulWidget {
   final RegisterRequest? registrationData;
@@ -20,19 +21,42 @@ class PilihKategori extends StatefulWidget {
 
 class _PilihKategori extends State<PilihKategori> {
   final AuthService authService = AuthService();
+  final LayananService layananService = LayananService();
   final Set<int> _selectedIds = {};
+  List<Recommendation> _layananRecommendations = [];
   bool isSubmitting = false;
+
+  List<Recommendation> get _availableRecommendations {
+    return _layananRecommendations.isEmpty
+        ? backendLayananFallbackRecommendations
+        : _layananRecommendations;
+  }
 
   @override
   void initState() {
     super.initState();
     _selectedIds.addAll(widget.initialSelectedIds);
+    _loadLayanan();
   }
 
   @override
   void dispose() {
     authService.dispose();
+    layananService.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadLayanan() async {
+    try {
+      final layanan = await layananService.getPublicLayanan();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _layananRecommendations =
+            layanan.map(recommendationFromLayanan).toList();
+      });
+    } catch (_) {}
   }
 
   Future<void> _finishSelection({required bool allowEmpty}) async {
@@ -312,7 +336,7 @@ class _PilihKategori extends State<PilihKategori> {
             Expanded(
               child: Row(
                 children: [
-                  Image.asset(item.logo, height: 40),
+                  Image.asset(layananLogoAssetPath(item.logo), height: 40),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -362,7 +386,9 @@ class _PilihKategori extends State<PilihKategori> {
       spacing: 10,
       runSpacing: 12,
       children: categories.map((cat) {
-        int count = recommendations.where((r) => r.kategori == cat && _selectedIds.contains(r.id)).length;
+        int count = _availableRecommendations
+            .where((r) => r.kategori == cat && _selectedIds.contains(r.id))
+            .length;
         bool isSelected = count > 0;
         
         return GestureDetector(
@@ -373,7 +399,7 @@ class _PilihKategori extends State<PilihKategori> {
             backgroundColor: Colors.transparent,
             builder: (context) => LayananSheetContent(
               kategori: cat,
-              allData: recommendations,// Ambil data dari variabel global kamu
+              allData: _availableRecommendations,
               initialSelectedIds: _selectedIds,
               onToggle: (id) {
                 setState(() {

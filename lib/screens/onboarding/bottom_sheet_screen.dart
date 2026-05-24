@@ -188,7 +188,10 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Image.asset('assets/images/${item.logo}', errorBuilder: (c, e, s) => const Icon(Icons.image)),
+                  child: Image.asset(
+                    layananLogoAssetPath(item.logo),
+                    errorBuilder: (c, e, s) => const Icon(Icons.image),
+                  ),
                 ),
                 const SizedBox(height: 14),
                 Text(
