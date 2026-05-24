@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'islamic_center_dummy.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class IslamicCenterPemesanan
     extends StatefulWidget {
 
   final IslamicCenterRoomModel room;
+  final String facilityTitle;
 
   const IslamicCenterPemesanan({
     super.key,
     required this.room,
+    required this.facilityTitle,
   });
 
   @override
@@ -40,6 +43,41 @@ class _IslamicCenterPemesananState
   List<String> selectedFasilitas = [
     'Kursi',
   ];
+
+  Future<void> kirimWhatsapp() async {
+    final nama = namaController.text;
+    final tanggal = selectedDate == null
+        ? '-'
+        : '${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}';
+    final waktu = selectedWaktu;
+    final fasilitas = selectedFasilitas.join(', ');
+    final ruangan =  '${widget.facilityTitle} - ${widget.room.title}';
+    final message = '''
+Halo!
+
+Saya ingin melakukan pemesanan untuk ruangan di Islamic Center. Berikut adalah detail pemesanan saya:
+
+Nama Lengkap: $nama
+Tanggal Pemesanan: $tanggal
+Waktu Pemesanan: $waktu
+Fasilitas yang Dipilih: $fasilitas
+Ruangan yang Dipesan: $ruangan
+
+Mohon konfirmasi pemesanan saya. Terima kasih.
+  ''';
+
+    final url =
+        'https://api.whatsapp.com/send/?phone=6281225541180&text=${Uri.encodeComponent(message)}';
+
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -552,7 +590,9 @@ class _IslamicCenterPemesananState
 
                                 child:
                                     ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    kirimWhatsapp();
+                                  },
 
                                   style:
                                       ElevatedButton.styleFrom(
