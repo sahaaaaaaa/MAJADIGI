@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+
+import '../../services/harga_pokok_service.dart';
 import 'detail_bawang.dart';
 
 class DetailHargaMalangScreen extends StatelessWidget {
-  const DetailHargaMalangScreen({super.key});
+  const DetailHargaMalangScreen({super.key, this.items = const []});
+
+  final List<HargaPokokItem> items;
+
+  static final NumberFormat _rupiahFormat = NumberFormat.decimalPattern(
+    'id_ID',
+  );
 
   @override
   Widget build(BuildContext context) {
+    final averageGrowth = _averageGrowthText;
+    final averageGrowthColor = _averageGrowthColor;
+    final commodityUpCount = items.where((item) => item.isUp).length;
+    final commodityDownCount = items.where((item) => item.isDown).length;
+    final commodityItems = items.take(8).toList();
+
     return Scaffold(
       backgroundColor: const Color(0xFF0047B3),
 
@@ -15,7 +30,12 @@ class DetailHargaMalangScreen extends StatelessWidget {
           // 🔵 HEADER
           Container(
             height: 170,
-            decoration: const BoxDecoration(color: Color(0xFF0047B3)),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/latar_belakang.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
 
           SafeArea(
@@ -91,8 +111,8 @@ class DetailHargaMalangScreen extends StatelessWidget {
                               Expanded(
                                 child: _summaryItem(
                                   "Rata-rata\nPertumbuhan",
-                                  "10% ↑",
-                                  Colors.pink,
+                                  averageGrowth,
+                                  averageGrowthColor,
                                 ),
                               ),
 
@@ -105,7 +125,7 @@ class DetailHargaMalangScreen extends StatelessWidget {
                               Expanded(
                                 child: _summaryItem(
                                   "Komoditas\nNaik",
-                                  "12",
+                                  commodityUpCount.toString(),
                                   Colors.pink,
                                 ),
                               ),
@@ -119,7 +139,7 @@ class DetailHargaMalangScreen extends StatelessWidget {
                               Expanded(
                                 child: _summaryItem(
                                   "Komoditas\nTurun",
-                                  "8",
+                                  commodityDownCount.toString(),
                                   Colors.green,
                                 ),
                               ),
@@ -143,49 +163,19 @@ class DetailHargaMalangScreen extends StatelessWidget {
 
                         const SizedBox(height: 18),
 
-                        _commodityItem(
-                          image: "assets/images/bawang_putih.png",
-                          title: "Bawang Putih / kg",
-                          percent: "15%",
-                          up: true,
-                        ),
-
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const DetailBawangScreen(),
-                              ),
-                            );
-                          },
-                          child: _commodityItem(
-                            image: "assets/images/bawang_merah.png",
-                            title: "Bawang Merah / kg",
-                            percent: "20%",
-                            up: false,
+                        ...commodityItems.map(
+                          (item) => GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      DetailBawangScreen(item: item),
+                                ),
+                              );
+                            },
+                            child: _commodityItem(item: item),
                           ),
-                        ),
-
-                        _commodityItem(
-                          image: "assets/images/beras.png",
-                          title: "Beras Medium / kg",
-                          percent: "20%",
-                          up: false,
-                        ),
-
-                        _commodityItem(
-                          image: "assets/images/besi.png",
-                          title: "Besi Beton 10 mm (12/...",
-                          percent: "15%",
-                          up: true,
-                        ),
-
-                        _commodityItem(
-                          image: "assets/images/buncis.png",
-                          title: "Buncis / kg",
-                          percent: "20%",
-                          up: false,
                         ),
 
                         const SizedBox(height: 16),
@@ -248,12 +238,20 @@ class DetailHargaMalangScreen extends StatelessWidget {
     );
   }
 
-  Widget _commodityItem({
-    required String image,
-    required String title,
-    required String percent,
-    required bool up,
-  }) {
+  Widget _commodityItem({required HargaPokokItem item}) {
+    final up = item.isUp;
+    final down = item.isDown;
+    final trendColor = down
+        ? Colors.green
+        : up
+        ? Colors.pink
+        : Colors.grey;
+    final trendIcon = down
+        ? Icons.arrow_downward
+        : up
+        ? Icons.arrow_upward
+        : Icons.remove;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
@@ -264,7 +262,7 @@ class DetailHargaMalangScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset(image, width: 45, height: 45),
+          _commodityImage(item, width: 45, height: 45),
 
           const SizedBox(width: 14),
 
@@ -273,7 +271,9 @@ class DetailHargaMalangScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  item.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(color: Colors.grey, fontSize: 15),
                 ),
 
@@ -281,9 +281,9 @@ class DetailHargaMalangScreen extends StatelessWidget {
 
                 Row(
                   children: [
-                    const Text(
-                      "Rp36.418",
-                      style: TextStyle(
+                    Text(
+                      _formatRupiah(item.price),
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         color: Color(0xFF121938),
@@ -293,18 +293,14 @@ class DetailHargaMalangScreen extends StatelessWidget {
                     const SizedBox(width: 10),
 
                     Text(
-                      percent,
+                      _formatPercent(item.diffPercent),
                       style: TextStyle(
-                        color: up ? Colors.pink : Colors.green,
+                        color: trendColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    Icon(
-                      up ? Icons.arrow_upward : Icons.arrow_downward,
-                      color: up ? Colors.pink : Colors.green,
-                      size: 18,
-                    ),
+                    Icon(trendIcon, color: trendColor, size: 18),
                   ],
                 ),
               ],
@@ -324,7 +320,16 @@ class DetailHargaMalangScreen extends StatelessWidget {
 
                 lineBarsData: [
                   LineChartBarData(
-                    spots: up
+                    spots: down
+                        ? [
+                            const FlSpot(0, 4),
+                            const FlSpot(1, 3),
+                            const FlSpot(2, 3),
+                            const FlSpot(3, 2),
+                            const FlSpot(4, 2),
+                            const FlSpot(5, 1),
+                          ]
+                        : up
                         ? [
                             const FlSpot(0, 1),
                             const FlSpot(1, 2),
@@ -334,17 +339,17 @@ class DetailHargaMalangScreen extends StatelessWidget {
                             const FlSpot(5, 4),
                           ]
                         : [
-                            const FlSpot(0, 4),
+                            const FlSpot(0, 3),
                             const FlSpot(1, 3),
                             const FlSpot(2, 3),
-                            const FlSpot(3, 2),
-                            const FlSpot(4, 2),
-                            const FlSpot(5, 1),
+                            const FlSpot(3, 3),
+                            const FlSpot(4, 3),
+                            const FlSpot(5, 3),
                           ],
 
                     isCurved: true,
 
-                    color: up ? Colors.pink : Colors.green,
+                    color: trendColor,
 
                     barWidth: 2.5,
 
@@ -352,9 +357,7 @@ class DetailHargaMalangScreen extends StatelessWidget {
 
                     belowBarData: BarAreaData(
                       show: true,
-                      color: (up ? Colors.pink : Colors.green).withOpacity(
-                        0.10,
-                      ),
+                      color: trendColor.withOpacity(0.10),
                     ),
                   ),
                 ],
@@ -364,5 +367,126 @@ class DetailHargaMalangScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String get _averageGrowthText {
+    if (items.isEmpty) {
+      return "0%";
+    }
+
+    final total = items.fold<double>(
+      0,
+      (sum, item) => sum + item.diffPercentValue,
+    );
+    final average = total / items.length;
+    final trend = average > 0
+        ? "↑"
+        : average < 0
+        ? "↓"
+        : "";
+
+    return "${_formatGrowth(average.abs())}% $trend".trim();
+  }
+
+  Color get _averageGrowthColor {
+    if (items.isEmpty) {
+      return Colors.grey;
+    }
+
+    final total = items.fold<double>(
+      0,
+      (sum, item) => sum + item.diffPercentValue,
+    );
+    final average = total / items.length;
+
+    if (average == 0) {
+      return Colors.grey;
+    }
+
+    return average > 0 ? Colors.pink : Colors.green;
+  }
+
+  Widget _commodityImage(
+    HargaPokokItem item, {
+    required double width,
+    double? height,
+  }) {
+    final fallback = _fallbackImageForName(item.name);
+
+    if (item.imageUrl.startsWith('http')) {
+      return Image.network(
+        item.imageUrl,
+        width: width,
+        height: height,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) {
+          return Image.asset(
+            fallback,
+            width: width,
+            height: height,
+            fit: BoxFit.contain,
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      item.imageUrl.isEmpty ? fallback : item.imageUrl,
+      width: width,
+      height: height,
+      fit: BoxFit.contain,
+    );
+  }
+
+  String _fallbackImageForName(String name) {
+    final lowerName = name.toLowerCase();
+    if (lowerName.contains('bawang merah')) {
+      return 'assets/images/bawang_merah.png';
+    }
+    if (lowerName.contains('bawang putih')) {
+      return 'assets/images/bawang_putih.png';
+    }
+    if (lowerName.contains('beras')) {
+      return 'assets/images/beras.png';
+    }
+    if (lowerName.contains('besi')) {
+      return 'assets/images/besi.png';
+    }
+    if (lowerName.contains('buncis')) {
+      return 'assets/images/buncis.png';
+    }
+    if (lowerName.contains('cabe') || lowerName.contains('cabai')) {
+      return 'assets/images/cabe.png';
+    }
+    if (lowerName.contains('daging') || lowerName.contains('telur')) {
+      return 'assets/images/daging.png';
+    }
+    if (lowerName.contains('ikan')) {
+      return 'assets/images/ikan.png';
+    }
+    if (lowerName.contains('kol') || lowerName.contains('kubis')) {
+      return 'assets/images/kol.png';
+    }
+
+    return 'assets/images/beras.png';
+  }
+
+  String _formatRupiah(int value) {
+    return 'Rp${_rupiahFormat.format(value)}';
+  }
+
+  String _formatPercent(String value) {
+    final normalized = value.replaceAll('-', '').replaceAll(' ', '').trim();
+    return normalized.isEmpty ? '0%' : normalized;
+  }
+
+  String _formatGrowth(double value) {
+    if (value >= 10) {
+      return value.toStringAsFixed(0);
+    }
+    if (value >= 1) {
+      return value.toStringAsFixed(2);
+    }
+    return value.toStringAsFixed(2);
   }
 }

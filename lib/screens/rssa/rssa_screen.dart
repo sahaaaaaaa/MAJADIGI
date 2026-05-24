@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../services/rsud_saiful_anwar_service.dart';
 import 'informasi_rssa_screen.dart';
 
 class RssaScreen extends StatefulWidget {
@@ -12,8 +14,12 @@ class RssaScreen extends StatefulWidget {
 
 class _RssaScreenState extends State<RssaScreen> {
   final PageController _pageController = PageController();
+  final RsudSaifulAnwarService _rsudSaifulAnwarService =
+      RsudSaifulAnwarService();
 
   int currentPage = 0;
+  Timer? _sliderTimer;
+  RsudSaifulAnwarOccupancy? _occupancy;
 
   final List<String> images = [
     'assets/images/rssa1.png',
@@ -21,11 +27,113 @@ class _RssaScreenState extends State<RssaScreen> {
     'assets/images/rssa3.png',
   ];
 
+  static const List<Color> _roomColors = [
+    Colors.green,
+    Colors.blue,
+    Colors.purple,
+    Colors.orange,
+    Colors.lightBlue,
+    Colors.pink,
+    Colors.blue,
+  ];
+
+  static const RsudSaifulAnwarOccupancy _fallbackOccupancy =
+      RsudSaifulAnwarOccupancy(
+        summary: RsudSaifulAnwarSummary(
+          total: 909,
+          occupied: 666,
+          available: 220,
+          lastUpdate: '2026-04-07 07:13:45',
+        ),
+        rooms: [
+          RsudSaifulAnwarRoom(
+            name: 'HCU',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ICCU/ICVCU Dengan Ventilator',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ICCU/ICVCU Tanpa Ventilator',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ICU Dengan Ventilator',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'ISOLASI',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'Intermediate Ward (IGD)',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'Isolasi Tekanan Negatif',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'KELAS I',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'KELAS II',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+          RsudSaifulAnwarRoom(
+            name: 'KELAS III',
+            type: '',
+            total: 10,
+            occupied: 10,
+            available: 0,
+          ),
+        ],
+      );
+
+  RsudSaifulAnwarSummary get _summary {
+    return _occupancy?.summary ?? _fallbackOccupancy.summary;
+  }
+
+  List<RsudSaifulAnwarRoom> get _rooms {
+    final rooms = _occupancy?.rooms ?? const [];
+    return rooms.isEmpty ? _fallbackOccupancy.rooms : rooms;
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadRoomOccupancy();
 
-    Timer.periodic(const Duration(seconds: 3), (timer) {
+    _sliderTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_pageController.hasClients) {
         currentPage = (currentPage + 1) % images.length;
 
@@ -36,6 +144,30 @@ class _RssaScreenState extends State<RssaScreen> {
         );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _sliderTimer?.cancel();
+    _pageController.dispose();
+    _rsudSaifulAnwarService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadRoomOccupancy() async {
+    try {
+      final occupancy = await _rsudSaifulAnwarService.getRoomOccupancy();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _occupancy = occupancy;
+      });
+    } catch (_) {}
+  }
+
+  Color _roomColor(int index) {
+    return _roomColors[index % _roomColors.length];
   }
 
   @override
@@ -51,7 +183,7 @@ class _RssaScreenState extends State<RssaScreen> {
             height: 320,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/latar_belakang.png'),
+                image: AssetImage("assets/images/latar_belakang.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -212,9 +344,9 @@ class _RssaScreenState extends State<RssaScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: const Text(
-                                    "2026-04-07 07:13:45",
-                                    style: TextStyle(
+                                  child: Text(
+                                    _summary.lastUpdate,
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
                                     ),
@@ -232,7 +364,7 @@ class _RssaScreenState extends State<RssaScreen> {
                                   children: [
                                     Expanded(
                                       child: _smallCard(
-                                        "220",
+                                        _summary.available.toString(),
                                         "Tersedia",
                                         Colors.green,
                                         'assets/images/icons/users-check.svg',
@@ -243,7 +375,7 @@ class _RssaScreenState extends State<RssaScreen> {
 
                                     Expanded(
                                       child: _smallCard(
-                                        "666",
+                                        _summary.occupied.toString(),
                                         "Terisi",
                                         Colors.orange,
                                         'assets/images/icons/users-up-01.svg',
@@ -266,15 +398,11 @@ class _RssaScreenState extends State<RssaScreen> {
                                 const SizedBox(height: 16),
 
                                 Row(
-                                  children: [
-                                    _bar(Colors.green),
-                                    _bar(Colors.blue),
-                                    _bar(Colors.purple),
-                                    _bar(Colors.orange),
-                                    _bar(Colors.lightBlue),
-                                    _bar(Colors.pink),
-                                    _bar(Colors.blue),
-                                  ],
+                                  children: _rooms
+                                      .asMap()
+                                      .keys
+                                      .map((index) => _bar(_roomColor(index)))
+                                      .toList(),
                                 ),
 
                                 const SizedBox(height: 14),
@@ -302,42 +430,16 @@ class _RssaScreenState extends State<RssaScreen> {
                                         DataColumn(label: Text("Tersedia")),
                                       ],
 
-                                      rows: [
-                                        _roomRow("HCU", Colors.green),
-
-                                        _roomRow(
-                                          "ICCU/ICVCU Dengan Ventilator",
-                                          Colors.blue,
-                                        ),
-
-                                        _roomRow(
-                                          "ICCU/ICVCU Tanpa Ventilator",
-                                          Colors.purple,
-                                        ),
-
-                                        _roomRow(
-                                          "ICU Dengan Ventilator",
-                                          Colors.orange,
-                                        ),
-
-                                        _roomRow("ISOLASI", Colors.lightBlue),
-
-                                        _roomRow(
-                                          "Intermediate Ward (IGD)",
-                                          Colors.blue,
-                                        ),
-
-                                        _roomRow(
-                                          "Isolasi Tekanan Negatif",
-                                          Colors.lightBlue,
-                                        ),
-
-                                        _roomRow("KELAS I", Colors.green),
-
-                                        _roomRow("KELAS II", Colors.pink),
-
-                                        _roomRow("KELAS III", Colors.lightBlue),
-                                      ],
+                                      rows: _rooms
+                                          .asMap()
+                                          .entries
+                                          .map(
+                                            (entry) => _roomRow(
+                                              entry.value,
+                                              _roomColor(entry.key),
+                                            ),
+                                          )
+                                          .toList(),
                                     ),
                                   ),
                                 ),
@@ -376,19 +478,19 @@ class _RssaScreenState extends State<RssaScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "909",
-                style: TextStyle(
+                _summary.total.toString(),
+                style: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF121938),
                 ),
               ),
 
-              Text("Total Kamar Rawat", style: TextStyle(fontSize: 15)),
+              const Text("Total Kamar Rawat", style: TextStyle(fontSize: 15)),
             ],
           ),
 
@@ -437,7 +539,7 @@ class _RssaScreenState extends State<RssaScreen> {
     );
   }
 
-  DataRow _roomRow(String room, Color color) {
+  DataRow _roomRow(RsudSaifulAnwarRoom room, Color color) {
     return DataRow(
       cells: [
         DataCell(
@@ -455,16 +557,28 @@ class _RssaScreenState extends State<RssaScreen> {
 
               const SizedBox(width: 12),
 
-              Expanded(child: Text(room, style: const TextStyle(fontSize: 14))),
+              Expanded(
+                child: Text(room.name, style: const TextStyle(fontSize: 14)),
+              ),
             ],
           ),
         ),
 
-        const DataCell(Text("10")),
+        DataCell(Text(room.total.toString())),
 
-        DataCell(Text("10", style: TextStyle(color: Colors.orange.shade700))),
+        DataCell(
+          Text(
+            room.occupied.toString(),
+            style: TextStyle(color: Colors.orange.shade700),
+          ),
+        ),
 
-        const DataCell(Text("0", style: TextStyle(color: Colors.green))),
+        DataCell(
+          Text(
+            room.available.toString(),
+            style: const TextStyle(color: Colors.green),
+          ),
+        ),
       ],
     );
   }

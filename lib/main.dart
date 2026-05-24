@@ -22,9 +22,7 @@ class MajadigiApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
 
-      // 🔥 BYPASS LANGSUNG HOME
-      //home: const MainNavigation(),
-      home: const WelcomeScreen(),
+      home: const SplashScreen(),
 
       routes: {
         '/login': (context) => const WelcomeScreen(),

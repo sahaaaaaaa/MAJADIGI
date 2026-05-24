@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class DetailRuteScreen
-    extends StatefulWidget {
+import '../../services/transjatim_service.dart';
+
+class DetailRuteScreen extends StatefulWidget {
   final String code;
   final String from;
   final String to;
@@ -17,17 +18,16 @@ class DetailRuteScreen
   });
 
   @override
-  State<DetailRuteScreen>
-      createState() =>
-          _DetailRuteScreenState();
+  State<DetailRuteScreen> createState() => _DetailRuteScreenState();
 }
 
-class _DetailRuteScreenState
-    extends State<
-        DetailRuteScreen> {
-  int selectedHalte = 0;
+class _DetailRuteScreenState extends State<DetailRuteScreen> {
+  final TransjatimService _transjatimService = TransjatimService();
 
-  final List<String> haltes = [
+  int selectedHalte = 0;
+  TransjatimBusStopResponse? _busStopResponse;
+
+  static const List<String> _fallbackHaltes = [
     "Halte Terminal Porong",
     "Halte Gedang",
     "Halte Tanggulangin",
@@ -35,11 +35,53 @@ class _DetailRuteScreenState
     "Halte Terminal Larangan",
   ];
 
+  List<String> get haltes {
+    final stops = _busStopResponse?.stops ?? const [];
+    if (stops.isEmpty) {
+      return _fallbackHaltes;
+    }
+    return stops.map((item) => item.name).toList();
+  }
+
+  String get _origin {
+    final routes = _busStopResponse?.routes ?? const [];
+    return routes.isNotEmpty ? routes.first : widget.from;
+  }
+
+  String get _destination {
+    final routes = _busStopResponse?.routes ?? const [];
+    return routes.length > 1 ? routes[1] : widget.to;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBusStops();
+  }
+
+  @override
+  void dispose() {
+    _transjatimService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadBusStops() async {
+    try {
+      final busStops = await _transjatimService.getBusStops(widget.code);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _busStopResponse = busStops;
+        selectedHalte = 0;
+      });
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Colors.transparent,
+      backgroundColor: Colors.transparent,
 
       body: Stack(
         children: [
@@ -47,12 +89,9 @@ class _DetailRuteScreenState
           Container(
             width: double.infinity,
             height: 230,
-            decoration:
-                const BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/latar_belakang.png',
-                ),
+                image: AssetImage("assets/images/latar_belakang.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -63,8 +102,7 @@ class _DetailRuteScreenState
               children: [
                 // HEADER
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 10,
                   ),
@@ -72,126 +110,87 @@ class _DetailRuteScreenState
                     children: [
                       IconButton(
                         onPressed: () {
-                          Navigator.pop(
-                              context);
+                          Navigator.pop(context);
                         },
                         icon: const Icon(
-                          Icons
-                              .arrow_back_ios_new,
-                          color:
-                              Colors.white,
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
                         ),
                       ),
 
                       Expanded(
                         child: Text(
                           widget.code,
-                          textAlign:
-                              TextAlign.center,
-                          style:
-                              const TextStyle(
-                            color:
-                                Colors.white,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
                             fontSize: 22,
-                            fontWeight:
-                                FontWeight
-                                    .w700,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
 
-                      const SizedBox(
-                          width: 40),
+                      const SizedBox(width: 40),
                     ],
                   ),
                 ),
 
                 Expanded(
-                  child:
-                      SingleChildScrollView(
+                  child: SingleChildScrollView(
                     child: Container(
-                      width:
-                          double.infinity,
+                      width: double.infinity,
 
-                      decoration:
-                          const BoxDecoration(
-                        color: Color(
-                          0xFFF5F5F5,
-                        ),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF5F5F5),
 
-                        borderRadius:
-                            BorderRadius.vertical(
-                          top:
-                              Radius.circular(
-                            34,
-                          ),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(34),
                         ),
                       ),
 
                       child: Padding(
-                        padding:
-                            const EdgeInsets.all(
-                          16,
-                        ),
+                        padding: const EdgeInsets.all(16),
 
                         child: Column(
                           children: [
                             // MAPS
                             ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(
-                                20,
-                              ),
+                              borderRadius: BorderRadius.circular(20),
 
                               child: Stack(
                                 children: [
                                   Image.asset(
                                     'assets/images/maps_transjatim.png',
-                                    width: double
-                                        .infinity,
+                                    width: double.infinity,
                                     height: 380,
-                                    fit: BoxFit
-                                        .cover,
+                                    fit: BoxFit.cover,
                                   ),
 
                                   // LABEL HALTE
-                                  if (selectedHalte !=
-                                      -1)
+                                  if (selectedHalte != -1)
                                     Positioned(
                                       top: 120,
                                       left: 70,
 
-                                      child:
-                                          Container(
-                                        padding:
-                                            const EdgeInsets.symmetric(
-                                          horizontal:
-                                              18,
-                                          vertical:
-                                              14,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 18,
+                                          vertical: 14,
                                         ),
 
-                                        decoration:
-                                            BoxDecoration(
-                                          color:
-                                              Colors.white,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
 
-                                          borderRadius:
-                                              BorderRadius.circular(
+                                          borderRadius: BorderRadius.circular(
                                             18,
                                           ),
                                         ),
 
-                                        child:
-                                            Text(
-                                          haltes[
-                                              selectedHalte],
-                                          style:
-                                              const TextStyle(
-                                            fontSize:
-                                                16,
-                                            fontWeight:
-                                                FontWeight.w600,
+                                        child: Text(
+                                          haltes[selectedHalte],
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ),
@@ -202,28 +201,17 @@ class _DetailRuteScreenState
 
                             // JAM
                             Container(
-                              width:
-                                  double.infinity,
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                horizontal:
-                                    16,
-                                vertical:
-                                    14,
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
                               ),
 
-                              decoration:
-                                  const BoxDecoration(
-                                color: Color(
-                                  0xFF27AE60,
-                                ),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF27AE60),
 
-                                borderRadius:
-                                    BorderRadius.vertical(
-                                  bottom:
-                                      Radius.circular(
-                                    20,
-                                  ),
+                                borderRadius: BorderRadius.vertical(
+                                  bottom: Radius.circular(20),
                                 ),
                               ),
 
@@ -231,121 +219,79 @@ class _DetailRuteScreenState
                                 children: [
                                   SvgPicture.asset(
                                     'assets/images/icons/clock_white.svg',
-                                    width:
-                                        18,
+                                    width: 18,
                                   ),
 
-                                  const SizedBox(
-                                      width:
-                                          10),
+                                  const SizedBox(width: 10),
 
                                   Text(
                                     "Jam Operasional ${widget.time}",
-                                    style:
-                                        const TextStyle(
-                                      color: Colors
-                                          .white,
-                                      fontSize:
-                                          16,
-                                      fontWeight:
-                                          FontWeight
-                                              .w500,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
 
-                            const SizedBox(
-                                height: 18),
+                            const SizedBox(height: 18),
 
                             // DARI KE
                             Container(
-                              padding:
-                                  const EdgeInsets.all(
-                                16,
-                              ),
+                              padding: const EdgeInsets.all(16),
 
-                              decoration:
-                                  BoxDecoration(
-                                color: Colors
-                                    .white,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
 
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  20,
-                                ),
+                                borderRadius: BorderRadius.circular(20),
 
-                                border:
-                                    Border.all(
-                                  color: Colors
-                                      .grey
-                                      .shade300,
-                                ),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
 
                               child: Column(
                                 children: [
                                   _routeField(
-                                    label:
-                                        "Dari",
-                                    value:
-                                        widget
-                                            .from,
+                                    label: "Dari",
+                                    value: _origin,
                                     icon:
                                         'assets/images/icons/marker-pin-02.svg',
                                   ),
 
-                                  const SizedBox(
-                                      height:
-                                          14),
+                                  const SizedBox(height: 14),
 
                                   Stack(
-                                    clipBehavior:
-                                        Clip.none,
+                                    clipBehavior: Clip.none,
 
                                     children: [
                                       _routeField(
-                                        label:
-                                            "Ke",
-                                        value:
-                                            widget
-                                                .to,
+                                        label: "Ke",
+                                        value: _destination,
                                         icon:
                                             'assets/images/icons/marker-pin-02.svg',
                                       ),
 
                                       Positioned(
-                                        right:
-                                            -5,
-                                        top:
-                                            -15,
+                                        right: -5,
+                                        top: -15,
 
-                                        child:
-                                            Container(
-                                          width:
-                                              48,
-                                          height:
-                                              48,
+                                        child: Container(
+                                          width: 48,
+                                          height: 48,
 
-                                          decoration:
-                                              BoxDecoration(
-                                            color:
-                                                Colors.white,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
 
-                                            shape:
-                                                BoxShape.circle,
+                                            shape: BoxShape.circle,
 
-                                            border:
-                                                Border.all(
+                                            border: Border.all(
                                               color: Colors.grey.shade300,
                                             ),
                                           ),
 
-                                          child:
-                                              Center(
-                                            child:
-                                                SvgPicture.asset(
+                                          child: Center(
+                                            child: SvgPicture.asset(
                                               'assets/images/icons/switch-vertical-01.svg',
                                               width: 22,
                                             ),
@@ -358,137 +304,89 @@ class _DetailRuteScreenState
                               ),
                             ),
 
-                            const SizedBox(
-                                height: 18),
+                            const SizedBox(height: 18),
 
                             // HALTE LIST
                             Container(
-                              width:
-                                  double.infinity,
-                              padding:
-                                  const EdgeInsets.all(
-                                16,
-                              ),
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(16),
 
-                              decoration:
-                                  BoxDecoration(
-                                color: Colors
-                                    .white,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
 
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  20,
-                                ),
+                                borderRadius: BorderRadius.circular(20),
 
-                                border:
-                                    Border.all(
-                                  color: Colors
-                                      .grey
-                                      .shade300,
-                                ),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
 
                               child: Column(
-                                children:
-                                    List.generate(
-                                  haltes.length,
-                                  (index) {
-                                    final isActive =
-                                        selectedHalte ==
-                                            index;
+                                children: List.generate(haltes.length, (index) {
+                                  final isActive = selectedHalte == index;
 
-                                    return GestureDetector(
-                                      onTap:
-                                          () {
-                                        setState(
-                                          () {
-                                            selectedHalte =
-                                                index;
-                                          },
-                                        );
-                                      },
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedHalte = index;
+                                      });
+                                    },
 
-                                      child:
-                                          Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
 
-                                        children: [
-                                          Column(
-                                            children: [
-                                              SvgPicture.asset(
-                                                isActive
-                                                    ? 'assets/images/icons/marker-pin-green.svg'
-                                                    : 'assets/images/icons/ellipse2.svg',
+                                      children: [
+                                        Column(
+                                          children: [
+                                            SvgPicture.asset(
+                                              isActive
+                                                  ? 'assets/images/icons/marker-pin-green.svg'
+                                                  : 'assets/images/icons/ellipse2.svg',
 
-                                                width:
-                                                    14,
+                                              width: 14,
+                                            ),
+
+                                            if (index != haltes.length - 1)
+                                              Container(
+                                                width: 2,
+                                                height: 38,
+                                                color: const Color(0xFFD9D9D9),
                                               ),
+                                          ],
+                                        ),
 
-                                              if (index !=
-                                                  haltes.length -
-                                                      1)
-                                                Container(
-                                                  width:
-                                                      2,
-                                                  height:
-                                                      38,
-                                                  color:
-                                                      const Color(
-                                                    0xFFD9D9D9,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
+                                        const SizedBox(width: 14),
 
-                                          const SizedBox(
-                                              width:
-                                                  14),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 0,
+                                            ),
 
-                                          Expanded(
-                                            child:
-                                                Padding(
-                                              padding:
-                                                  const EdgeInsets.only(
-                                                top:
-                                                    0,
-                                              ),
+                                            child: Text(
+                                              haltes[index],
 
-                                              child:
-                                                  Text(
-                                                haltes[
-                                                    index],
+                                              style: TextStyle(
+                                                fontSize: 16,
 
-                                                style:
-                                                    TextStyle(
-                                                  fontSize:
-                                                      16,
+                                                fontWeight: isActive
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
 
-                                                  fontWeight:
-                                                      isActive
-                                                          ? FontWeight.w600
-                                                          : FontWeight.normal,
-
-                                                  color:
-                                                      isActive
-                                                          ? const Color(
-                                                            0xFF27AE60,
-                                                          )
-                                                          : Colors.grey.shade700,
-                                                ),
+                                                color: isActive
+                                                    ? const Color(0xFF27AE60)
+                                                    : Colors.grey.shade700,
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }),
                               ),
                             ),
 
-                            const SizedBox(
-                                height: 30),
+                            const SizedBox(height: 30),
                           ],
                         ),
                       ),
@@ -509,57 +407,37 @@ class _DetailRuteScreenState
     required String icon,
   }) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
 
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
       ),
 
       child: Row(
         children: [
-          SvgPicture.asset(
-            icon,
-            width: 22,
-          ),
+          SvgPicture.asset(icon, width: 22),
 
           const SizedBox(width: 12),
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style:
-                      const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 13,
-                  ),
+                  style: const TextStyle(color: Colors.grey, fontSize: 13),
                 ),
 
-                const SizedBox(
-                    height: 4),
+                const SizedBox(height: 4),
 
                 Text(
                   value,
-                  style:
-                      const TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
-                    fontWeight:
-                        FontWeight.w500,
-                    color: Color(
-                      0xFF121938,
-                    ),
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF121938),
                   ),
                 ),
               ],

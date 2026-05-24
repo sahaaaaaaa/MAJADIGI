@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import '../../services/point_jatim_service.dart';
 import 'point_jatim_dummy.dart';
 
 class LayananDetailScreen extends StatelessWidget {
@@ -104,7 +107,7 @@ class LayananDetailScreen extends StatelessWidget {
                           borderRadius:
                               BorderRadius.circular(24),
 
-                          child: Image.network(
+                          child: _buildPointJatimImage(
                             item.image,
                             height: 220,
                             width: double.infinity,
@@ -235,7 +238,7 @@ class LayananDetailScreen extends StatelessWidget {
                           child: SizedBox(
                             height: 220,
 
-                            child: item.infomemoImages.length == 1
+                            child: _infomemoImages.length == 1
 
                                 /// SINGLE IMAGE
                                 ? ClipRRect(
@@ -256,8 +259,10 @@ class LayananDetailScreen extends StatelessWidget {
                                                   const EdgeInsets.all(12),
 
                                               child: InteractiveViewer(
-                                                child: Image.asset(
-                                                  item.infomemoImages.first,
+                                                child: _buildPointJatimImage(
+                                                  _infomemoImages.first,
+                                                  height: 500,
+                                                  width: 500,
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
@@ -266,8 +271,9 @@ class LayananDetailScreen extends StatelessWidget {
                                         );
                                       },
 
-                                      child: Image.asset(
-                                        item.infomemoImages.first,
+                                      child: _buildPointJatimImage(
+                                        _infomemoImages.first,
+                                        height: 220,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       ),
@@ -279,7 +285,7 @@ class LayananDetailScreen extends StatelessWidget {
                                     scrollDirection: Axis.horizontal,
 
                                     itemCount:
-                                        item.infomemoImages.length,
+                                        _infomemoImages.length,
 
                                     separatorBuilder:
                                         (_, __) =>
@@ -305,8 +311,10 @@ class LayananDetailScreen extends StatelessWidget {
                                                       const EdgeInsets.all(12),
 
                                                   child: InteractiveViewer(
-                                                    child: Image.asset(
-                                                      item.infomemoImages[index],
+                                                    child: _buildPointJatimImage(
+                                                      _infomemoImages[index],
+                                                      height: 500,
+                                                      width: 500,
                                                       fit: BoxFit.contain,
                                                     ),
                                                   ),
@@ -315,8 +323,9 @@ class LayananDetailScreen extends StatelessWidget {
                                             );
                                           },
 
-                                          child: Image.asset(
-                                            item.infomemoImages[index],
+                                          child: _buildPointJatimImage(
+                                            _infomemoImages[index],
+                                            height: 220,
                                             width: 320,
                                             fit: BoxFit.cover,
                                           ),
@@ -357,22 +366,26 @@ class LayananDetailScreen extends StatelessWidget {
 
                         _buildDetailRow(
                           'Koordinat',
-                          '7.8496131, 112.4607358',
+                          item.koordinat.isNotEmpty
+                              ? item.koordinat
+                              : '7.8496131, 112.4607358',
                         ),
 
                         _buildDetailRow(
                           'IRR',
-                          '19.82%',
+                          item.irr.isNotEmpty ? item.irr : '19.82%',
                         ),
 
                         _buildDetailRow(
                           'NPV',
-                          'Rp 7,85 Miliar',
+                          item.npv.isNotEmpty ? item.npv : 'Rp 7,85 Miliar',
                         ),
 
                         _buildDetailRow(
                           'Payback Period',
-                          '5.5 Tahun',
+                          item.paybackPeriod.isNotEmpty
+                              ? item.paybackPeriod
+                              : '5.5 Tahun',
                           isLast: true,
                         ),
 
@@ -390,7 +403,9 @@ class LayananDetailScreen extends StatelessWidget {
                         const SizedBox(height: 14),
 
                         Text(
-                          PointJatimDetailDummy.deskripsi,
+                          item.deskripsi.isNotEmpty
+                              ? item.deskripsi
+                              : PointJatimDetailDummy.deskripsi,
                           style: TextStyle(
                             color: Colors.grey.shade700,
                             fontSize: 14,
@@ -404,38 +419,15 @@ class LayananDetailScreen extends StatelessWidget {
                         const Text(
                           'Lokasi',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.w700,
+                            color: Color(0xff10162F),
                           ),
                         ),
 
                         const SizedBox(height: 16),
 
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(20),
-
-                          child: Image.network(
-                            'https://maps.googleapis.com/maps/api/staticmap?center=-7.8496131,112.4607358&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7C-7.8496131,112.4607358',
-                            width: double.infinity,
-                            height: 230,
-                            fit: BoxFit.cover,
-
-                            errorBuilder:
-                                (context, error, stackTrace) {
-                              return Container(
-                                height: 230,
-                                color: Colors.grey.shade300,
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.map,
-                                    size: 50,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        _buildMapPreview(),
 
                         const SizedBox(height: 40),
                       ],
@@ -500,4 +492,252 @@ class LayananDetailScreen extends StatelessWidget {
       ),
     );
   }
+
+  List<String> get _infomemoImages {
+    final images = item.infomemoImages
+        .map((image) => image.trim())
+        .where((image) => image.isNotEmpty)
+        .toList();
+    if (images.isNotEmpty) {
+      return images;
+    }
+
+    final image = item.image.trim();
+    return [image.isNotEmpty ? image : PointJatimAssets.fallbackImage];
+  }
+
+  Widget _buildPointJatimImage(
+    String image, {
+    required double height,
+    required double width,
+    required BoxFit fit,
+  }) {
+    final resolvedImage = image.trim();
+    if (resolvedImage.isEmpty ||
+        resolvedImage == PointJatimAssets.fallbackImage) {
+      return _buildImagePlaceholder(
+        height: height,
+        width: width,
+      );
+    }
+
+    final isNetwork = resolvedImage.startsWith('http://') ||
+        resolvedImage.startsWith('https://');
+
+    if (isNetwork) {
+      return Image.network(
+        resolvedImage,
+        height: height,
+        width: width,
+        fit: fit,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+
+          return _buildImagePlaceholder(
+            height: height,
+            width: width,
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildImagePlaceholder(
+            height: height,
+            width: width,
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      resolvedImage,
+      height: height,
+      width: width,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildImagePlaceholder(
+          height: height,
+          width: width,
+        );
+      },
+    );
+  }
+
+  Widget _buildImagePlaceholder({
+    required double height,
+    required double width,
+  }) {
+    return Container(
+      height: height,
+      width: width,
+      color: const Color(0xffEEF3FF),
+      alignment: Alignment.center,
+      child: Image.asset(
+        PointJatimAssets.fallbackImage,
+        width: 64,
+        height: 64,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  Widget _buildMapPreview() {
+    if (item.lat == 0 && item.lon == 0) {
+      return _buildMapPlaceholder('Koordinat tidak tersedia');
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: AspectRatio(
+        aspectRatio: 0.96,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return _buildOpenStreetMapTiles(
+              constraints.maxWidth,
+              constraints.maxHeight,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOpenStreetMapTiles(
+    double width,
+    double height,
+  ) {
+    const zoom = 15;
+    const tileSize = 256.0;
+    final tileCount = math.pow(2, zoom).toInt();
+    final centerX = (item.lon + 180) / 360 * tileCount * tileSize;
+    final latRad = item.lat * math.pi / 180;
+    final centerY =
+        (1 - math.log(math.tan(latRad) + 1 / math.cos(latRad)) / math.pi) /
+            2 *
+            tileCount *
+            tileSize;
+    final startTileX = ((centerX - width / 2) / tileSize).floor();
+    final endTileX = ((centerX + width / 2) / tileSize).floor();
+    final startTileY = ((centerY - height / 2) / tileSize).floor();
+    final endTileY = ((centerY + height / 2) / tileSize).floor();
+    final children = <Widget>[];
+
+    for (var tileX = startTileX; tileX <= endTileX; tileX++) {
+      for (var tileY = startTileY; tileY <= endTileY; tileY++) {
+        if (tileY < 0 || tileY >= tileCount) {
+          continue;
+        }
+
+        final wrappedTileX = ((tileX % tileCount) + tileCount) % tileCount;
+        final left = tileX * tileSize - centerX + width / 2;
+        final top = tileY * tileSize - centerY + height / 2;
+        final url =
+            'https://tile.openstreetmap.org/$zoom/$wrappedTileX/$tileY.png';
+
+        children.add(
+          Positioned(
+            left: left,
+            top: top,
+            width: tileSize,
+            height: tileSize,
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return _buildTileFallback();
+              },
+            ),
+          ),
+        );
+      }
+    }
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Container(
+            color: const Color(0xffF1F2EF),
+          ),
+        ),
+        ...children,
+        Positioned.fill(
+          child: Container(
+            color: Colors.white.withOpacity(0.14),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTileFallback() {
+    return Container(
+      color: const Color(0xffF1F2EF),
+      child: CustomPaint(
+        painter: _MapTileFallbackPainter(),
+      ),
+    );
+  }
+
+  Widget _buildMapPlaceholder(String text) {
+    return Container(
+      width: double.infinity,
+      height: 370,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.location_on_rounded,
+            size: 46,
+            color: Color(0xff1E4FD8),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MapTileFallbackPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final roadPaint = Paint()
+      ..color = Colors.white.withOpacity(0.8)
+      ..strokeWidth = 10
+      ..strokeCap = StrokeCap.round;
+    final waterPaint = Paint()
+      ..color = const Color(0xffBCE9F5).withOpacity(0.75)
+      ..strokeWidth = 26
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(
+      Offset(0, size.height * 0.82),
+      Offset(size.width, size.height * 0.62),
+      waterPaint,
+    );
+    canvas.drawLine(
+      Offset(0, size.height * 0.32),
+      Offset(size.width, size.height * 0.52),
+      roadPaint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.18, 0),
+      Offset(size.width * 0.76, size.height),
+      roadPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

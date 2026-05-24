@@ -1,35 +1,17 @@
 name: majadigi
 description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
+publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
   sdk: ^3.11.4
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_svg: ^2.2.0
   http: ^1.6.0
   intl: ^0.18.1
@@ -38,36 +20,25 @@ dependencies:
   fl_chart: ^0.68.0
   
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
   assets:
     - assets/images/logo_majadigi.png
     - assets/images/welcome_hero.png
+    - assets/images/welcome_hero2.jpg
+    - assets/images/welcome_hero3.jpg
     - assets/images/latar_belakang.png
+
+    # kategori
     - assets/images/kategori/ekonomi_&_bisnis.png
     - assets/images/kategori/infrastuktur.png
     - assets/images/kategori/kependudukan.png
@@ -76,8 +47,8 @@ flutter:
     - assets/images/kategori/pendidikan.png
     - assets/images/kategori/pariwisata_&_kebudayaan.png
     - assets/images/kategori/multisektor.png
-    - assets/images/welcome_hero2.jpg
-    - assets/images/welcome_hero3.jpg
+
+    # layanan
     - assets/images/cak_durasim.png
     - assets/images/destinasi_wisata.png
     - assets/images/islamic_center.png
@@ -90,17 +61,30 @@ flutter:
     - assets/images/rsud_saifulanwar.png
     - assets/images/transjatim_ajaib.png
     - assets/images/grid_lainnya.png
+
+    # icon dashboard
     - assets/images/icon_ekonomi.png
     - assets/images/icon_penduduk.png
     - assets/images/icon_user.png
+
+    # wisata
     - assets/images/bromo.png
-    - assets/images/kawah_ijen.png
-    - assets/images/tumpak_sewu.png
     - assets/images/bromo2.png
     - assets/images/bromo3.png
+    - assets/images/kawah_ijen.png
+    - assets/images/tumpak_sewu.png
     - assets/images/maps.png
-    - assets/images/sidita.png
+    - assets/images/mapsjatim.png
+
+    # berita
+    - assets/images/berita1.png
+    - assets/images/berita2.png
+    - assets/images/berita3.png
+
+    # hoax
     - assets/images/banner_hoax.png
+
+    # harga bahan pokok
     - assets/images/bawang_merah.png
     - assets/images/bawang_putih.png
     - assets/images/beras.png
@@ -112,15 +96,20 @@ flutter:
     - assets/images/kayu.png
     - assets/images/kol.png
     - assets/images/siskaperbapo.png
-    - assets/images/nomordarurat.png
+
+    # rsud
     - assets/images/rsud1.png
     - assets/images/rsud2.png
     - assets/images/rsud3.png
     - assets/images/Top_rsudjatim.png
+
+    # rssa
     - assets/images/Top_rssa.png
     - assets/images/rssa1.png
     - assets/images/rssa2.png
     - assets/images/rssa3.png
+
+    # transjatim
     - assets/images/transjatim1.png
     - assets/images/transjatim2.png
     - assets/images/transjatim3.png
@@ -129,6 +118,44 @@ flutter:
     - assets/images/islamicCenter/asrama.png
     - assets/images/islamicCenter/aula.png
     - assets/images/islamicCenter/masjid.png
+
+    # layanan daerah
+    - assets/images/mpp.png
+    - assets/images/rs.png
+    - assets/images/sma.png
+
+    # nomor darurat
+    - assets/images/nomordarurat.png
+
+    # sidita
+    - assets/images/sidita.png
+
+    # islamic center
+    - assets/images/islamicCenter/asrama.png
+    - assets/images/islamicCenter/aula.png
+    - assets/images/islamicCenter/masjid.png
+
+    # nawa bhakti satya
+    - assets/images/nawa/jatim_agro.png
+    - assets/images/nawa/jatim_akses.png
+    - assets/images/nawa/jatim_berkah.png
+    - assets/images/nawa/jatim_cerdas.png
+    - assets/images/nawa/jatim_harmoni.png
+    - assets/images/nawa/jatim_kerja.png
+    - assets/images/nawa/jatim_lestari.png
+    - assets/images/nawa/jatim_sehat.png
+    - assets/images/nawa/jatim_sejahtera.png
+
+    # point jatim
+    - assets/images/pointJatim/biofarmaka.png
+    - assets/images/pointJatim/infomemo_peternakan_sapi1.png
+    - assets/images/pointJatim/infomemo_peternakan_sapi2.png
+    - assets/images/pointJatim/pasar_agrobis.png
+    - assets/images/pointJatim/pengembangan_susu_sapi.png
+    - assets/images/pointJatim/peternakan_sapi_perah_terintegrasi.png
+    - assets/images/pointJatim/rsud_kajuruhan.png
+    
+    # svg icons
     - assets/images/icons/ambulans.svg
     - assets/images/icons/call.svg
     - assets/images/icons/polda.svg
@@ -203,22 +230,27 @@ flutter:
       fonts:
         - asset: assets/fonts/Onest-Thin.ttf
           weight: 100
+
         - asset: assets/fonts/Onest-ExtraLight.ttf
           weight: 200
+
         - asset: assets/fonts/Onest-Light.ttf
           weight: 300
+
         - asset: assets/fonts/Onest-Regular.ttf
           weight: 400
+
         - asset: assets/fonts/Onest-Medium.ttf
           weight: 500
+
         - asset: assets/fonts/Onest-SemiBold.ttf
           weight: 600
+
         - asset: assets/fonts/Onest-Bold.ttf
           weight: 700
+
         - asset: assets/fonts/Onest-ExtraBold.ttf
           weight: 800
+
         - asset: assets/fonts/Onest-Black.ttf
           weight: 900
-
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package

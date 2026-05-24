@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'category_selection_screen.dart';
 import '../service_model.dart';
 import '../../services/auth_service.dart';
+import '../../services/layanan_service.dart';
 
 class RecommendationScreen extends StatefulWidget {
   final List<Recommendation> data;
@@ -18,7 +19,45 @@ class RecommendationScreen extends StatefulWidget {
 }
 
 class _RecommendationScreenState extends State<RecommendationScreen> {
+  final LayananService _layananService = LayananService();
+
   final Set<int> _selectedIds = {};
+  List<Recommendation> _layananRecommendations = [];
+
+  List<Recommendation> get _visibleRecommendations {
+    if (widget.data.isNotEmpty) {
+      return widget.data;
+    }
+    if (_layananRecommendations.isNotEmpty) {
+      return _layananRecommendations;
+    }
+    return backendLayananFallbackRecommendations;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLayanan();
+  }
+
+  @override
+  void dispose() {
+    _layananService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadLayanan() async {
+    try {
+      final layanan = await _layananService.getPublicLayanan();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _layananRecommendations =
+            layanan.map(recommendationFromLayanan).toList();
+      });
+    } catch (_) {}
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -227,9 +266,9 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
             mainAxisSpacing: 12,
             mainAxisExtent: 145, 
           ),
-          itemCount: recommendations.length,
+          itemCount: _visibleRecommendations.length,
           itemBuilder: (context, index) {
-            return _buildRecommendationCard(recommendations[index]);
+            return _buildRecommendationCard(_visibleRecommendations[index]);
           },
         ),
       ],
@@ -265,7 +304,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
-                  'assets/images/${item.logo}',
+                  layananLogoAssetPath(item.logo),
                   width: 32, height: 32,
                   errorBuilder: (context, error, stackTrace) => const Icon(Icons.business, color: Colors.blue),
                 ),
