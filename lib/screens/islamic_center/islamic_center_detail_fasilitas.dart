@@ -282,6 +282,7 @@ class IslamicCenterDetailFasilitas
                           builder: (_) =>
                               IslamicCenterPemesanan(
                             room: room,
+                            facilityTitle: facility.title,
                           ),
                         ),
                       );

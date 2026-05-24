@@ -19,9 +19,9 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
 
   // Data dummy untuk gambar klarifikasi terbaru agar bervariasi
   final List<String> newsImages = [
-    'assets/images/open_data_banner1.png',
-    'assets/images/open_data_banner2.png', 
-    'assets/images/open_data_banner3.png',
+    'assets/images/openData/open_data_banner1.png',
+    'assets/images/openData/open_data_banner2.png', 
+    'assets/images/openData/open_data_banner3.png',
   ];
 
   @override

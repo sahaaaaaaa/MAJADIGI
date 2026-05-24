@@ -55,7 +55,6 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-
       body: Stack(
         children: [
           // 🔵 HEADER BACKGROUND
@@ -73,14 +72,13 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
             ),
           ),
 
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(32),
-                  ),
+          SafeArea(
+            child: Column(
+              children: [
+                // 🔹 HEADER
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     children: [
                       IconButton(
@@ -110,6 +108,7 @@ class _EditAkunScreenState extends State<EditAkunScreen> {
                   ),
                 ),
 
+                // 🔹 CONTENT
                 Expanded(
                   child: Container(
                     padding:

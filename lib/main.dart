@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'screens/onboarding/login_screen.dart';
+//import 'screens/onboarding/login_screen.dart';
+import 'screens/onboarding/welcome_screen.dart';
 import 'widgets/main_navigation.dart';
 
 void main() {
@@ -22,10 +23,11 @@ class MajadigiApp extends StatelessWidget {
       ),
 
       // 🔥 BYPASS LANGSUNG HOME
-      home: const MainNavigation(),
+      //home: const MainNavigation(),
+      home: const WelcomeScreen(),
 
       routes: {
-        '/login': (context) => const LoginScreen(),
+        '/login': (context) => const WelcomeScreen(),
       },
     );
   }

@@ -283,7 +283,6 @@ String selectedFilterValue = "Semua";
             children: [
               _buildTab("Tabel", 0),
               _buildTab("Grafik", 1),
-              _buildTab("Tabel Dinamis", 2),
             ],
           ),
 
@@ -292,8 +291,8 @@ String selectedFilterValue = "Semua";
               _buildTableTab(),
             if (selectedTab == 1)
               _buildChartTab(),
-            if (selectedTab == 2)
-              _buildDynamicTable(),
+            // if (selectedTab == 2)
+            //   _buildDynamicTable(),
             ],
             ),
           ),

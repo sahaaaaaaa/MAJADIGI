@@ -281,16 +281,34 @@ class _LayananScreenState
       children: [
 
         /// BACKGROUND IMAGE
-        Container(
-          width: double.infinity,
-          height: 300,
+        Positioned(
+          top: 10,
+          left: -430,
 
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                "assets/images/latar_belakang.png",
+          child: Transform.rotate(
+            angle: -60.94 * (3.14159 / 180),
+
+            child: Container(
+              width: 950,
+              height: 850,
+
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+
+                  colors: [
+                    Color(0xFF0047B3),
+                    Color(0xFF0065FF),
+                  ],
+                ),
+
+                shape: BoxShape.rectangle,
+
+                borderRadius: BorderRadius.all(
+                  Radius.elliptical(935, 791),
+                ),
               ),
-              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -305,7 +323,7 @@ class _LayananScreenState
                 24,
                 30,
                 24,
-                20,
+                10,
               ),
 
               child: Row(
@@ -319,7 +337,7 @@ class _LayananScreenState
 
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

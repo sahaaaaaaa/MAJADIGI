@@ -34,8 +34,9 @@ dependencies:
   http: ^1.6.0
   intl: ^0.18.1
   image_picker: ^1.0.7
-  url_launcher: ^6.2.5
+  url_launcher: ^6.3.0
   fl_chart: ^0.68.0
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -125,7 +126,9 @@ flutter:
     - assets/images/transjatim3.png
     - assets/images/maps_transjatim.png
     - assets/images/Top_transjatim.png
-
+    - assets/images/islamicCenter/asrama.png
+    - assets/images/islamicCenter/aula.png
+    - assets/images/islamicCenter/masjid.png
     - assets/images/icons/ambulans.svg
     - assets/images/icons/call.svg
     - assets/images/icons/polda.svg
@@ -146,9 +149,27 @@ flutter:
     - assets/images/icons/marker-pin-02.svg
     - assets/images/icons/ellipse2.svg
     - assets/images/icons/clock_white.svg
-    # - assets/images/open_data_banner1.png
-    # - assets/images/open_data_banner2.png
-    # - assets/images/open_data_banner3.png
+    - assets/images/pointJatim/biofarmaka.png
+    - assets/images/pointJatim/infomemo_peternakan_sapi1.png
+    - assets/images/pointJatim/infomemo_peternakan_sapi2.png
+    - assets/images/pointJatim/pasar_agrobis.png
+    - assets/images/pointJatim/pengembangan_susu_sapi.png
+    - assets/images/pointJatim/peternakan_sapi_perah_terintegrasi.png
+    - assets/images/pointJatim/rsud_kajuruhan.png
+    - assets/images/openData/open_data_banner1.png
+    - assets/images/openData/open_data_banner2.png
+    - assets/images/openData/open_data_banner3.png
+    - assets/images/openData/ekonomi.png
+    - assets/images/openData/infrastruktur.png
+    - assets/images/openData/kemiskinan.png
+    - assets/images/openData/kependudukan.png
+    - assets/images/openData/kesehatan.png
+    - assets/images/openData/lingkungan.png
+    - assets/images/openData/pemerintah.png 
+    - assets/images/openData/pendidikan.png
+    - assets/images/openData/sosial.png
+    - assets/images/openData/tataruang.png
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
