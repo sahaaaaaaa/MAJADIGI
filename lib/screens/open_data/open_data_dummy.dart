@@ -33,7 +33,6 @@ class OpenDataModel {
 }
 
 class DetailPeriodeModel {
-
   final int id;
   final int idIndex;
   final String kodeProvinsi;
@@ -45,9 +44,9 @@ class DetailPeriodeModel {
   final String satuan;
   final String tahun;
   final String kategori;
+  final Map<String, String> values;
 
   DetailPeriodeModel({
-
     required this.id,
     required this.idIndex,
     required this.kodeProvinsi,
@@ -59,7 +58,21 @@ class DetailPeriodeModel {
     required this.satuan,
     required this.tahun,
     required this.kategori,
-  });
+    Map<String, String>? values,
+  }) : values =
+           values ??
+           {
+             "id": id.toString(),
+             "id_index": idIndex.toString(),
+             "kode_provinsi": kodeProvinsi,
+             "nama_provinsi": namaProvinsi,
+             "kab_kota": kabKota,
+             "periode_update": periodeUpdate,
+             "kategori": kategori,
+             "jumlah": jumlahPosko.toString(),
+             "satuan": satuan,
+             "tahun": tahun,
+           };
 }
 
 class HighlightDataModel {
@@ -69,6 +82,13 @@ class HighlightDataModel {
   final String kategori;
   final String tanggal;
   final String status;
+  final String slug;
+  final String schema;
+  final String table;
+  final String organisasiImage;
+  final String description;
+  final int countView;
+  final int countDownload;
 
   HighlightDataModel({
     required this.title,
@@ -77,11 +97,17 @@ class HighlightDataModel {
     required this.kategori,
     required this.tanggal,
     required this.status,
+    this.slug = "",
+    this.schema = "",
+    this.table = "",
+    this.organisasiImage = "",
+    this.description = "",
+    this.countView = 0,
+    this.countDownload = 0,
   });
 }
 
 final List<String> dummyOrganisasi = [
-
   "Badan Kepegawaian Daerah Provinsi Jawa Timur",
 
   "Badan Kesatuan Bangsa dan Politik Provinsi Jawa Timur",
@@ -118,7 +144,6 @@ final List<String> dummyOrganisasi = [
 ];
 
 final List<String> dummyTopik = [
-
   "Ekonomi",
 
   "Infrastruktur",
@@ -143,11 +168,12 @@ final List<String> dummyTopik = [
 final List<OpenDataModel> dummyOpenData = [
   OpenDataModel(
     title: "Realisasi Investasi Jawa Timur Tahun 2025 Tembus Rp. 147,7 Triliun",
-    content: "Alhamdulillah, investasi Jawa Timur tahun 2025 tembus Rp 147,7 triliun dan trennya konsisten tumbuh sejak 2024.\n\nKomitmen ini didominasi PMDN dan PMA yang terus meningkat.\n\nMenurut Pemerintah Jawa Timur, sektor investasi terus bergerak positif dan berdampak pada ekonomi.",
+    content:
+        "Alhamdulillah, investasi Jawa Timur tahun 2025 tembus Rp 147,7 triliun dan trennya konsisten tumbuh sejak 2024.\n\nKomitmen ini didominasi PMDN dan PMA yang terus meningkat.\n\nMenurut Pemerintah Jawa Timur, sektor investasi terus bergerak positif dan berdampak pada ekonomi.",
     date: "08 April 2026",
     category: "Ekonomi",
     image: "assets/images/open_data_banner3.png",
-    
+
     totalDataset: "40.204",
     totalPerangkatDaerah: "64",
     totalArtikel: "22",
@@ -160,7 +186,8 @@ final List<OpenDataModel> dummyOpenData = [
 
   OpenDataModel(
     title: "Data Kependudukan Berdasarkan Wilayah",
-    content: "Laporan lengkap mengenai persebaran penduduk di berbagai wilayah Jawa Timur pada kuartal pertama 2026.",
+    content:
+        "Laporan lengkap mengenai persebaran penduduk di berbagai wilayah Jawa Timur pada kuartal pertama 2026.",
     date: "10 April 2026",
     category: "Sosial",
     image: "assets/images/open_data_banner2.png",
@@ -177,7 +204,8 @@ final List<OpenDataModel> dummyOpenData = [
   ),
   OpenDataModel(
     title: "Publikasi Indeks Pembangunan Manusia",
-    content: "Peningkatan IPM Jawa Timur menunjukkan keberhasilan program pendidikan dan kesehatan yang merata.",
+    content:
+        "Peningkatan IPM Jawa Timur menunjukkan keberhasilan program pendidikan dan kesehatan yang merata.",
     date: "12 April 2026",
     category: "Kesehatan",
     image: "assets/images/open_data_banner1.png",
@@ -195,13 +223,10 @@ final List<OpenDataModel> dummyOpenData = [
 ];
 
 final List<HighlightDataModel> dummyHighlightData = [
-
   HighlightDataModel(
-    title:
-        "Jumlah Hari Perawatan (Rawat Inap) Berdasarkan Kelas",
+    title: "Jumlah Hari Perawatan (Rawat Inap) Berdasarkan Kelas",
 
-    instansi:
-        "Rumah Sakit Umum Daerah Husada Prima",
+    instansi: "Rumah Sakit Umum Daerah Husada Prima",
 
     tahun: "2020 - 2025",
 
@@ -213,11 +238,9 @@ final List<HighlightDataModel> dummyHighlightData = [
   ),
 
   HighlightDataModel(
-    title:
-        "Jumlah Layanan Radiologi Berdasarkan Jenis Kegiatan",
+    title: "Jumlah Layanan Radiologi Berdasarkan Jenis Kegiatan",
 
-    instansi:
-        "Rumah Sakit Umum Daerah Husada Prima",
+    instansi: "Rumah Sakit Umum Daerah Husada Prima",
 
     tahun: "2020 - 2025",
 
@@ -245,126 +268,93 @@ final List<HighlightDataModel> dummyHighlightData = [
   ),
 
   HighlightDataModel(
-  title:
-      "Jumlah Penyaluran Dana Desa Menurut Kabupaten/Kota di Jawa Timur",
+    title: "Jumlah Penyaluran Dana Desa Menurut Kabupaten/Kota di Jawa Timur",
 
-  instansi:
-      "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
+    instansi: "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
 
-  tahun: "2020 - 2025",
+    tahun: "2020 - 2025",
 
-  kategori: "Ekonomi",
+    kategori: "Ekonomi",
 
-  tanggal: "21 April 2025",
+    tanggal: "21 April 2025",
 
-  status: "Tetap",
-),
+    status: "Tetap",
+  ),
 
-HighlightDataModel(
-  title:
-      "Jumlah koperasi berdasarkan status keaktifan",
+  HighlightDataModel(
+    title: "Jumlah koperasi berdasarkan status keaktifan",
 
-  instansi:
-      "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
+    instansi: "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
 
-  tahun: "2020 - 2025",
+    tahun: "2020 - 2025",
 
-  kategori: "Ekonomi",
+    kategori: "Ekonomi",
 
-  tanggal: "21 April 2025",
+    tanggal: "21 April 2025",
 
-  status: "Tetap",
-),
+    status: "Tetap",
+  ),
 
-HighlightDataModel(
-  title:
-      "Jumlah tenaga kerja koperasi",
+  HighlightDataModel(
+    title: "Jumlah tenaga kerja koperasi",
 
-  instansi:
-      "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
+    instansi: "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
 
-  tahun: "2020 - 2025",
+    tahun: "2020 - 2025",
 
-  kategori: "Ekonomi",
+    kategori: "Ekonomi",
 
-  tanggal: "21 April 2025",
+    tanggal: "21 April 2025",
 
-  status: "Tetap",
-),
+    status: "Tetap",
+  ),
 
-HighlightDataModel(
-  title:
-      "Jumlah Koperasi Aktif berdasarkan kelompok",
+  HighlightDataModel(
+    title: "Jumlah Koperasi Aktif berdasarkan kelompok",
 
-  instansi:
-      "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
+    instansi: "Dinas Pemberdayaan Masyarakat dan Desa Provinsi Jawa Timur",
 
-  tahun: "2020 - 2025",
+    tahun: "2020 - 2025",
 
-  kategori: "Ekonomi",
+    kategori: "Ekonomi",
 
-  tanggal: "21 April 2025",
+    tanggal: "21 April 2025",
 
-  status: "Tetap",
-),
+    status: "Tetap",
+  ),
 ];
 
 class DataTableModel {
-
   final int id;
   final String periode;
+  final String periodeFilter;
 
   DataTableModel({
     required this.id,
     required this.periode,
+    this.periodeFilter = "",
   });
 }
 
 final List<DataTableModel> dummyTableData = [
+  DataTableModel(id: 1, periode: "Maret 2026"),
 
-  DataTableModel(
-    id: 1,
-    periode: "Maret 2026",
-  ),
+  DataTableModel(id: 2, periode: "Januari 2026"),
 
-  DataTableModel(
-    id: 2,
-    periode: "Januari 2026",
-  ),
+  DataTableModel(id: 3, periode: "Februari 2026"),
 
-  DataTableModel(
-    id: 3,
-    periode: "Februari 2026",
-  ),
+  DataTableModel(id: 4, periode: "Maret 2026"),
 
-  DataTableModel(
-    id: 4,
-    periode: "Maret 2026",
-  ),
+  DataTableModel(id: 5, periode: "Desember 2026"),
 
-  DataTableModel(
-    id: 5,
-    periode: "Desember 2026",
-  ),
+  DataTableModel(id: 6, periode: "April 2026"),
 
-  DataTableModel(
-    id: 6,
-    periode: "April 2026",
-  ),
+  DataTableModel(id: 7, periode: "Mei 2026"),
 
-  DataTableModel(
-    id: 7,
-    periode: "Mei 2026",
-  ),
-
-  DataTableModel(
-    id: 8,
-    periode: "Juni 2026",
-  ),
+  DataTableModel(id: 8, periode: "Juni 2026"),
 ];
 
 final List<DetailPeriodeModel> dummyDetailPeriode = [
-
   DetailPeriodeModel(
     id: 1,
     idIndex: 1,
