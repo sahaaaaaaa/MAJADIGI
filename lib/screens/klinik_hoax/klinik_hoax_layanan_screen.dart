@@ -5,7 +5,8 @@ class KlinikHoaksLayananScreen extends StatefulWidget {
   const KlinikHoaksLayananScreen({super.key, this.initialTab = 0});
 
   @override
-  State<KlinikHoaksLayananScreen> createState() => _KlinikHoaksLayananScreenState();
+  State<KlinikHoaksLayananScreen> createState() =>
+      _KlinikHoaksLayananScreenState();
 }
 
 class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
@@ -14,7 +15,8 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
   final TextEditingController namaUser = TextEditingController();
   final TextEditingController emailUser = TextEditingController();
   final TextEditingController phoneUser = TextEditingController();
-  final TextEditingController laporanKlinikHoaks = TextEditingController(); // Ini yang kamu minta
+  final TextEditingController laporanKlinikHoaks =
+      TextEditingController(); // Ini yang kamu minta
   final TextEditingController linkBukti = TextEditingController();
   final TextEditingController captchaInput = TextEditingController();
   final TextEditingController tiketLacak = TextEditingController();
@@ -60,7 +62,7 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
             children: [
               _buildAppBar(),
               const SizedBox(height: 10),
-              
+
               // Container Putih Utama
               Expanded(
                 child: Container(
@@ -89,23 +91,34 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
 
                         // Judul Dinamis
                         Text(
-                          activeTab == 0 ? "Laporan Hoaks" : "Lacak tiket Laporan",
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                          activeTab == 0
+                              ? "Laporan Hoaks"
+                              : "Lacak tiket Laporan",
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 12),
-                        
+
                         // Deskripsi Dinamis
                         Text(
-                          activeTab == 0 
-                            ? "Kirimkan detail informasi yang kamu dapat, akan kami bantu cari klarifikasinya dalam 1x24 jam."
-                            : "Masukkan no tiket yang telah dikirim ke WhatsApp dan Email anda.",
+                          activeTab == 0
+                              ? "Kirimkan detail informasi yang kamu dapat, akan kami bantu cari klarifikasinya dalam 1x24 jam."
+                              : "Masukkan no tiket yang telah dikirim ke WhatsApp dan Email anda.",
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey[600], fontSize: 14, height: 1.5),
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
                         ),
                         const SizedBox(height: 30),
 
                         // Form Konten
-                        activeTab == 0 ? _buildFormLaporan() : _buildFormLacak(),
+                        activeTab == 0
+                            ? _buildFormLaporan()
+                            : _buildFormLacak(),
                       ],
                     ),
                   ),
@@ -129,7 +142,14 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
               children: [
                 Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
                 SizedBox(width: 8),
-                Text('Kembali', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                Text(
+                  'Kembali',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
           ),
@@ -155,7 +175,10 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
           hintStyle: const TextStyle(color: Color(0xFFA0A0A0), fontSize: 16),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 18,
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),
             borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 1.2),
@@ -168,16 +191,31 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
       ),
     );
   }
- 
+
   Widget _buildFormLaporan() {
     return Column(
       children: [
         _buildTextField(controller: namaUser, hintText: "Nama Anda"),
-        _buildTextField(controller: emailUser, hintText: "Email", keyboardType: TextInputType.emailAddress),
-        _buildTextField(controller: phoneUser, hintText: "No handphone", keyboardType: TextInputType.phone),
-        _buildTextField(controller: laporanKlinikHoaks, hintText: "Isi Laporan...", maxLines: 4),
-        _buildTextField(controller: linkBukti, hintText: "Link Bukti / Website"),
-       // Simulasikan Captcha (seperti di image_6c2eb1.png)     
+        _buildTextField(
+          controller: emailUser,
+          hintText: "Email",
+          keyboardType: TextInputType.emailAddress,
+        ),
+        _buildTextField(
+          controller: phoneUser,
+          hintText: "No handphone",
+          keyboardType: TextInputType.phone,
+        ),
+        _buildTextField(
+          controller: laporanKlinikHoaks,
+          hintText: "Isi Laporan...",
+          maxLines: 4,
+        ),
+        _buildTextField(
+          controller: linkBukti,
+          hintText: "Link Bukti / Website",
+        ),
+        // Simulasikan Captcha (seperti di image_6c2eb1.png)
         Row(
           children: [
             Container(
@@ -186,15 +224,19 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
                 border: Border.all(color: Colors.grey.shade300),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Image.asset('assets/images/captcha_dummy.png', height: 40, errorBuilder: (c, e, s) => const Icon(Icons.image)),
+              child: Image.asset(
+                'assets/images/captcha_dummy.png',
+                height: 40,
+                errorBuilder: (c, e, s) => const Icon(Icons.image),
+              ),
             ),
             const SizedBox(width: 15),
             Expanded(
               child: _buildTextField(
-                controller: captchaInput, 
-                hintText: "Kode Captcha"
-                ),
+                controller: captchaInput,
+                hintText: "Kode Captcha",
               ),
+            ),
           ],
         ),
         const SizedBox(height: 30),
@@ -203,60 +245,85 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
     );
   }
 
-
   // --- UI FORM LACAK ---
   Widget _buildFormLacak() {
-  return Column(
-    children: [
-      // Desain ala kartu tiket
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFF),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFDCE7F8), width: 1.5),
+    return Column(
+      children: [
+        // Desain ala kartu tiket
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF8FAFF),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xFFDCE7F8), width: 1.5),
+          ),
+          child: Column(
+            children: [
+              const Icon(
+                Icons.confirmation_number_outlined,
+                size: 40,
+                color: Color(0xFF0D57E7),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                "Nomor Tiket Laporan",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0D1B4C),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Inputan tiket
+              _buildTextField(
+                controller: tiketLacak,
+                hintText: "Contoh: MJD-12345",
+                keyboardType: TextInputType.text,
+              ),
+            ],
+          ),
         ),
-        child: Column(
-          children: [
-            const Icon(Icons.confirmation_number_outlined, size: 40, color: Color(0xFF0D57E7)),
-            const SizedBox(height: 12),
-            const Text(
-              "Nomor Tiket Laporan",
-              style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0D1B4C)),
-            ),
-            const SizedBox(height: 20),
-            // Inputan tiket
-            _buildTextField(
-              controller: tiketLacak, 
-              hintText: "Contoh: MJD-12345",
-              keyboardType: TextInputType.text,
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 24),
-      _buildSubmitButton("Lacak"),
-    ],
-  );
-}
+        const SizedBox(height: 24),
+        _buildSubmitButton("Lacak"),
+      ],
+    );
+  }
 
   Widget _buildSubmitButton(String text) {
     return SizedBox(
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: _showUnavailableFeatureMessage,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF0D57E7),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           elevation: 0,
         ),
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+      ),
+    );
+  }
+
+  void _showUnavailableFeatureMessage() {
+    final featureName = activeTab == 0
+        ? 'Upload laporan hoaks'
+        : 'Pelacakan tiket laporan';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '$featureName belum tersedia karena endpoint API belum ada.',
+        ),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

@@ -1,14 +1,207 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/services/destinasi_wisata_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailWisataScreen extends StatelessWidget {
-  const DetailWisataScreen({super.key});
+class DetailWisataScreen extends StatefulWidget {
+  const DetailWisataScreen({
+    super.key,
+    this.destinationId,
+    this.initialDestination,
+    this.favorite,
+  });
 
-  final String mapsUrl = "https://maps.app.goo.gl/CNFKMwNEB9RgyXB89";
+  final int? destinationId;
+  final WisataDestination? initialDestination;
+  final WisataFavorite? favorite;
+
+  @override
+  State<DetailWisataScreen> createState() => _DetailWisataScreenState();
+}
+
+class _DetailWisataScreenState extends State<DetailWisataScreen> {
+  static const Color _favoriteColor = Color(0xFFE53935);
+  static const String _fallbackMapsUrl =
+      "https://maps.app.goo.gl/CNFKMwNEB9RgyXB89";
+
+  late final DestinasiWisataService _wisataService;
+  WisataDestinationDetail? _detail;
+  bool _isFavorite = false;
+  bool _isFavoriteBusy = false;
+  bool _hasFavoriteInteraction = false;
+
+  int? get _destinationId =>
+      widget.destinationId ??
+      widget.initialDestination?.id ??
+      widget.favorite?.id;
+
+  @override
+  void initState() {
+    super.initState();
+    _wisataService = DestinasiWisataService();
+    _isFavorite =
+        widget.favorite != null ||
+        (widget.initialDestination?.isFavorite ?? false);
+    _loadDetail();
+  }
+
+  @override
+  void dispose() {
+    _wisataService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadDetail() async {
+    final id = _destinationId;
+    if (id == null) {
+      return;
+    }
+
+    try {
+      final detail = await _wisataService.getDestinationDetail(id);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _detail = detail;
+        if (!_hasFavoriteInteraction) {
+          _isFavorite =
+              detail.isFavorite ||
+              widget.favorite != null ||
+              (widget.initialDestination?.isFavorite ?? false);
+        }
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _toggleFavorite() async {
+    final id = _destinationId;
+    if (id == null || _isFavoriteBusy) {
+      return;
+    }
+
+    final wasFavorite = _isFavorite;
+    final nextValue = !wasFavorite;
+    setState(() {
+      _hasFavoriteInteraction = true;
+      _isFavoriteBusy = true;
+      _isFavorite = nextValue;
+    });
+
+    try {
+      if (wasFavorite) {
+        await _wisataService.removeFavorite(id);
+      } else {
+        await _wisataService.addFavorite(id);
+      }
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isFavorite = wasFavorite;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isFavoriteBusy = false;
+        });
+      }
+    }
+  }
 
   void _openMaps() async {
-    final Uri url = Uri.parse(mapsUrl);
+    final detail = _detail;
+    final Uri url;
+
+    if (detail != null && detail.hasCoordinate) {
+      url = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=${detail.latitude},${detail.longitude}',
+      );
+    } else {
+      url = Uri.parse(_fallbackMapsUrl);
+    }
+
     await launchUrl(url, mode: LaunchMode.externalApplication);
+  }
+
+  String get _name {
+    return _detail?.name ??
+        widget.initialDestination?.name ??
+        widget.favorite?.name ??
+        "Gunung Bromo";
+  }
+
+  String get _description {
+    return _detail?.description ??
+        widget.initialDestination?.shortDescription ??
+        "Gunung berapi aktif di Jawa Timur";
+  }
+
+  String get _city {
+    return _detail?.city ??
+        widget.initialDestination?.city ??
+        widget.favorite?.city ??
+        "Kabupaten Probolinggo";
+  }
+
+  String get _address {
+    return _detail?.address ??
+        "Cemoro Lawang, Desa Ngadisari, Kec. Sukapura, Kabupaten Probolinggo";
+  }
+
+  String get _coordinate {
+    final detail = _detail;
+    if (detail != null && detail.hasCoordinate) {
+      return "${detail.latitude.toStringAsFixed(6)}, "
+          "${detail.longitude.toStringAsFixed(6)}";
+    }
+    return "-7.9324305, 112.9531326";
+  }
+
+  String get _status {
+    final status = _detail?.status.toLowerCase() ?? '';
+    if (status == 'active') {
+      return 'Buka';
+    }
+    if (status.isNotEmpty) {
+      return _detail!.status;
+    }
+    return 'Buka';
+  }
+
+  double get _rating {
+    return _detail?.rating ?? widget.initialDestination?.rating ?? 4.8;
+  }
+
+  int get _totalReviews {
+    return _detail?.totalReviews ??
+        widget.initialDestination?.totalReviews ??
+        0;
+  }
+
+  String get _primaryImage {
+    final detailImage = _detail?.primaryImage ?? '';
+    if (detailImage.isNotEmpty) {
+      return detailImage;
+    }
+    return widget.initialDestination?.thumbnail ??
+        widget.favorite?.thumbnail ??
+        '';
+  }
+
+  List<String> get _photos {
+    final images = _detail?.images ?? const [];
+    if (images.isNotEmpty) {
+      return images;
+    }
+    if (_primaryImage.isNotEmpty) {
+      return [_primaryImage];
+    }
+    return const [
+      "assets/images/bromo.png",
+      "assets/images/bromo2.png",
+      "assets/images/bromo3.png",
+    ];
   }
 
   @override
@@ -46,13 +239,16 @@ class DetailWisataScreen extends StatelessWidget {
                               Icons.arrow_back,
                               color: Colors.white,
                             ),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () =>
+                                Navigator.pop(context, _isFavorite),
                           ),
-                          const Expanded(
+                          Expanded(
                             child: Center(
                               child: Text(
-                                "Gunung Bromo",
-                                style: TextStyle(
+                                _name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -60,9 +256,16 @@ class DetailWisataScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Icon(
-                            Icons.favorite_border,
-                            color: Colors.white,
+                          IconButton(
+                            onPressed: _toggleFavorite,
+                            icon: Icon(
+                              _isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: _isFavorite
+                                  ? _favoriteColor
+                                  : Colors.white,
+                            ),
                           ),
                         ],
                       ),
@@ -75,11 +278,10 @@ class DetailWisataScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          "assets/images/bromo.png",
+                        child: _wisataImage(
+                          _primaryImage,
                           height: 200,
                           width: double.infinity,
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -96,7 +298,7 @@ class DetailWisataScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                             ),
                           ],
@@ -104,31 +306,39 @@ class DetailWisataScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Gunung Bromo",
-                              style: TextStyle(
+                            Text(
+                              _name,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 6),
                             Row(
-                              children: const [
-                                Icon(
+                              children: [
+                                const Icon(
                                   Icons.star,
                                   color: Colors.orange,
                                   size: 16,
                                 ),
-                                SizedBox(width: 4),
-                                Text("4.8 (100+)"),
-                                SizedBox(width: 12),
-                                Icon(
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${_rating.toStringAsFixed(1)} ($_totalReviews)",
+                                ),
+                                const SizedBox(width: 12),
+                                const Icon(
                                   Icons.location_on,
                                   color: Color(0xFF0E63FF),
                                   size: 16,
                                 ),
-                                SizedBox(width: 4),
-                                Text("Kabupaten Probolinggo"),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    _city,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
@@ -157,11 +367,7 @@ class DetailWisataScreen extends StatelessWidget {
                   height: 140,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: [
-                      _fotoItem("assets/images/bromo.png"),
-                      _fotoItem("assets/images/bromo2.png"),
-                      _fotoItem("assets/images/bromo3.png"),
-                    ],
+                    children: _photos.map(_fotoItem).toList(),
                   ),
                 ),
 
@@ -189,6 +395,7 @@ class DetailWisataScreen extends StatelessWidget {
                         Positioned(
                           bottom: 20,
                           left: 20,
+                          right: 20,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -198,7 +405,11 @@ class DetailWisataScreen extends StatelessWidget {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text("Gunung Bromo"),
+                            child: Text(
+                              _name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                       ],
@@ -215,12 +426,10 @@ class DetailWisataScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
 
-                _infoCard("Kabupaten/Kota", "Kabupaten Probolinggo"),
-                _infoCard(
-                  "Alamat",
-                  "Cemoro Lawang, Desa Ngadisari, Kec. Sukapura, Kabupaten Probolinggo",
-                ),
-                _infoCard("Titik Koordinat", "-7.9324305, 112.9531326"),
+                _infoCard("Kabupaten/Kota", _city),
+                _infoCard("Alamat", _address),
+                _infoCard("Titik Koordinat", _coordinate),
+                _infoCard("Deskripsi", _description),
 
                 // STATUS
                 Container(
@@ -246,9 +455,12 @@ class DetailWisataScreen extends StatelessWidget {
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text(
-                          "Buka",
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        child: Text(
+                          _status,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -262,13 +474,43 @@ class DetailWisataScreen extends StatelessWidget {
     );
   }
 
+  Widget _wisataImage(
+    String image, {
+    required double height,
+    required double width,
+  }) {
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      return Image.network(
+        image,
+        height: height,
+        width: width,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            "assets/images/bromo.png",
+            height: height,
+            width: width,
+            fit: BoxFit.cover,
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      image.isEmpty ? "assets/images/bromo.png" : image,
+      height: height,
+      width: width,
+      fit: BoxFit.cover,
+    );
+  }
+
   // FOTO ITEM
   Widget _fotoItem(String image) {
     return Container(
       margin: const EdgeInsets.only(right: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: Image.asset(image, width: 220, fit: BoxFit.cover),
+        child: _wisataImage(image, width: 220, height: 140),
       ),
     );
   }
