@@ -35,6 +35,19 @@ class LayananModel {
   final bool isFavorite;
   final bool isFeatured;
 
+  LayananModel copyWith({bool? isInstalled, bool? isFavorite}) {
+    return LayananModel(
+      id: id,
+      name: name,
+      description: description,
+      iconUrl: iconUrl,
+      categoryName: categoryName,
+      isInstalled: isInstalled ?? this.isInstalled,
+      isFavorite: isFavorite ?? this.isFavorite,
+      isFeatured: isFeatured,
+    );
+  }
+
   factory LayananModel.fromJson(Map<String, dynamic> json) {
     final category = json['category'];
 
@@ -62,35 +75,97 @@ class LayananService {
     _client.close();
   }
 
-  Future<List<LayananModel>> getPublicLayanan() async {
-    final decoded = await _get('/public/layanan', requireAuth: false);
+  Future<List<LayananModel>> getPublicLayanan({String search = ''}) async {
+    final queryParameters = <String, String>{};
+    if (search.trim().isNotEmpty) {
+      queryParameters['search'] = search.trim();
+    }
+
+    final decoded = await _get(
+      '/public/layanan',
+      queryParameters: queryParameters,
+      includeOptionalAuth: true,
+    );
     return _listFromPayload(decoded);
   }
 
-  Future<List<LayananModel>> getInstalledLayanan() async {
+  Future<List<LayananModel>> getInstalledLayanan({String search = ''}) async {
     if (AuthService.currentSession == null) {
       return const [];
     }
 
-    final decoded = await _get('/layanan/installed', requireAuth: true);
+    final queryParameters = <String, String>{};
+    if (search.trim().isNotEmpty) {
+      queryParameters['search'] = search.trim();
+    }
+
+    final decoded = await _get(
+      '/layanan/installed',
+      queryParameters: queryParameters,
+      requireAuth: true,
+    );
     return _listFromPayload(decoded);
+  }
+
+  Future<List<LayananModel>> getFavoriteLayanan({String search = ''}) async {
+    if (AuthService.currentSession == null) {
+      return const [];
+    }
+
+    final queryParameters = <String, String>{};
+    if (search.trim().isNotEmpty) {
+      queryParameters['search'] = search.trim();
+    }
+
+    final decoded = await _get(
+      '/layanan/favorites',
+      queryParameters: queryParameters,
+      requireAuth: true,
+    );
+    return _listFromPayload(decoded);
+  }
+
+  Future<void> installLayanan(int layananId) async {
+    await _post('/layanan', body: {'layanan_id': layananId}, requireAuth: true);
+  }
+
+  Future<void> uninstallLayanan(int layananId) async {
+    await _delete('/layanan/$layananId');
+  }
+
+  Future<void> addFavoriteLayanan(int layananId) async {
+    await _post(
+      '/layanan/favorites',
+      body: {'layanan_id': layananId},
+      requireAuth: true,
+    );
+  }
+
+  Future<void> removeFavoriteLayanan(int layananId) async {
+    await _delete('/layanan/favorites/$layananId');
   }
 
   Future<Map<String, dynamic>> _get(
     String path, {
-    required bool requireAuth,
+    Map<String, String> queryParameters = const {},
+    bool requireAuth = false,
+    bool includeOptionalAuth = false,
   }) async {
     http.Response response;
 
     try {
+      final uri = Uri.parse('${ApiConfig.baseUrl}$path').replace(
+        queryParameters: queryParameters.isEmpty ? null : queryParameters,
+      );
       response = await _client.get(
-        Uri.parse('${ApiConfig.baseUrl}$path'),
-        headers: _headers(requireAuth: requireAuth),
+        uri,
+        headers: _headers(
+          requireAuth: requireAuth,
+          includeOptionalAuth: includeOptionalAuth,
+        ),
       );
     } catch (_) {
-      throw LayananException(
-        'Tidak dapat terhubung ke server layanan.',
-      );
+      throw LayananException('Tidak dapat terhubung ke server layanan.');
     }
 
     final decoded = _decode(response.body);
@@ -105,11 +180,72 @@ class LayananService {
     return decoded;
   }
 
-  Map<String, String> _headers({required bool requireAuth}) {
+  Future<Map<String, dynamic>> _post(
+    String path, {
+    required Map<String, dynamic> body,
+    required bool requireAuth,
+  }) async {
+    http.Response response;
+
+    try {
+      response = await _client.post(
+        Uri.parse('${ApiConfig.baseUrl}$path'),
+        headers: _headers(requireAuth: requireAuth, hasJsonBody: true),
+        body: jsonEncode(body),
+      );
+    } catch (_) {
+      throw LayananException('Tidak dapat terhubung ke server layanan.');
+    }
+
+    final decoded = _decode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw LayananException(
+        decoded['error']?.toString() ??
+            decoded['message']?.toString() ??
+            'Gagal memproses layanan.',
+      );
+    }
+
+    return decoded;
+  }
+
+  Future<Map<String, dynamic>> _delete(String path) async {
+    http.Response response;
+
+    try {
+      response = await _client.delete(
+        Uri.parse('${ApiConfig.baseUrl}$path'),
+        headers: _headers(requireAuth: true),
+      );
+    } catch (_) {
+      throw LayananException('Tidak dapat terhubung ke server layanan.');
+    }
+
+    final decoded = _decode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw LayananException(
+        decoded['error']?.toString() ??
+            decoded['message']?.toString() ??
+            'Gagal memproses layanan.',
+      );
+    }
+
+    return decoded;
+  }
+
+  Map<String, String> _headers({
+    required bool requireAuth,
+    bool includeOptionalAuth = false,
+    bool hasJsonBody = false,
+  }) {
     final headers = <String, String>{'Accept': 'application/json'};
+    if (hasJsonBody) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     final session = AuthService.currentSession;
 
-    if (requireAuth && session != null) {
+    if ((requireAuth || includeOptionalAuth) && session != null) {
       headers['Authorization'] = session.authorizationHeader;
     }
 

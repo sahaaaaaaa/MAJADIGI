@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/services/destinasi_wisata_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'detail_wisata_screen.dart';
 
@@ -10,10 +11,53 @@ class InformasiScreen extends StatefulWidget {
 }
 
 class _InformasiScreenState extends State<InformasiScreen> {
+  late final DestinasiWisataService _wisataService;
   int selectedTab = 0;
 
   bool manfaatOpen = false;
   bool sistemOpen = false;
+  bool _isLoadingFavorites = true;
+  String? _favoriteError;
+  List<WisataFavorite> _favorites = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _wisataService = DestinasiWisataService();
+    _loadFavorites();
+  }
+
+  @override
+  void dispose() {
+    _wisataService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadFavorites() async {
+    setState(() {
+      _isLoadingFavorites = true;
+      _favoriteError = null;
+    });
+
+    try {
+      final favorites = await _wisataService.getFavorites();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _favorites = favorites;
+        _isLoadingFavorites = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isLoadingFavorites = false;
+        _favoriteError = "Wisata tersimpan belum dapat dimuat.";
+      });
+    }
+  }
 
   void _openLink(String url) async {
     final Uri uri = Uri.parse(url);
@@ -108,28 +152,20 @@ class _InformasiScreenState extends State<InformasiScreen> {
                         // TAB 1
                         // =========================
                         if (selectedTab == 0) ...[
-                              // 🔥 TOP IMAGE
-                            Container(
-                              width: double.infinity,
-                              height: 160,
+                          // 🔥 TOP IMAGE
+                          Container(
+                            width: double.infinity,
+                            height: 160,
 
-                              decoration:
-                                  BoxDecoration(
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(
-                                  24,
-                                ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
 
-                                image:
-                                    const DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/sidita.png',
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                              image: const DecorationImage(
+                                image: AssetImage('assets/images/sidita.png'),
+                                fit: BoxFit.cover,
                               ),
                             ),
+                          ),
 
                           const SizedBox(height: 20),
 
@@ -209,18 +245,19 @@ class _InformasiScreenState extends State<InformasiScreen> {
                         // TAB 2 (WISATA TERSIMPAN)
                         // =========================
                         if (selectedTab == 1) ...[
-                          _savedCard(
-                            "Gunung Bromo",
-                            "Gunung Bromo adalah gunung Berapi aktif di Jawa Timur, Indonesia.",
-                            "Kabupaten Probolinggo",
-                            "assets/images/bromo.png",
-                          ),
-                          _savedCard(
-                            "Kawah Ijen",
-                            "Keindahan Kawah ijen dengan fenomena alam yang mendunia.",
-                            "Kabupaten Banyuwangi",
-                            "assets/images/kawah_ijen.png",
-                          ),
+                          if (_isLoadingFavorites)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(24),
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          else if (_favoriteError != null)
+                            _emptyFavoriteBox(_favoriteError!)
+                          else if (_favorites.isEmpty)
+                            _emptyFavoriteBox("Belum ada wisata tersimpan.")
+                          else
+                            ..._favorites.map(_savedCard),
                         ],
                       ],
                     ),
@@ -263,13 +300,26 @@ class _InformasiScreenState extends State<InformasiScreen> {
     );
   }
 
-  Widget _savedCard(String title, String desc, String location, String image) {
+  Widget _savedCard(WisataFavorite favorite) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final result = await Navigator.push<bool>(
           context,
-          MaterialPageRoute(builder: (_) => const DetailWisataScreen()),
+          MaterialPageRoute(
+            builder: (_) => DetailWisataScreen(
+              destinationId: favorite.id,
+              favorite: favorite,
+            ),
+          ),
         );
+        if (!mounted || result != false) {
+          return;
+        }
+        setState(() {
+          _favorites = _favorites
+              .where((item) => item.id != favorite.id)
+              .toList();
+        });
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
@@ -287,17 +337,16 @@ class _InformasiScreenState extends State<InformasiScreen> {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(16),
                   ),
-                  child: Image.asset(
-                    image,
+                  child: _wisataImage(
+                    favorite.thumbnail,
                     height: 180,
                     width: double.infinity,
-                    fit: BoxFit.cover,
                   ),
                 ),
                 const Positioned(
                   top: 12,
                   right: 12,
-                  child: Icon(Icons.favorite, color: Colors.white),
+                  child: Icon(Icons.favorite, color: Color(0xFFE53935)),
                 ),
               ],
             ),
@@ -307,7 +356,7 @@ class _InformasiScreenState extends State<InformasiScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    favorite.name,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -315,7 +364,7 @@ class _InformasiScreenState extends State<InformasiScreen> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    desc,
+                    favorite.city,
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
@@ -328,7 +377,7 @@ class _InformasiScreenState extends State<InformasiScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        location,
+                        favorite.city,
                         style: const TextStyle(color: Color(0xFF0E63FF)),
                       ),
                     ],
@@ -338,6 +387,52 @@ class _InformasiScreenState extends State<InformasiScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _wisataImage(
+    String image, {
+    required double height,
+    required double width,
+  }) {
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      return Image.network(
+        image,
+        height: height,
+        width: width,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            "assets/images/bromo.png",
+            height: height,
+            width: width,
+            fit: BoxFit.cover,
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      image.isEmpty ? "assets/images/bromo.png" : image,
+      height: height,
+      width: width,
+      fit: BoxFit.cover,
+    );
+  }
+
+  Widget _emptyFavoriteBox(String message) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Text(
+        message,
+        style: TextStyle(color: Colors.grey[700], fontSize: 13),
       ),
     );
   }

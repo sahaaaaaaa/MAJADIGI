@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/nomor_darurat_service.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'informasi_nomor.dart';
 
 class NomorDaruratScreen extends StatefulWidget {
@@ -174,12 +175,9 @@ class _NomorDaruratScreenState extends State<NomorDaruratScreen> {
 
                       Row(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.bookmark_border,
-                              color: Colors.white,
-                            ),
+                          const LayananFavoriteButton(
+                            serviceName: 'Nomor Darurat',
+                            lookupQuery: 'Nomor Darurat',
                           ),
 
                           IconButton(

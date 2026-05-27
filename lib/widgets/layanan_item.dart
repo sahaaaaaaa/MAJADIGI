@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'asset_icon_image.dart';
+
 class LayananItem extends StatelessWidget {
   final String image;
   final String title;
@@ -18,7 +20,7 @@ class LayananItem extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Image.asset(image, width: 50),
+          AssetIconImage(asset: image, width: 50, height: 50),
           const SizedBox(height: 6),
           Text(
             title,

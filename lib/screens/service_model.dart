@@ -103,7 +103,7 @@ String layananLogoAssetName(String name) {
     return 'khas_jatim.png';
   }
   if (normalized.contains('nomor darurat')) {
-    return 'klinik_hoax.png';
+    return 'icons/ambulans.svg';
   }
   if (normalized.contains('rsud haji')) {
     return 'rsud_haji.png';
@@ -163,7 +163,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     id: 4,
     title: 'Nomor Darurat',
     description: 'Layanan cepat tanggap darurat 24 jam',
-    logo: 'klinik_hoax.png',
+    logo: 'icons/ambulans.svg',
     kategori: 'Kependudukan',
   ),
   Recommendation(
@@ -238,103 +238,103 @@ List<NewsArticle> dummyNews = [
     date: "08 April 2026",
     category: "Hoaks",
     imageUrl: "assets/news1.png",
-    content: "Beredar unggahan di media sosial yang menampilkan pertemuan antara Duta Besar Amerika Serikat dan Ketua Umum PBNU...",
+    content:
+        "Beredar unggahan di media sosial yang menampilkan pertemuan antara Duta Besar Amerika Serikat dan Ketua Umum PBNU...",
   ),
   // Tambahkan berita lainnya sesuai desain
 ];
 
 final List<Recommendation> recommendations = [
   Recommendation(
-    id: 1, 
-    title: 'RSUD Dr. Saiful Anwar', 
-    description: 'Layanan kesehatan rujukan utama Jawa Timur', 
-    logo: 'rsud_saifulanwar.png', 
-    kategori: 'Kesehatan'
+    id: 1,
+    title: 'RSUD Dr. Saiful Anwar',
+    description: 'Layanan kesehatan rujukan utama Jawa Timur',
+    logo: 'rsud_saifulanwar.png',
+    kategori: 'Kesehatan',
   ),
   Recommendation(
-    id: 2, 
-    title: 'RSUD Haji', 
-    description: 'Pelayanan kesehatan berkualitas dan islami', 
-    logo: 'rsud_haji.png', 
-    kategori: 'Kesehatan'
+    id: 2,
+    title: 'RSUD Haji',
+    description: 'Pelayanan kesehatan berkualitas dan islami',
+    logo: 'rsud_haji.png',
+    kategori: 'Kesehatan',
   ),
   Recommendation(
-    id: 3, 
-    title: 'Destinasi Wisata', 
-    description: 'Eksplorasi keindahan alam dan budaya Jatim', 
-    logo: 'destinasi_wisata.png', 
-    kategori: 'Pariwisata & Kebudayaan' ,
+    id: 3,
+    title: 'Destinasi Wisata',
+    description: 'Eksplorasi keindahan alam dan budaya Jatim',
+    logo: 'destinasi_wisata.png',
+    kategori: 'Pariwisata & Kebudayaan',
     screen: const DestinasiWisataScreen(),
   ),
   Recommendation(
-    id: 4, 
-    title: 'Islamic Center', 
-    description: 'Pusat informasi dan kegiatan keagamaan', 
-    logo: 'islamic_center.png', 
-    kategori: 'Sosial' ,
+    id: 4,
+    title: 'Islamic Center',
+    description: 'Pusat informasi dan kegiatan keagamaan',
+    logo: 'islamic_center.png',
+    kategori: 'Sosial',
     screen: const IslamicCenterHomeScreen(),
   ),
   Recommendation(
-    id: 5, 
-    title: 'Open Data', 
-    description: 'Transparansi data publik untuk masyarakat', 
-    logo: 'open_data.png', 
+    id: 5,
+    title: 'Open Data',
+    description: 'Transparansi data publik untuk masyarakat',
+    logo: 'open_data.png',
     kategori: 'PPID',
     screen: const OpenDataScreen(),
   ),
   Recommendation(
-    id: 6, 
-    title: 'Klinik Hoaks', 
-    description: 'Verifikasi informasi dan cek fakta digital', 
-    logo: 'klinik_hoax.png', 
+    id: 6,
+    title: 'Klinik Hoaks',
+    description: 'Verifikasi informasi dan cek fakta digital',
+    logo: 'klinik_hoax.png',
     kategori: 'Multisektor (Khusus)',
     screen: KlinikHoaksHomeScreen(),
   ),
   Recommendation(
-    id: 7, 
-    title: 'Harga Bahan Pokok', 
-    description: 'Pantau harga pangan pasar secara real-time', 
-    logo: 'klinik_hoax.png', 
-    kategori: 'Ekonomi & Bisnis' 
+    id: 7,
+    title: 'Harga Bahan Pokok',
+    description: 'Pantau harga pangan pasar secara real-time',
+    logo: 'klinik_hoax.png',
+    kategori: 'Ekonomi & Bisnis',
   ),
   Recommendation(
-    id: 8, 
-    title: 'Nomor Darurat', 
-    description: 'Layanan cepat tanggap darurat 24 jam', 
-    logo: 'klinik_hoax.png', 
-    kategori: 'Kebencanaan' 
+    id: 8,
+    title: 'Nomor Darurat',
+    description: 'Layanan cepat tanggap darurat 24 jam',
+    logo: 'icons/ambulans.svg',
+    kategori: 'Kebencanaan',
   ),
   Recommendation(
-    id: 9, 
-    title: 'Transjatim', 
-    description: 'Informasi rute transportasi publik Jatim', 
-    logo: 'transjatim_ajaib.png', 
-    kategori: 'Infrastruktur'
-
+    id: 9,
+    title: 'Transjatim',
+    description: 'Informasi rute transportasi publik Jatim',
+    logo: 'transjatim_ajaib.png',
+    kategori: 'Infrastruktur',
   ),
   Recommendation(
-    id: 10, 
-    title: 'Point Jatim', 
-    description: 'Sistem poin terintegrasi layanan warga', 
-    logo: 'point_jatim.png', 
+    id: 10,
+    title: 'Point Jatim',
+    description: 'Sistem poin terintegrasi layanan warga',
+    logo: 'point_jatim.png',
     kategori: 'Kependudukan',
-    screen: PointJatimHomeScreen()
+    screen: PointJatimHomeScreen(),
   ),
   Recommendation(
-    id: 11, 
-    title: 'SKOPI', 
-    description: 'Koleksi khas semua tentang Jawa Timur', 
-    logo: 'SKOPI.png', 
+    id: 11,
+    title: 'SKOPI',
+    description: 'Koleksi khas semua tentang Jawa Timur',
+    logo: 'SKOPI.png',
     kategori: 'Ekonomi & Bisnis',
     nawaBhakti: 'Jatim Agro',
   ),
   Recommendation(
-  id: 12,
-  title: 'Kidungan',
-  description: 'Koleksi khas semua tentang Jawa Timur',
-  logo: 'kidungan.jpg',
-  kategori: 'Pariwisata & Kebudayaan',
-  nawaBhakti: 'Jatim Agro',
+    id: 12,
+    title: 'Kidungan',
+    description: 'Koleksi khas semua tentang Jawa Timur',
+    logo: 'kidungan.jpg',
+    kategori: 'Pariwisata & Kebudayaan',
+    nawaBhakti: 'Jatim Agro',
   ),
 
   Recommendation(
@@ -342,7 +342,7 @@ final List<Recommendation> recommendations = [
     title: 'Peta potensi tembakau',
     description: 'Koleksi khas semua tentang Jawa Timur',
     logo: 'klinik_hoax.png',
-    kategori:'Ekonomi & Bisnis',
+    kategori: 'Ekonomi & Bisnis',
     nawaBhakti: 'Jatim Agro',
   ),
 
@@ -358,99 +358,82 @@ final List<Recommendation> recommendations = [
   Recommendation(
     id: 15,
     title: 'Pusaka Jawatimuran',
-    description:
-        'Koleksi khas semua tentang Jawa Timur',
+    description: 'Koleksi khas semua tentang Jawa Timur',
 
     logo: 'klinik_hoax.png',
 
-    kategori:
-        'Pariwisata & Kebudayaan',
+    kategori: 'Pariwisata & Kebudayaan',
   ),
 
   Recommendation(
     id: 16,
     title: 'Paket Kunjungan Agrowisata',
-    description:
-        'Koleksi khas semua tentang Jawa Timur',
+    description: 'Koleksi khas semua tentang Jawa Timur',
 
     logo: 'klinik_hoax.png',
 
-    kategori:
-        'Pariwisata & Kebudayaan',
+    kategori: 'Pariwisata & Kebudayaan',
   ),
 
   Recommendation(
     id: 17,
     title: 'Khas Jatim',
-    description:
-        'Koleksi khas semua tentang Jawa Timur',
+    description: 'Koleksi khas semua tentang Jawa Timur',
 
     logo: 'khas_jatim.png',
 
-    kategori:
-        'Pariwisata & Kebudayaan',
+    kategori: 'Pariwisata & Kebudayaan',
   ),
 
   Recommendation(
     id: 18,
     title: 'Cak Durasim',
-    description:
-        'Koleksi khas semua tentang Jawa Timur',
+    description: 'Koleksi khas semua tentang Jawa Timur',
 
     logo: 'cak_durasim.png',
 
-    kategori:
-        'Pariwisata & Kebudayaan',
+    kategori: 'Pariwisata & Kebudayaan',
   ),
 
   Recommendation(
     id: 19,
     title: 'Virtual Tour 360',
-    description:
-        'Koleksi khas semua tentang Jawa Timur',
+    description: 'Koleksi khas semua tentang Jawa Timur',
 
     logo: 'klinik_hoax.png',
 
-    kategori:
-        'Pariwisata & Kebudayaan',
+    kategori: 'Pariwisata & Kebudayaan',
   ),
 
   Recommendation(
     id: 20,
     title: 'RSUD Haji Prov. Jatim',
-    description:
-        'Pelayanan kesehatan berkualitas dan islami',
+    description: 'Pelayanan kesehatan berkualitas dan islami',
 
     logo: 'rsud_haji.png',
 
-    kategori:
-        'Kesehatan',
+    kategori: 'Kesehatan',
   ),
 
   Recommendation(
     id: 21,
     title: 'Transjatim AJAIB 2.0',
-    description:
-        'Informasi rute transportasi publik Jatim',
+    description: 'Informasi rute transportasi publik Jatim',
 
     logo: 'transjatim_ajaib.png',
 
-    kategori:
-        'Infrastruktur',
+    kategori: 'Infrastruktur',
   ),
 
   Recommendation(
     id: 22,
     title: 'Islamic Center',
-    description:
-        'Pusat informasi dan kegiatan keagamaan',
+    description: 'Pusat informasi dan kegiatan keagamaan',
 
     logo: 'islamic_center.png',
 
-    kategori:
-        'Sosial',
+    kategori: 'Sosial',
 
-    screen:
-        const IslamicCenterHomeScreen(),
+    screen: const IslamicCenterHomeScreen(),
   ),
 ];
