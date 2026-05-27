@@ -35,6 +35,19 @@ class LayananModel {
   final bool isFavorite;
   final bool isFeatured;
 
+  LayananModel copyWith({bool? isInstalled, bool? isFavorite}) {
+    return LayananModel(
+      id: id,
+      name: name,
+      description: description,
+      iconUrl: iconUrl,
+      categoryName: categoryName,
+      isInstalled: isInstalled ?? this.isInstalled,
+      isFavorite: isFavorite ?? this.isFavorite,
+      isFeatured: isFeatured,
+    );
+  }
+
   factory LayananModel.fromJson(Map<String, dynamic> json) {
     final category = json['category'];
 
@@ -94,8 +107,42 @@ class LayananService {
     return _listFromPayload(decoded);
   }
 
+  Future<List<LayananModel>> getFavoriteLayanan({String search = ''}) async {
+    if (AuthService.currentSession == null) {
+      return const [];
+    }
+
+    final queryParameters = <String, String>{};
+    if (search.trim().isNotEmpty) {
+      queryParameters['search'] = search.trim();
+    }
+
+    final decoded = await _get(
+      '/layanan/favorites',
+      queryParameters: queryParameters,
+      requireAuth: true,
+    );
+    return _listFromPayload(decoded);
+  }
+
   Future<void> installLayanan(int layananId) async {
     await _post('/layanan', body: {'layanan_id': layananId}, requireAuth: true);
+  }
+
+  Future<void> uninstallLayanan(int layananId) async {
+    await _delete('/layanan/$layananId');
+  }
+
+  Future<void> addFavoriteLayanan(int layananId) async {
+    await _post(
+      '/layanan/favorites',
+      body: {'layanan_id': layananId},
+      requireAuth: true,
+    );
+  }
+
+  Future<void> removeFavoriteLayanan(int layananId) async {
+    await _delete('/layanan/favorites/$layananId');
   }
 
   Future<Map<String, dynamic>> _get(
@@ -145,6 +192,30 @@ class LayananService {
         Uri.parse('${ApiConfig.baseUrl}$path'),
         headers: _headers(requireAuth: requireAuth, hasJsonBody: true),
         body: jsonEncode(body),
+      );
+    } catch (_) {
+      throw LayananException('Tidak dapat terhubung ke server layanan.');
+    }
+
+    final decoded = _decode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw LayananException(
+        decoded['error']?.toString() ??
+            decoded['message']?.toString() ??
+            'Gagal memproses layanan.',
+      );
+    }
+
+    return decoded;
+  }
+
+  Future<Map<String, dynamic>> _delete(String path) async {
+    http.Response response;
+
+    try {
+      response = await _client.delete(
+        Uri.parse('${ApiConfig.baseUrl}$path'),
+        headers: _headers(requireAuth: true),
       );
     } catch (_) {
       throw LayananException('Tidak dapat terhubung ke server layanan.');

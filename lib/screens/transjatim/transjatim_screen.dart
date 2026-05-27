@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../widgets/layanan_favorite_button.dart';
 import 'daftar_tiket_screen.dart';
 import 'daftar_rute_screen.dart';
 import 'informasi_transjatim_screen.dart';
@@ -95,12 +96,9 @@ class _TransjatimScreenState extends State<TransjatimScreen> {
 
                       Row(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.bookmark_border,
-                              color: Colors.white,
-                            ),
+                          const LayananFavoriteButton(
+                            serviceName: 'Transjatim',
+                            lookupQuery: 'Transjatim',
                           ),
 
                           IconButton(

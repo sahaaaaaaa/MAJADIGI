@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../services/rsud_haji_service.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'informasi_rsud_jatim.dart';
 
 class RsudHajiScreen extends StatefulWidget {
@@ -130,9 +131,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
             height: 320,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/latar_belakang.png',
-                ),
+                image: AssetImage('assets/images/latar_belakang.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
               ),
@@ -174,29 +173,26 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
 
                       Row(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.bookmark_border,
-                              color: Colors.white,
-                            ),
+                          const LayananFavoriteButton(
+                            serviceName: 'RSUD Haji',
+                            lookupQuery: 'RSUD Haji',
                           ),
 
                           IconButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            const InformasiRsudScreen(),
-      ),
-    );
-  },
-  icon: const Icon(
-    Icons.info_outline,
-    color: Colors.white,
-  ),
-),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const InformasiRsudScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.info_outline,
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -220,15 +216,11 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                             },
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: 18,
                                 ),
                                 child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    22,
-                                  ),
+                                  borderRadius: BorderRadius.circular(22),
                                   child: Image.asset(
                                     images[index],
                                     fit: BoxFit.cover,
@@ -243,29 +235,18 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
 
                         // 🔥 INDICATOR
                         Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
                             images.length,
                             (index) => Container(
-                              margin:
-                                  const EdgeInsets.symmetric(
-                                horizontal: 3,
-                              ),
-                              width:
-                                  currentPage == index
-                                      ? 30
-                                      : 10,
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
+                              width: currentPage == index ? 30 : 10,
                               height: 5,
                               decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  10,
-                                ),
-                                color:
-                                    currentPage == index
-                                        ? Colors.white
-                                        : Colors.white54,
+                                borderRadius: BorderRadius.circular(10),
+                                color: currentPage == index
+                                    ? Colors.white
+                                    : Colors.white54,
                               ),
                             ),
                           ),
@@ -276,22 +257,17 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                         // 🔥 CONTENT
                         Container(
                           width: double.infinity,
-                          decoration:
-                              const BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Color(0xFFF5F5F5),
-                            borderRadius:
-                                BorderRadius.vertical(
+                            borderRadius: BorderRadius.vertical(
                               top: Radius.circular(34),
                             ),
                           ),
 
                           child: Padding(
-                            padding:
-                                const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 8),
 
@@ -299,98 +275,65 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                   "Ketersediaan Kamar Rawat",
                                   style: TextStyle(
                                     fontSize: 18,
-                                    fontWeight:
-                                        FontWeight.w700,
-                                    color:
-                                        Color(0xFF121938),
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF121938),
                                   ),
                                 ),
 
                                 const SizedBox(height: 10),
 
                                 Container(
-                                  padding:
-                                      const EdgeInsets
-                                          .symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
                                     vertical: 6,
                                   ),
-                                  decoration:
-                                      BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                      8,
-                                    ),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     _summary.lastUpdate,
                                     style: const TextStyle(
                                       fontSize: 12,
-                                      color:
-                                          Colors.grey,
+                                      color: Colors.grey,
                                     ),
                                   ),
                                 ),
 
-                                const SizedBox(
-                                    height: 18),
+                                const SizedBox(height: 18),
 
                                 // 🔥 CARD TOTAL
                                 Container(
                                   width: double.infinity,
-                                  padding:
-                                      const EdgeInsets
-                                          .all(20),
-                                  decoration:
-                                      BoxDecoration(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                      20,
-                                    ),
+                                    borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color:
-                                          Colors.grey
-                                              .shade300,
+                                      color: Colors.grey.shade300,
                                     ),
                                   ),
 
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment
-                                                .start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            _summary.total
-                                                .toString(),
-                                            style:
-                                                TextStyle(
-                                              fontSize:
-                                                  40,
-                                              fontWeight:
-                                                  FontWeight
-                                                      .bold,
-                                              color: Color(
-                                                0xFF121938,
-                                              ),
+                                            _summary.total.toString(),
+                                            style: TextStyle(
+                                              fontSize: 40,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF121938),
                                             ),
                                           ),
 
                                           const Text(
                                             "Total Kamar Rawat",
-                                            style:
-                                                TextStyle(
-                                              fontSize:
-                                                  15,
-                                            ),
+                                            style: TextStyle(fontSize: 15),
                                           ),
                                         ],
                                       ),
@@ -403,65 +346,47 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                   ),
                                 ),
 
-                                const SizedBox(
-                                    height: 14),
+                                const SizedBox(height: 14),
 
                                 // 🔥 TERSEDIA TERISI
                                 Row(
                                   children: [
                                     Expanded(
                                       child: _smallCard(
-                                        value: _summary
-                                            .available
-                                            .toString(),
-                                        label:
-                                            "Tersedia",
+                                        value: _summary.available.toString(),
+                                        label: "Tersedia",
                                         icon:
                                             'assets/images/icons/users-check.svg',
-                                        valueColor:
-                                            const Color(
-                                          0xFF27AE60,
-                                        ),
+                                        valueColor: const Color(0xFF27AE60),
                                       ),
                                     ),
 
-                                    const SizedBox(
-                                        width: 14),
+                                    const SizedBox(width: 14),
 
                                     Expanded(
                                       child: _smallCard(
-                                        value: _summary
-                                            .occupied
-                                            .toString(),
-                                        label:
-                                            "Terisi",
+                                        value: _summary.occupied.toString(),
+                                        label: "Terisi",
                                         icon:
                                             'assets/images/icons/users-up-01.svg',
-                                        valueColor:
-                                            const Color(
-                                          0xFFFF6B00,
-                                        ),
+                                        valueColor: const Color(0xFFFF6B00),
                                       ),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(
-                                    height: 24),
+                                const SizedBox(height: 24),
 
                                 const Text(
                                   "Status Ketersediaan Ruangan",
                                   style: TextStyle(
                                     fontSize: 18,
-                                    fontWeight:
-                                        FontWeight.w700,
-                                    color:
-                                        Color(0xFF121938),
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF121938),
                                   ),
                                 ),
 
-                                const SizedBox(
-                                    height: 16),
+                                const SizedBox(height: 16),
 
                                 // 🔥 BAR WARNA
                                 Row(
@@ -469,156 +394,95 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                       .asMap()
                                       .keys
                                       .map(
-                                        (index) => _barColor(
-                                          _roomColor(index),
-                                        ),
+                                        (index) => _barColor(_roomColor(index)),
                                       )
                                       .toList(),
                                 ),
 
-                                const SizedBox(
-                                    height: 14),
+                                const SizedBox(height: 14),
 
                                 // 🔥 TABLE
                                 Container(
-                                  decoration:
-                                      BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                      20,
-                                    ),
+                                    borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color:
-                                          Colors.grey
-                                              .shade300,
+                                      color: Colors.grey.shade300,
                                     ),
                                   ),
 
-                                  child:
-                                      SingleChildScrollView(
-                                    scrollDirection:
-                                        Axis.horizontal,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
                                     child: DataTable(
-                                      headingRowHeight:
-                                          50,
-                                      columnSpacing:
-                                          30,
+                                      headingRowHeight: 50,
+                                      columnSpacing: 30,
 
                                       columns: const [
-                                        DataColumn(
-                                          label: Text(
-                                            "Ruang",
-                                          ),
-                                        ),
+                                        DataColumn(label: Text("Ruang")),
 
-                                        DataColumn(
-                                          label: Text(
-                                            "Kapasitas",
-                                          ),
-                                        ),
+                                        DataColumn(label: Text("Kapasitas")),
 
-                                        DataColumn(
-                                          label: Text(
-                                            "Terisi",
-                                          ),
-                                        ),
+                                        DataColumn(label: Text("Terisi")),
 
-                                        DataColumn(
-                                          label: Text(
-                                            "Tersedia",
-                                          ),
-                                        ),
+                                        DataColumn(label: Text("Tersedia")),
                                       ],
 
-                                      rows: _rooms
-                                          .asMap()
-                                          .entries
-                                          .map(
-                                        (entry) {
-                                          final item =
-                                              entry.value;
-                                          final color =
-                                              _roomColor(
-                                                  entry.key);
-                                          return DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      width:
-                                                          10,
-                                                      height:
-                                                          10,
-                                                      decoration:
-                                                          BoxDecoration(
-                                                        color:
-                                                            color,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                      ),
-                                                    ),
-
-                                                    const SizedBox(
-                                                        width:
-                                                            12),
-
-                                                    Text(
-                                                      item.name,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              DataCell(
-                                                Text(item
-                                                    .total
-                                                    .toString()),
-                                              ),
-
-                                              DataCell(
-                                                Text(
-                                                  item
-                                                      .occupied
-                                                      .toString(),
-                                                  style:
-                                                      const TextStyle(
-                                                    color:
-                                                        Color(
-                                                      0xFFFF6B00,
+                                      rows: _rooms.asMap().entries.map((entry) {
+                                        final item = entry.value;
+                                        final color = _roomColor(entry.key);
+                                        return DataRow(
+                                          cells: [
+                                            DataCell(
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: 10,
+                                                    height: 10,
+                                                    decoration: BoxDecoration(
+                                                      color: color,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
                                                     ),
                                                   ),
-                                                ),
-                                              ),
 
-                                              DataCell(
-                                                Text(
-                                                  item
-                                                      .available
-                                                      .toString(),
-                                                  style:
-                                                      const TextStyle(
-                                                    color:
-                                                        Color(
-                                                      0xFF27AE60,
-                                                    ),
-                                                  ),
+                                                  const SizedBox(width: 12),
+
+                                                  Text(item.name),
+                                                ],
+                                              ),
+                                            ),
+
+                                            DataCell(
+                                              Text(item.total.toString()),
+                                            ),
+
+                                            DataCell(
+                                              Text(
+                                                item.occupied.toString(),
+                                                style: const TextStyle(
+                                                  color: Color(0xFFFF6B00),
                                                 ),
                                               ),
-                                            ],
-                                          );
-                                        },
-                                      ).toList(),
+                                            ),
+
+                                            DataCell(
+                                              Text(
+                                                item.available.toString(),
+                                                style: const TextStyle(
+                                                  color: Color(0xFF27AE60),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList(),
                                     ),
                                   ),
                                 ),
 
-                                const SizedBox(
-                                    height: 30),
+                                const SizedBox(height: 30),
                               ],
                             ),
                           ),
@@ -636,12 +500,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
   }
 
   Widget _barColor(Color color) {
-    return Expanded(
-      child: Container(
-        height: 16,
-        color: color,
-      ),
-    );
+    return Expanded(child: Container(height: 16, color: color));
   }
 
   Widget _smallCard({
@@ -655,18 +514,14 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        border: Border.all(color: Colors.grey.shade300),
       ),
 
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 value,
@@ -677,10 +532,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                 ),
               ),
 
-              SvgPicture.asset(
-                icon,
-                width: 22,
-              ),
+              SvgPicture.asset(icon, width: 22),
             ],
           ),
 
@@ -688,10 +540,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
 
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF121938),
-            ),
+            style: const TextStyle(fontSize: 14, color: Color(0xFF121938)),
           ),
         ],
       ),

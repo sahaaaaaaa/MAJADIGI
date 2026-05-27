@@ -10,7 +10,9 @@ import '../../services/layanan_service.dart';
 import '../service_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.refreshVersion = 0});
+
+  final int refreshVersion;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -66,6 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshVersion != widget.refreshVersion) {
+      _loadInstalledLayanan();
+    }
   }
 
   @override

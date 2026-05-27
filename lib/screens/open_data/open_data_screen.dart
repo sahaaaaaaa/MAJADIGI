@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:majadigi/services/open_data_service.dart';
+import 'package:majadigi/widgets/layanan_favorite_button.dart';
 import 'open_data_detail_screen.dart';
 import 'open_data_info_screen.dart';
 import 'fitur_cari_data.dart';
@@ -244,11 +245,11 @@ class _OpenDataScreenState extends State<OpenDataScreen> {
           ),
           Row(
             children: [
-              Icon(
-                Icons.bookmark_outline_rounded,
-                color: Colors.white.withOpacity(0.9),
+              const LayananFavoriteButton(
+                serviceName: 'Open Data',
+                lookupQuery: 'Open Data',
               ),
-              const SizedBox(width: 15),
+              const SizedBox(width: 3),
 
               InkWell(
                 onTap: () {

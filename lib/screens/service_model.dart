@@ -103,7 +103,7 @@ String layananLogoAssetName(String name) {
     return 'khas_jatim.png';
   }
   if (normalized.contains('nomor darurat')) {
-    return 'klinik_hoax.png';
+    return 'nomordarurat.png';
   }
   if (normalized.contains('rsud haji')) {
     return 'rsud_haji.png';
@@ -163,7 +163,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     id: 4,
     title: 'Nomor Darurat',
     description: 'Layanan cepat tanggap darurat 24 jam',
-    logo: 'klinik_hoax.png',
+    logo: 'nomordarurat.png',
     kategori: 'Kependudukan',
   ),
   Recommendation(
@@ -299,9 +299,9 @@ final List<Recommendation> recommendations = [
   ),
   Recommendation(
     id: 8, 
-    title: 'Nomor Darurat', 
-    description: 'Layanan cepat tanggap darurat 24 jam', 
-    logo: 'klinik_hoax.png', 
+    title: 'Nomor Darurat',
+    description: 'Layanan cepat tanggap darurat 24 jam',
+    logo: 'nomordarurat.png',
     kategori: 'Kebencanaan' 
   ),
   Recommendation(

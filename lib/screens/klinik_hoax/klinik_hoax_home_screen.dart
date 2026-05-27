@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/klinik_hoaks_service.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'klinik_hoax_layanan_screen.dart';
 import 'klinik_hoax_detail_screen.dart';
 import 'klinik_hoax_info_screen.dart';
@@ -241,11 +242,11 @@ class _KlinikHoaksHomeScreenState extends State<KlinikHoaksHomeScreen> {
           ),
           Row(
             children: [
-              Icon(
-                Icons.bookmark_outline_rounded,
-                color: Colors.white.withValues(alpha: 0.9),
+              const LayananFavoriteButton(
+                serviceName: 'Klinik Hoaks',
+                lookupQuery: 'Klinik Hoaks',
               ),
-              const SizedBox(width: 15),
+              const SizedBox(width: 3),
               InkWell(
                 onTap: () {
                   Navigator.push(

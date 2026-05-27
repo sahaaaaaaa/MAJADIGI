@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:majadigi/services/destinasi_wisata_service.dart';
+import 'package:majadigi/widgets/layanan_favorite_button.dart';
 import 'detail_wisata_screen.dart';
 import 'informasi_wisata.dart';
 
@@ -442,9 +443,12 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                     ),
                   ),
 
-                  const Icon(Icons.bookmark_border, color: Colors.white),
+                  const LayananFavoriteButton(
+                    serviceName: 'Destinasi Wisata',
+                    lookupQuery: 'Destinasi',
+                  ),
 
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 2),
 
                   GestureDetector(
                     onTap: () {

@@ -79,7 +79,7 @@ HomeServiceItem? homeServiceFromLayanan(LayananModel layanan) {
   if (normalized.contains('nomor darurat')) {
     return HomeServiceItem(
       title: 'Nomor Darurat',
-      image: 'assets/images/klinik_hoax.png',
+      image: 'assets/images/nomordarurat.png',
       builder: (_) => const NomorDaruratScreen(),
     );
   }

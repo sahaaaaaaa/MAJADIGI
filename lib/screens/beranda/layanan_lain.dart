@@ -46,7 +46,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
       }
 
       setState(() {
-        _services = services;
+        _services = _installedFirst(services);
         _isLoading = false;
         final grouped = _groupedServices;
         if (_expandedCategories.isEmpty && grouped.isNotEmpty) {
@@ -79,6 +79,21 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
 
   String _categoryName(LayananModel service) {
     return layananCategoryName(service.name, service.categoryName);
+  }
+
+  List<LayananModel> _installedFirst(List<LayananModel> services) {
+    final installed = <LayananModel>[];
+    final notInstalled = <LayananModel>[];
+
+    for (final service in services) {
+      if (service.isInstalled) {
+        installed.add(service);
+      } else {
+        notInstalled.add(service);
+      }
+    }
+
+    return [...installed, ...notInstalled];
   }
 
   Future<void> _handleServiceTap(LayananModel service) async {
@@ -153,7 +168,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
       }
 
       setState(() {
-        _services = refreshed;
+        _services = _installedFirst(refreshed);
         _installingLayananId = null;
       });
       _showSnackBar('${layananDisplayTitle(service.name)} berhasil diinstall.');
