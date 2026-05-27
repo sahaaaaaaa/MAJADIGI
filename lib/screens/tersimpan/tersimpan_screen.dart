@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/auth_service.dart';
 import '../../services/layanan_service.dart';
+import '../../widgets/asset_icon_image.dart';
 import '../beranda/home_service_item.dart';
 import '../service_model.dart';
 
@@ -402,18 +403,16 @@ class _TersimpanScreenState extends State<TersimpanScreen> {
         height: size,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
-          return Image.asset(assetPath, width: size, height: size);
+          return AssetIconImage(asset: assetPath, width: size, height: size);
         },
       );
     }
 
-    return Image.asset(
-      assetPath,
+    return AssetIconImage(
+      asset: assetPath,
       width: size,
       height: size,
       fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) =>
-          Icon(Icons.apps, size: size, color: const Color(0xFF0D57E7)),
     );
   }
 

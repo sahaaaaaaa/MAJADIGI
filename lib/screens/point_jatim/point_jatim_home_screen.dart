@@ -237,6 +237,42 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     return value.toStringAsFixed(6);
   }
 
+  void _openProjectDetail(PointJatimProjectModel item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => LayananDetailScreen(item: item)),
+    );
+  }
+
+  PointJatimProjectModel _projectFromHighlight(PointJatimHighlightModel item) {
+    final title = item.title.trim().toLowerCase();
+    final image = item.image.trim();
+
+    for (final project in _projects) {
+      if (project.title.trim().toLowerCase() == title) {
+        return project;
+      }
+    }
+
+    for (final project in _projects) {
+      if (image.isNotEmpty && project.image.trim() == image) {
+        return project;
+      }
+    }
+
+    return PointJatimProjectModel(
+      image: item.image,
+      category: 'Point Jatim',
+      title: item.title,
+      lokasi: item.subtitle,
+      harga: '-',
+      tahun: '-',
+      infomemoImages: const [],
+      deskripsi: item.subtitle,
+      wilayah: item.subtitle,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredProjects = _projects.where((item) {
@@ -461,7 +497,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                                     return _buildHighlightCard(item);
                                   },
 
-                                  separatorBuilder: (_, __) =>
+                                  separatorBuilder: (context, index) =>
                                       const SizedBox(width: 14),
 
                                   itemCount: _highlights.length,
@@ -656,63 +692,67 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
   }
 
   Widget _buildHighlightCard(PointJatimHighlightModel item) {
-    return Container(
-      width: 168,
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
         borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: _buildPointJatimImage(
-              item.image,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    height: 1.35,
-                  ),
+        onTap: () => _openProjectDetail(_projectFromHighlight(item)),
+        child: SizedBox(
+          width: 168,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  item.subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                child: _buildPointJatimImage(
+                  item.image,
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      item.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildProjectCard(BuildContext context, PointJatimProjectModel item) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => LayananDetailScreen(item: item)),
-        );
-      },
+      onTap: () => _openProjectDetail(item),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
@@ -812,7 +852,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     required ValueChanged<String?> onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       dropdownColor: Colors.white,
       style: const TextStyle(color: Color(0xff1D1D1D), fontSize: 16),
       icon: const Icon(

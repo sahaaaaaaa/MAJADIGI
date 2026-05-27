@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/auth_service.dart';
 import '../../services/layanan_service.dart';
+import '../../widgets/asset_icon_image.dart';
 import '../service_model.dart';
 import 'home_service_item.dart';
 
@@ -516,16 +517,11 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
         height: size,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
-          return Image.asset(assetPath, width: size, height: size);
+          return AssetIconImage(asset: assetPath, width: size, height: size);
         },
       );
     }
 
-    return Image.asset(
-      assetPath,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-    );
+    return AssetIconImage(asset: assetPath, width: size, height: size);
   }
 }

@@ -4,6 +4,7 @@ import 'home_service_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'layanan_lain.dart';
 import 'layanan_daerah.dart';
+import '../../widgets/asset_icon_image.dart';
 import '../../widgets/layanan_item.dart';
 import '../../services/auth_service.dart';
 import '../../services/layanan_service.dart';
@@ -984,7 +985,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: Image.asset(image, fit: BoxFit.contain),
+                child: AssetIconImage(asset: image, fit: BoxFit.contain),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -1132,11 +1133,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   LayananItem _buildInstalledLayananItem(LayananModel layanan) {
     final homeService = homeServiceFromLayanan(layanan);
+    final backendIcon = layanan.iconUrl.trim();
+
     return LayananItem(
       title: homeService?.title ?? layananDisplayTitle(layanan.name),
-      image:
-          homeService?.image ??
-          layananLogoAssetPath(layananLogoAssetName(layanan.name)),
+      image: backendIcon.startsWith('http')
+          ? backendIcon
+          : homeService?.image ??
+                layananLogoAssetPath(layananLogoAssetName(layanan.name)),
       onTap: () => _openInstalledLayanan(layanan),
     );
   }
