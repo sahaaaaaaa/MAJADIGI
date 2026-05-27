@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../services/klinik_hoaks_service.dart';
 
 class KlinikHoaksLayananScreen extends StatefulWidget {
   final int initialTab; // 0 untuk Laporan, 1 untuk Lacak
@@ -11,6 +14,7 @@ class KlinikHoaksLayananScreen extends StatefulWidget {
 
 class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
   late int activeTab;
+  late final KlinikHoaksService _klinikHoaksService;
 
   final TextEditingController namaUser = TextEditingController();
   final TextEditingController emailUser = TextEditingController();
@@ -21,14 +25,20 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
   final TextEditingController captchaInput = TextEditingController();
   final TextEditingController tiketLacak = TextEditingController();
 
+  bool _isSubmitting = false;
+  bool _isTracking = false;
+  KlinikHoaksTrackedReport? _trackedReport;
+
   @override
   void initState() {
     super.initState();
     activeTab = widget.initialTab;
+    _klinikHoaksService = KlinikHoaksService();
   }
 
   @override
   void dispose() {
+    _klinikHoaksService.dispose();
     namaUser.dispose();
     emailUser.dispose();
     phoneUser.dispose();
@@ -105,7 +115,7 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
                         Text(
                           activeTab == 0
                               ? "Kirimkan detail informasi yang kamu dapat, akan kami bantu cari klarifikasinya dalam 1x24 jam."
-                              : "Masukkan no tiket yang telah dikirim ke WhatsApp dan Email anda.",
+                              : "Masukkan kode tiket yang telah dikirim ke Email anda.",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.grey[600],
@@ -240,7 +250,11 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
           ],
         ),
         const SizedBox(height: 30),
-        _buildSubmitButton("Kirim!"),
+        _buildSubmitButton(
+          "Kirim!",
+          isLoading: _isSubmitting,
+          onPressed: _submitReport,
+        ),
       ],
     );
   }
@@ -276,55 +290,470 @@ class _KlinikHoaksLayananScreenState extends State<KlinikHoaksLayananScreen> {
               // Inputan tiket
               _buildTextField(
                 controller: tiketLacak,
-                hintText: "Contoh: MJD-12345",
+                hintText: "Contoh: KH-20260527-VM4HQN",
                 keyboardType: TextInputType.text,
               ),
             ],
           ),
         ),
         const SizedBox(height: 24),
-        _buildSubmitButton("Lacak"),
+        _buildSubmitButton(
+          "Lacak",
+          isLoading: _isTracking,
+          onPressed: _trackReport,
+        ),
+        if (_trackedReport != null) ...[
+          const SizedBox(height: 24),
+          _buildTrackingResult(_trackedReport!),
+        ],
       ],
     );
   }
 
-  Widget _buildSubmitButton(String text) {
+  Widget _buildSubmitButton(
+    String text, {
+    required bool isLoading,
+    required VoidCallback onPressed,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: _showUnavailableFeatureMessage,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF0D57E7),
+          disabledBackgroundColor: const Color(0xFF8BB4FF),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           elevation: 0,
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+        child: isLoading
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.4,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+      ),
+    );
+  }
+
+  Widget _buildTrackingResult(KlinikHoaksTrackedReport report) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFDCE7F8), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  report.ticketCode,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0D1B4C),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              _buildStatusChip(report.statusLabel),
+            ],
+          ),
+          const SizedBox(height: 18),
+          _buildInfoRow(Icons.person_outline, report.name),
+          _buildInfoRow(Icons.mail_outline, report.email),
+          if (report.phone.isNotEmpty)
+            _buildInfoRow(Icons.phone_outlined, report.phone),
+          if (report.formattedCreatedAt.isNotEmpty)
+            _buildInfoRow(
+              Icons.calendar_today_outlined,
+              report.formattedCreatedAt,
+            ),
+          const SizedBox(height: 16),
+          Text(
+            report.content,
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.45,
+              color: Color(0xFF343A40),
+            ),
+          ),
+          if (report.evidenceUrl.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            _buildInfoRow(Icons.link_rounded, report.evidenceUrl),
+          ],
+          const SizedBox(height: 22),
+          const Text(
+            "Progress Laporan",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0D1B4C),
+            ),
+          ),
+          const SizedBox(height: 14),
+          ...report.progress.map(_buildProgressStep),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEAF1FF),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label.isEmpty ? '-' : label,
+        style: const TextStyle(
+          color: Color(0xFF0D57E7),
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  void _showUnavailableFeatureMessage() {
-    final featureName = activeTab == 0
-        ? 'Upload laporan hoaks'
-        : 'Pelacakan tiket laporan';
+  Widget _buildInfoRow(IconData icon, String value) {
+    if (value.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '$featureName belum tersedia karena endpoint API belum ada.',
-        ),
-        behavior: SnackBarBehavior.floating,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFF8A94A6)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Color(0xFF5B6472),
+                fontSize: 14,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildProgressStep(KlinikHoaksReportProgressStep step) {
+    final color = step.completed
+        ? const Color(0xFF0D57E7)
+        : const Color(0xFFB8C0CC);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              color: step.completed ? color : Colors.white,
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: color, width: 2),
+            ),
+            child: step.completed
+                ? const Icon(Icons.check, color: Colors.white, size: 16)
+                : null,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  step.title,
+                  style: TextStyle(
+                    color: step.completed
+                        ? const Color(0xFF0D1B4C)
+                        : const Color(0xFF8A94A6),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  step.description,
+                  style: const TextStyle(
+                    color: Color(0xFF5B6472),
+                    fontSize: 13,
+                    height: 1.35,
+                  ),
+                ),
+                if (step.formattedCompletedAt.isNotEmpty) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    step.formattedCompletedAt,
+                    style: const TextStyle(
+                      color: Color(0xFF8A94A6),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submitReport() async {
+    FocusScope.of(context).unfocus();
+
+    final validationMessage = _validateReportForm();
+    if (validationMessage != null) {
+      _showSnackBar(validationMessage);
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      final result = await _klinikHoaksService.createLaporanHoaks(
+        KlinikHoaksReportRequest(
+          name: namaUser.text.trim(),
+          email: emailUser.text.trim(),
+          phone: phoneUser.text.trim(),
+          content: laporanKlinikHoaks.text.trim(),
+          evidenceUrl: linkBukti.text.trim(),
+        ),
+      );
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _isSubmitting = false;
+      });
+      await _showReportSuccessDialog(result);
+      if (!mounted) {
+        return;
+      }
+
+      _clearReportForm();
+      setState(() {
+        activeTab = 1;
+        tiketLacak.text = result.ticketCode;
+        _trackedReport = result.report;
+      });
+    } on KlinikHoaksException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isSubmitting = false;
+      });
+      _showSnackBar(error.message);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isSubmitting = false;
+      });
+      _showSnackBar('Gagal mengirim laporan hoaks.');
+    }
+  }
+
+  Future<void> _trackReport() async {
+    FocusScope.of(context).unfocus();
+
+    final ticketCode = tiketLacak.text.trim().toUpperCase();
+    if (ticketCode.isEmpty) {
+      _showSnackBar('Kode tiket laporan wajib diisi.');
+      return;
+    }
+
+    tiketLacak.value = TextEditingValue(
+      text: ticketCode,
+      selection: TextSelection.collapsed(offset: ticketCode.length),
+    );
+
+    setState(() {
+      _isTracking = true;
+      _trackedReport = null;
+    });
+
+    try {
+      final report = await _klinikHoaksService.trackLaporanHoaks(ticketCode);
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _trackedReport = report;
+        _isTracking = false;
+      });
+    } on KlinikHoaksException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isTracking = false;
+      });
+      _showSnackBar(error.message);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isTracking = false;
+      });
+      _showSnackBar('Gagal melacak laporan hoaks.');
+    }
+  }
+
+  String? _validateReportForm() {
+    final name = namaUser.text.trim();
+    final email = emailUser.text.trim();
+    final content = laporanKlinikHoaks.text.trim();
+    final evidenceUrl = linkBukti.text.trim();
+
+    if (name.isEmpty) {
+      return 'Nama pelapor wajib diisi.';
+    }
+    if (email.isEmpty) {
+      return 'Email pelapor wajib diisi.';
+    }
+    if (!_isValidEmail(email)) {
+      return 'Format email pelapor tidak valid.';
+    }
+    if (content.isEmpty) {
+      return 'Isi laporan wajib diisi.';
+    }
+    if (evidenceUrl.isNotEmpty && !_isValidHttpUrl(evidenceUrl)) {
+      return 'Link bukti harus berupa URL http atau https.';
+    }
+
+    return null;
+  }
+
+  Future<void> _showReportSuccessDialog(
+    KlinikHoaksReportCreateResult result,
+  ) async {
+    final emailMessage =
+        result.emailDelivery.sent && result.emailDelivery.to.isNotEmpty
+        ? 'Kode tiket juga sudah dikirim ke ${result.emailDelivery.to}.'
+        : 'Email belum terkirim. Simpan kode tiket ini untuk melacak laporan.';
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          title: const Text('Laporan Terkirim'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(emailMessage),
+              const SizedBox(height: 16),
+              const Text(
+                'Kode tiket',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 6),
+              SelectableText(
+                result.ticketCode,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Color(0xFF0D57E7),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: result.ticketCode));
+                if (mounted) {
+                  _showSnackBar('Kode tiket disalin.');
+                }
+              },
+              child: const Text('Salin Kode'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0D57E7),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Lacak Tiket'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _clearReportForm() {
+    namaUser.clear();
+    emailUser.clear();
+    phoneUser.clear();
+    laporanKlinikHoaks.clear();
+    linkBukti.clear();
+    captchaInput.clear();
+  }
+
+  void _showSnackBar(String message) {
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  bool _isValidEmail(String value) {
+    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
+  }
+
+  bool _isValidHttpUrl(String value) {
+    final parsed = Uri.tryParse(value);
+    return parsed != null &&
+        parsed.hasAuthority &&
+        (parsed.scheme == 'http' || parsed.scheme == 'https');
   }
 }

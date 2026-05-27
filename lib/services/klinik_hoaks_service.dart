@@ -123,6 +123,187 @@ class KlinikHoaksDashboard {
   final List<KlinikHoaksArticle> latestArticles;
 }
 
+class KlinikHoaksReportRequest {
+  const KlinikHoaksReportRequest({
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.content,
+    required this.evidenceUrl,
+  });
+
+  final String name;
+  final String email;
+  final String phone;
+  final String content;
+  final String evidenceUrl;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nama': name,
+      'email': email,
+      'no_handphone': phone,
+      'laporan_klinik_hoaks': content,
+      'link_bukti': evidenceUrl,
+    };
+  }
+}
+
+class KlinikHoaksReportCreateResult {
+  const KlinikHoaksReportCreateResult({
+    required this.ticketCode,
+    required this.message,
+    required this.emailDelivery,
+    required this.report,
+  });
+
+  final String ticketCode;
+  final String message;
+  final KlinikHoaksEmailDelivery emailDelivery;
+  final KlinikHoaksTrackedReport report;
+
+  factory KlinikHoaksReportCreateResult.fromJson(Map<String, dynamic> json) {
+    final emailDelivery = json['email_delivery'];
+    final report = json['report'];
+
+    return KlinikHoaksReportCreateResult(
+      ticketCode: json['ticket_code']?.toString() ?? '',
+      message: json['message']?.toString() ?? '',
+      emailDelivery: emailDelivery is Map<String, dynamic>
+          ? KlinikHoaksEmailDelivery.fromJson(emailDelivery)
+          : const KlinikHoaksEmailDelivery(
+              sent: false,
+              to: '',
+              subject: '',
+              error: '',
+            ),
+      report: report is Map<String, dynamic>
+          ? KlinikHoaksTrackedReport.fromJson(report)
+          : KlinikHoaksTrackedReport.empty(),
+    );
+  }
+}
+
+class KlinikHoaksEmailDelivery {
+  const KlinikHoaksEmailDelivery({
+    required this.sent,
+    required this.to,
+    required this.subject,
+    required this.error,
+  });
+
+  final bool sent;
+  final String to;
+  final String subject;
+  final String error;
+
+  factory KlinikHoaksEmailDelivery.fromJson(Map<String, dynamic> json) {
+    return KlinikHoaksEmailDelivery(
+      sent: _toBool(json['sent']),
+      to: json['to']?.toString() ?? '',
+      subject: json['subject']?.toString() ?? '',
+      error: json['error']?.toString() ?? '',
+    );
+  }
+}
+
+class KlinikHoaksTrackedReport {
+  const KlinikHoaksTrackedReport({
+    required this.ticketCode,
+    required this.status,
+    required this.statusLabel,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.content,
+    required this.evidenceUrl,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.progress,
+  });
+
+  final String ticketCode;
+  final String status;
+  final String statusLabel;
+  final String name;
+  final String email;
+  final String phone;
+  final String content;
+  final String evidenceUrl;
+  final String createdAt;
+  final String updatedAt;
+  final List<KlinikHoaksReportProgressStep> progress;
+
+  String get formattedCreatedAt => formatKlinikHoaksDate(createdAt);
+
+  factory KlinikHoaksTrackedReport.empty() {
+    return const KlinikHoaksTrackedReport(
+      ticketCode: '',
+      status: '',
+      statusLabel: '',
+      name: '',
+      email: '',
+      phone: '',
+      content: '',
+      evidenceUrl: '',
+      createdAt: '',
+      updatedAt: '',
+      progress: [],
+    );
+  }
+
+  factory KlinikHoaksTrackedReport.fromJson(Map<String, dynamic> json) {
+    final progress = json['progress'];
+
+    return KlinikHoaksTrackedReport(
+      ticketCode: json['ticket_code']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
+      statusLabel: json['status_label']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      phone: json['phone']?.toString() ?? '',
+      content: json['content']?.toString() ?? '',
+      evidenceUrl: json['evidence_url']?.toString() ?? '',
+      createdAt: json['created_at']?.toString() ?? '',
+      updatedAt: json['updated_at']?.toString() ?? '',
+      progress: progress is List
+          ? progress
+                .whereType<Map<String, dynamic>>()
+                .map(KlinikHoaksReportProgressStep.fromJson)
+                .toList()
+          : const [],
+    );
+  }
+}
+
+class KlinikHoaksReportProgressStep {
+  const KlinikHoaksReportProgressStep({
+    required this.status,
+    required this.title,
+    required this.description,
+    required this.completed,
+    required this.completedAt,
+  });
+
+  final String status;
+  final String title;
+  final String description;
+  final bool completed;
+  final String completedAt;
+
+  String get formattedCompletedAt => formatKlinikHoaksDate(completedAt);
+
+  factory KlinikHoaksReportProgressStep.fromJson(Map<String, dynamic> json) {
+    return KlinikHoaksReportProgressStep(
+      status: json['status']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      completed: _toBool(json['completed']),
+      completedAt: json['completed_at']?.toString() ?? '',
+    );
+  }
+}
+
 class KlinikHoaksService {
   KlinikHoaksService({http.Client? client}) : _client = client ?? http.Client();
 
@@ -191,6 +372,41 @@ class KlinikHoaksService {
     throw KlinikHoaksException('Detail klarifikasi tidak ditemukan.');
   }
 
+  Future<KlinikHoaksReportCreateResult> createLaporanHoaks(
+    KlinikHoaksReportRequest request,
+  ) async {
+    final decoded = await _post(
+      '/klinik-hoaks/laporan-hoaks',
+      request.toJson(),
+    );
+    final data = decoded['data'];
+
+    if (data is Map<String, dynamic>) {
+      return KlinikHoaksReportCreateResult.fromJson(data);
+    }
+
+    throw KlinikHoaksException('Response laporan hoaks tidak valid.');
+  }
+
+  Future<KlinikHoaksTrackedReport> trackLaporanHoaks(String ticketCode) async {
+    final normalizedTicket = ticketCode.trim();
+    if (normalizedTicket.isEmpty) {
+      throw KlinikHoaksException('Kode tiket laporan wajib diisi.');
+    }
+
+    final uri = Uri.parse(
+      '${ApiConfig.baseUrl}/klinik-hoaks/lacak-laporan',
+    ).replace(queryParameters: {'kode_tiket': normalizedTicket});
+    final decoded = await _getUri(uri);
+    final data = decoded['data'];
+
+    if (data is Map<String, dynamic>) {
+      return KlinikHoaksTrackedReport.fromJson(data);
+    }
+
+    throw KlinikHoaksException('Laporan hoaks tidak ditemukan.');
+  }
+
   Future<int> _getCount(String path, String key) async {
     final decoded = await _get(path);
     final payload = _payloadMap(decoded);
@@ -204,13 +420,14 @@ class KlinikHoaksService {
   }
 
   Future<Map<String, dynamic>> _get(String path) async {
+    return _getUri(Uri.parse('${ApiConfig.baseUrl}$path'));
+  }
+
+  Future<Map<String, dynamic>> _getUri(Uri uri) async {
     http.Response response;
 
     try {
-      response = await _client.get(
-        Uri.parse('${ApiConfig.baseUrl}$path'),
-        headers: _headers(),
-      );
+      response = await _client.get(uri, headers: _headers());
     } catch (_) {
       throw KlinikHoaksException(
         'Tidak dapat terhubung ke server Klinik Hoaks.',
@@ -229,8 +446,42 @@ class KlinikHoaksService {
     return decoded;
   }
 
-  Map<String, String> _headers() {
+  Future<Map<String, dynamic>> _post(
+    String path,
+    Map<String, dynamic> body,
+  ) async {
+    http.Response response;
+
+    try {
+      response = await _client.post(
+        Uri.parse('${ApiConfig.baseUrl}$path'),
+        headers: _headers(hasJsonBody: true),
+        body: jsonEncode(body),
+      );
+    } catch (_) {
+      throw KlinikHoaksException(
+        'Tidak dapat terhubung ke server Klinik Hoaks.',
+      );
+    }
+
+    final decoded = _decode(response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw KlinikHoaksException(
+        decoded['error']?.toString() ??
+            decoded['message']?.toString() ??
+            'Gagal mengirim laporan Klinik Hoaks.',
+      );
+    }
+
+    return decoded;
+  }
+
+  Map<String, String> _headers({bool hasJsonBody = false}) {
     final headers = <String, String>{'Accept': 'application/json'};
+    if (hasJsonBody) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     final session = AuthService.currentSession;
     if (session != null) {
       headers['Authorization'] = session.authorizationHeader;
@@ -395,4 +646,12 @@ int _toInt(dynamic value) {
     return value.toInt();
   }
   return int.tryParse(value?.toString() ?? '') ?? 0;
+}
+
+bool _toBool(dynamic value) {
+  if (value is bool) {
+    return value;
+  }
+  final normalized = value?.toString().toLowerCase().trim();
+  return normalized == 'true' || normalized == '1';
 }
