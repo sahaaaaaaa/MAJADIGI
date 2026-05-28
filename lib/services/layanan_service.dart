@@ -21,9 +21,11 @@ class LayananModel {
     required this.description,
     required this.iconUrl,
     required this.categoryName,
+    required this.nawaBhaktiSatya,
     required this.isInstalled,
     required this.isFavorite,
     required this.isFeatured,
+    required this.installCount,
   });
 
   final int id;
@@ -31,20 +33,28 @@ class LayananModel {
   final String description;
   final String iconUrl;
   final String categoryName;
+  final String nawaBhaktiSatya;
   final bool isInstalled;
   final bool isFavorite;
   final bool isFeatured;
+  final int installCount;
 
-  LayananModel copyWith({bool? isInstalled, bool? isFavorite}) {
+  LayananModel copyWith({
+    bool? isInstalled,
+    bool? isFavorite,
+    int? installCount,
+  }) {
     return LayananModel(
       id: id,
       name: name,
       description: description,
       iconUrl: iconUrl,
       categoryName: categoryName,
+      nawaBhaktiSatya: nawaBhaktiSatya,
       isInstalled: isInstalled ?? this.isInstalled,
       isFavorite: isFavorite ?? this.isFavorite,
       isFeatured: isFeatured,
+      installCount: installCount ?? this.installCount,
     );
   }
 
@@ -59,9 +69,11 @@ class LayananModel {
       categoryName: category is Map<String, dynamic>
           ? category['nama']?.toString() ?? ''
           : '',
+      nawaBhaktiSatya: json['nawa_bhakti_satya']?.toString() ?? '',
       isInstalled: json['is_installed'] == true,
       isFavorite: json['is_favorite'] == true,
       isFeatured: json['is_featured'] == true,
+      installCount: _toInt(json['install_count']),
     );
   }
 }

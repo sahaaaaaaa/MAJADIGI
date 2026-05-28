@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:majadigi/screens/beranda/layanan_lain.dart';
 import 'package:majadigi/screens/layanan/katalog_screen.dart';
 import 'package:majadigi/screens/layanan/kategori_layanan_screen.dart';
 import 'package:majadigi/screens/layanan/nawabhaktisatya_screen.dart';
@@ -9,626 +8,454 @@ class LayananScreen extends StatefulWidget {
   const LayananScreen({super.key});
 
   @override
-  State<LayananScreen> createState() =>
-      _LayananScreenState();
+  State<LayananScreen> createState() => _LayananScreenState();
 }
 
-class _LayananScreenState
-  extends State<LayananScreen> {
-    final TextEditingController
-    searchController =
-        TextEditingController();
+class _LayananScreenState extends State<LayananScreen> {
+  final TextEditingController searchController = TextEditingController();
 
   String searchQuery = '';
 
   int selectedTab = 0;
-  
-  final List<String> tabs = [
-    "Layanan",
-    "Nawa Bhakti Satya",
-    "Katalog",
-  ];
 
-  final List<Map<String, dynamic>>
-      kategoriList = [
-        
+  final List<String> tabs = ["Layanan", "Nawa Bhakti Satya", "Katalog"];
+
+  final List<Map<String, dynamic>> kategoriList = [
     {
-      "title":
-          "Pariwisata & Kebudayaan",
-      "image":
-          "assets/images/kategori/pariwisata_&_kebudayaan.png",
+      "title": "Pariwisata & Kebudayaan",
+      "image": "assets/images/kategori/pariwisata_&_kebudayaan.png",
     },
 
-    {
-      "title": "Pendidikan",
-      "image":
-          "assets/images/kategori/pendidikan.png",
-    },
+    {"title": "Pendidikan", "image": "assets/images/kategori/pendidikan.png"},
 
     {
       "title": "Ketenagakerjaan",
-      "image":
-          "assets/images/kategori/ketenagakerjaan.png",
+      "image": "assets/images/kategori/ketenagakerjaan.png",
     },
 
     {
       "title": "Ekonomi & Bisnis",
-      "image":
-          "assets/images/kategori/ekonomi_&_bisnis.png",
+      "image": "assets/images/kategori/ekonomi_&_bisnis.png",
     },
 
-    {
-      "title": "Kesehatan",
-      "image":
-          "assets/images/kategori/kesehatan.png",
-    },
+    {"title": "Kesehatan", "image": "assets/images/kategori/kesehatan.png"},
 
     {
       "title": "Kependudukan",
-      "image":
-          "assets/images/kategori/kependudukan.png",
+      "image": "assets/images/kategori/kependudukan.png",
     },
 
     {
-      "title":
-          "Multisektor (Khusus)",
-      "image":
-          "assets/images/kategori/multisektor.png",
+      "title": "Multisektor (Khusus)",
+      "image": "assets/images/kategori/multisektor.png",
     },
 
     {
       "title": "Infrastruktur",
-      "image":
-          "assets/images/kategori/infrastuktur.png",
+      "image": "assets/images/kategori/infrastuktur.png",
     },
-    
   ];
 
-  List<Recommendation>
-    get filteredRecommendations {
-
-  return recommendations
-      .where(
-        (item) => item.title
-            .toString()
-            .toLowerCase()
-            .contains(
-              searchQuery
-                  .toLowerCase(),
-            ),
-      )
-      .toList();
-}
+  List<Recommendation> get filteredRecommendations {
+    return recommendations
+        .where(
+          (item) => item.title.toString().toLowerCase().contains(
+            searchQuery.toLowerCase(),
+          ),
+        )
+        .toList();
+  }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   void showSearchDialog() {
+    showModalBottomSheet(
+      context: context,
 
-  showModalBottomSheet(
-    context: context,
+      isScrollControlled: true,
 
-    isScrollControlled: true,
+      backgroundColor: Colors.white,
 
-    backgroundColor: Colors.white,
-
-    shape:
-        const RoundedRectangleBorder(
-      borderRadius:
-          BorderRadius.vertical(
-        top: Radius.circular(30),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
-    ),
 
-    builder: (context) {
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 24,
 
-      return StatefulBuilder(
-        builder:
-            (context, setModalState) {
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
 
-          return Padding(
-            padding:
-                EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 24,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
 
-              bottom:
-                  MediaQuery.of(
-                context,
-              ).viewInsets.bottom +
-                      24,
-            ),
+                children: [
+                  TextField(
+                    controller: searchController,
 
-            child: Column(
-              mainAxisSize:
-                  MainAxisSize.min,
+                    onChanged: (value) {
+                      setModalState(() {
+                        searchQuery = value;
+                      });
+                    },
 
-              children: [
+                    decoration: InputDecoration(
+                      hintText: 'Cari layanan...',
 
-                TextField(
-                  controller:
-                      searchController,
+                      prefixIcon: const Icon(Icons.search),
 
-                  onChanged: (value) {
-
-                    setModalState(() {
-                      searchQuery =
-                          value;
-                    });
-                  },
-
-                  decoration:
-                      InputDecoration(
-                    hintText:
-                        'Cari layanan...',
-
-                    prefixIcon:
-                        const Icon(
-                      Icons.search,
-                    ),
-
-                    border:
-                        OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(
-                        18,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(
-                  height: 20,
-                ),
+                  const SizedBox(height: 20),
 
-                if (filteredRecommendations
-                    .isEmpty)
+                  if (filteredRecommendations.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.all(20),
 
-                  const Padding(
-                    padding:
-                        EdgeInsets.all(
-                      20,
+                      child: Text("Layanan tidak ditemukan"),
                     ),
 
-                    child: Text(
-                      "Layanan tidak ditemukan",
-                    ),
-                  ),
+                  if (filteredRecommendations.isNotEmpty)
+                    SizedBox(
+                      height: 300,
 
-                if (filteredRecommendations
-                    .isNotEmpty)
+                      child: ListView.builder(
+                        itemCount: filteredRecommendations.length,
 
-                  SizedBox(
-                    height: 300,
+                        itemBuilder: (context, index) {
+                          final item = filteredRecommendations[index];
 
-                    child: ListView.builder(
-                      itemCount:
-                          filteredRecommendations
-                              .length,
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: const Color(0xffF5F7FF),
 
-                      itemBuilder:
-                          (context, index) {
-
-                        final item =
-                            filteredRecommendations[
-                                index];
-
-                        return ListTile(
-                          leading:
-                              CircleAvatar(
-                            backgroundColor:
-                                const Color(
-                              0xffF5F7FF,
+                              child: Image.asset("assets/images/${item.logo}"),
                             ),
 
-                            child:
-                                Image.asset(
-                              "assets/images/${item.logo}",
-                            ),
-                          ),
+                            title: Text(item.title),
 
-                          title:
-                              Text(
-                            item.title,
-                          ),
+                            subtitle: Text(item.kategori),
 
-                          subtitle:
-                              Text(
-                            item.kategori,
-                          ),
+                            onTap: () {
+                              Navigator.pop(context);
 
-                          onTap: () {
+                              if (item.screen != null) {
+                                Navigator.push(
+                                  context,
 
-                            Navigator.pop(
-                              context,
-                            );
-
-                            if (item.screen !=
-                                null) {
-
-                              Navigator.push(
-                                context,
-
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      item.screen!,
-                                ),
-                              );
-                            }
-                          },
-                        );
-                      },
+                                  MaterialPageRoute(
+                                    builder: (_) => item.screen!,
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
-}
-
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-  backgroundColor: const Color(0xFF0D57E7),
-
-  body: SafeArea(
-    bottom: false,
-
-    child: Stack(
-      children: [
-
-        /// BACKGROUND IMAGE
-        Positioned(
-          top: 10,
-          left: -430,
-
-          child: Transform.rotate(
-            angle: -60.94 * (3.14159 / 180),
-
-            child: Container(
-              width: 950,
-              height: 850,
-
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-
-                  colors: [
-                    Color(0xFF0047B3),
-                    Color(0xFF0065FF),
-                  ],
-                ),
-
-                shape: BoxShape.rectangle,
-
-                borderRadius: BorderRadius.all(
-                  Radius.elliptical(935, 791),
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        /// CONTENT
-        Column(
-          children: [
-
-            /// HEADER
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                24,
-                30,
-                24,
-                10,
-              ),
-
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
-
-                children: [
-
-                  const Text(
-                    "Semua Layanan",
-
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  IconButton(
-                    onPressed: () {
-                      showSearchDialog();
-                    },
-
-                    icon: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
                 ],
               ),
-            ),
+            );
+          },
+        );
+      },
+    );
+  }
 
-            /// BODY PUTIH
-            Expanded(
-              child: Container(
-                width: double.infinity,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0D57E7),
 
-                padding: const EdgeInsets.all(16),
+      body: SafeArea(
+        bottom: false,
 
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+        child: Stack(
+          children: [
+            /// BACKGROUND IMAGE
+            Positioned(
+              top: 10,
+              left: -430,
 
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(35),
-                    topRight: Radius.circular(35),
+              child: Transform.rotate(
+                angle: -60.94 * (3.14159 / 180),
+
+                child: Container(
+                  width: 950,
+                  height: 850,
+
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+
+                      colors: [Color(0xFF0047B3), Color(0xFF0065FF)],
+                    ),
+
+                    shape: BoxShape.rectangle,
+
+                    borderRadius: BorderRadius.all(Radius.elliptical(935, 791)),
                   ),
                 ),
+              ),
+            ),
 
-                child: Column(
-                  children: [
+            /// CONTENT
+            Column(
+              children: [
+                /// HEADER
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 30, 24, 10),
 
-                    /// TAB
-                    Container(
-                      padding: const EdgeInsets.all(4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                    children: [
+                      const Text(
+                        "Semua Layanan",
 
-                        borderRadius:
-                            BorderRadius.circular(30),
-
-                        border: Border.all(
-                          color: const Color(
-                            0xffE5E5E5,
-                          ),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      child: Row(
-                        children: List.generate(
-                          tabs.length,
-                          (index) {
+                      IconButton(
+                        onPressed: () {
+                          showSearchDialog();
+                        },
 
-                            final isActive =
-                                selectedTab == index;
+                        icon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                            return Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedTab = index;
-                                  });
+                /// BODY PUTIH
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
 
-                                  
-                                },
-                                child:
-                                    AnimatedContainer(
-                                  duration:
-                                      const Duration(
-                                    milliseconds: 250,
-                                  ),
+                    padding: const EdgeInsets.all(16),
 
-                                  padding:
-                                      const EdgeInsets
-                                          .symmetric(
-                                    vertical: 12,
-                                  ),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
 
-                                  decoration:
-                                      BoxDecoration(
-                                    color: isActive
-                                        ? const Color(
-                                            0xffE9F0FF,
-                                          )
-                                        : Colors
-                                            .transparent,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(35),
+                        topRight: Radius.circular(35),
+                      ),
+                    ),
 
-                                    borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                      24,
+                    child: Column(
+                      children: [
+                        /// TAB
+                        Container(
+                          padding: const EdgeInsets.all(4),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+
+                            borderRadius: BorderRadius.circular(30),
+
+                            border: Border.all(color: const Color(0xffE5E5E5)),
+                          ),
+
+                          child: Row(
+                            children: List.generate(tabs.length, (index) {
+                              final isActive = selectedTab == index;
+
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedTab = index;
+                                    });
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
                                     ),
-                                  ),
 
-                                  child: Center(
-                                    child: Text(
-                                      tabs[index],
+                                    decoration: BoxDecoration(
+                                      color: isActive
+                                          ? const Color(0xffE9F0FF)
+                                          : Colors.transparent,
 
-                                      style: TextStyle(
-                                        fontSize: 13,
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
 
-                                        fontWeight:
-                                            isActive
-                                                ? FontWeight
-                                                    .w600
-                                                : FontWeight
-                                                    .w400,
+                                    child: Center(
+                                      child: Text(
+                                        tabs[index],
 
-                                        color: isActive
-                                            ? const Color(
-                                                0xff2F61E8,
-                                              )
-                                            : Colors
-                                                .grey,
+                                        style: TextStyle(
+                                          fontSize: 13,
+
+                                          fontWeight: isActive
+                                              ? FontWeight.w600
+                                              : FontWeight.w400,
+
+                                          color: isActive
+                                              ? const Color(0xff2F61E8)
+                                              : Colors.grey,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            }),
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(height: 20),
+
+                        /// GRID
+                        Expanded(
+                          child: Builder(
+                            builder: (context) {
+                              // TAB LAYANAN
+                              if (selectedTab == 0) {
+                                return _buildLayananGrid();
+                              }
+
+                              // TAB NAWA BHAKTI
+                              if (selectedTab == 1) {
+                                return const NawaBhaktiScreen();
+                              }
+
+                              // TAB KATALOG
+                              return const KatalogScreen();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-
-                    const SizedBox(height: 20),
-
-                    /// GRID
-                    Expanded(
-                      child: Builder(
-                        builder: (context) {
-
-                          // TAB LAYANAN
-                          if (selectedTab == 0) {
-                            return _buildLayananGrid();
-                          }
-
-                          // TAB NAWA BHAKTI
-                          if (selectedTab == 1) {
-                            return const NawaBhaktiScreen();
-                          }
-
-                          // TAB KATALOG
-                          return const KatalogScreen();
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  ),
-);
-
+      ),
+    );
   }
+
   Widget _buildLayananGrid() {
+    return GridView.builder(
+      itemCount: kategoriList.length,
 
-  return GridView.builder(
-    itemCount: kategoriList.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 14,
+        mainAxisSpacing: 14,
+        childAspectRatio: 0.78,
+      ),
 
-    gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      crossAxisSpacing: 14,
-      mainAxisSpacing: 14,
-      childAspectRatio: 0.82,
-    ),
+      itemBuilder: (context, index) {
+        final item = kategoriList[index];
 
-    itemBuilder:
-        (context, index) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
 
-      final item = kategoriList[index];
-
-      return GestureDetector(
-        onTap: () {
-
-          Navigator.push(
-            context,
-
-            MaterialPageRoute(
-              builder: (_) =>
-                KategoriLayananScreen(
-              kategori: item["title"],
-            ),
-            ),
-          );
-        },
-
-        child: Container(
-          padding:
-              const EdgeInsets.all(16),
-
-          decoration:
-              BoxDecoration(
-            color: Colors.white,
-
-            borderRadius:
-                BorderRadius.circular(22),
-
-            border: Border.all(
-              color:
-                  const Color(
-                0xffEAEAEA,
+              MaterialPageRoute(
+                builder: (_) => KategoriLayananScreen(kategori: item["title"]),
               ),
+            );
+          },
+
+          child: Container(
+            padding: const EdgeInsets.all(16),
+
+            decoration: BoxDecoration(
+              color: Colors.white,
+
+              borderRadius: BorderRadius.circular(22),
+
+              border: Border.all(color: const Color(0xffEAEAEA)),
+            ),
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                Container(
+                  width: 58,
+                  height: 58,
+
+                  padding: const EdgeInsets.all(10),
+
+                  decoration: const BoxDecoration(
+                    color: Color(0xffF5F7FF),
+                    shape: BoxShape.circle,
+                  ),
+
+                  child: Image.asset(item["image"]),
+                ),
+
+                const SizedBox(height: 16),
+
+                Text(
+                  item["title"],
+
+                  maxLines: 2,
+
+                  overflow: TextOverflow.ellipsis,
+
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Flexible(
+                  child: Text(
+                    "Koleksi khas semua tentang Jawa Timur",
+
+                    maxLines: 3,
+
+                    overflow: TextOverflow.ellipsis,
+
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-
-          child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-
-            children: [
-
-              Container(
-                width: 58,
-                height: 58,
-
-                padding:
-                    const EdgeInsets.all(10),
-
-                decoration:
-                    const BoxDecoration(
-                  color: Color(0xffF5F7FF),
-                  shape: BoxShape.circle,
-                ),
-
-                child:
-                    Image.asset(
-                  item["image"],
-                ),
-              ),
-
-              const SizedBox(
-                height: 16,
-              ),
-
-              Text(
-                item["title"],
-
-                maxLines: 2,
-
-                overflow:
-                    TextOverflow.ellipsis,
-
-                style:
-                    const TextStyle(
-                  fontSize: 16,
-                  fontWeight:
-                      FontWeight.w700,
-                  height: 1.4,
-                ),
-              ),
-
-              const SizedBox(
-                height: 10,
-              ),
-
-              Text(
-                "Koleksi khas semua tentang Jawa Timur",
-
-                maxLines: 3,
-
-                overflow:
-                    TextOverflow
-                        .ellipsis,
-
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 1.5,
-
-                  color: Colors
-                      .grey
-                      .shade600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
   }
+}
