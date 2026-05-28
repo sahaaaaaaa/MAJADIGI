@@ -34,6 +34,10 @@ Recommendation recommendationFromLayanan(LayananModel layanan) {
     description: layanan.description,
     logo: layananLogoAssetName(layanan.name),
     kategori: layananCategoryName(layanan.name, layanan.categoryName),
+    nawaBhakti: layananNawaBhaktiSatyaName(
+      layanan.name,
+      layanan.nawaBhaktiSatya,
+    ),
   );
 }
 
@@ -50,7 +54,7 @@ String layananCategoryName(String name, String fallback) {
     return 'Sosial';
   }
   if (normalized.contains('open data')) {
-    return 'PPID';
+    return 'Kependudukan';
   }
   if (normalized.contains('klinik hoaks')) {
     return 'Multisektor (Khusus)';
@@ -88,6 +92,23 @@ String layananDisplayTitle(String name) {
   }
 
   return name;
+}
+
+String layananNawaBhaktiSatyaName(String name, String fallback) {
+  final normalized = name.toLowerCase();
+
+  if (normalized.contains('transjatim') ||
+      normalized.contains('nomor darurat')) {
+    return 'Jatim Akses';
+  }
+  if (normalized.contains('islamic')) {
+    return 'Jatim Harmoni';
+  }
+  if (normalized.contains('saiful anwar') || normalized.contains('rsud haji')) {
+    return 'Jatim Sehat';
+  }
+
+  return fallback;
 }
 
 String layananLogoAssetName(String name) {
@@ -165,6 +186,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Layanan cepat tanggap darurat 24 jam',
     logo: 'icons/ambulans.svg',
     kategori: 'Kependudukan',
+    nawaBhakti: 'Jatim Akses',
   ),
   Recommendation(
     id: 5,
@@ -172,6 +194,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Pelayanan kesehatan berkualitas dan islami',
     logo: 'rsud_haji.png',
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
     id: 6,
@@ -179,6 +202,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Layanan kesehatan rujukan utama Jawa Timur',
     logo: 'rsud_saifulanwar.png',
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
     id: 7,
@@ -186,6 +210,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Informasi rute transportasi publik Jatim',
     logo: 'transjatim_ajaib.png',
     kategori: 'Kependudukan',
+    nawaBhakti: 'Jatim Akses',
   ),
   Recommendation(
     id: 8,
@@ -201,6 +226,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Pusat informasi dan kegiatan keagamaan',
     logo: 'islamic_center.png',
     kategori: 'Ekonomi & Bisnis',
+    nawaBhakti: 'Jatim Harmoni',
     screen: const IslamicCenterHomeScreen(),
   ),
   Recommendation(
@@ -251,6 +277,7 @@ final List<Recommendation> recommendations = [
     description: 'Layanan kesehatan rujukan utama Jawa Timur',
     logo: 'rsud_saifulanwar.png',
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
     id: 2,
@@ -258,6 +285,7 @@ final List<Recommendation> recommendations = [
     description: 'Pelayanan kesehatan berkualitas dan islami',
     logo: 'rsud_haji.png',
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
     id: 3,
@@ -273,6 +301,7 @@ final List<Recommendation> recommendations = [
     description: 'Pusat informasi dan kegiatan keagamaan',
     logo: 'islamic_center.png',
     kategori: 'Sosial',
+    nawaBhakti: 'Jatim Harmoni',
     screen: const IslamicCenterHomeScreen(),
   ),
   Recommendation(
@@ -280,7 +309,7 @@ final List<Recommendation> recommendations = [
     title: 'Open Data',
     description: 'Transparansi data publik untuk masyarakat',
     logo: 'open_data.png',
-    kategori: 'PPID',
+    kategori: 'Kependudukan',
     screen: const OpenDataScreen(),
   ),
   Recommendation(
@@ -304,6 +333,7 @@ final List<Recommendation> recommendations = [
     description: 'Layanan cepat tanggap darurat 24 jam',
     logo: 'icons/ambulans.svg',
     kategori: 'Kebencanaan',
+    nawaBhakti: 'Jatim Akses',
   ),
   Recommendation(
     id: 9,
@@ -311,6 +341,7 @@ final List<Recommendation> recommendations = [
     description: 'Informasi rute transportasi publik Jatim',
     logo: 'transjatim_ajaib.png',
     kategori: 'Infrastruktur',
+    nawaBhakti: 'Jatim Akses',
   ),
   Recommendation(
     id: 10,
@@ -413,6 +444,7 @@ final List<Recommendation> recommendations = [
     logo: 'rsud_haji.png',
 
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
 
   Recommendation(
@@ -423,6 +455,7 @@ final List<Recommendation> recommendations = [
     logo: 'transjatim_ajaib.png',
 
     kategori: 'Infrastruktur',
+    nawaBhakti: 'Jatim Akses',
   ),
 
   Recommendation(
@@ -433,6 +466,7 @@ final List<Recommendation> recommendations = [
     logo: 'islamic_center.png',
 
     kategori: 'Sosial',
+    nawaBhakti: 'Jatim Harmoni',
 
     screen: const IslamicCenterHomeScreen(),
   ),
