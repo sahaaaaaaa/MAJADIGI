@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/point_jatim_service.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'point_jatim_dummy.dart';
 import 'point_jatim_info_screen.dart';
 import 'layanan_detail_screen.dart';
@@ -8,8 +9,7 @@ class PointJatimHomeScreen extends StatefulWidget {
   const PointJatimHomeScreen({super.key});
 
   @override
-  State<PointJatimHomeScreen> createState() =>
-      _PointJatimHomeScreenState();
+  State<PointJatimHomeScreen> createState() => _PointJatimHomeScreenState();
 }
 
 class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
@@ -64,11 +64,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
         for (final item in komoditi) item.id: item.description,
       };
       final projects = potensi.items
-          .map((item) => _projectFromPotensi(
-                item,
-                sectorNames,
-                komoditiNames,
-              ))
+          .map((item) => _projectFromPotensi(item, sectorNames, komoditiNames))
           .toList();
 
       if (!mounted) {
@@ -162,10 +158,10 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     final category = sectorName.isNotEmpty
         ? sectorName
         : item.businessField.isNotEmpty
-            ? item.businessField
-            : item.jenis.isNotEmpty
-                ? item.jenis
-                : 'Lainnya';
+        ? item.businessField
+        : item.jenis.isNotEmpty
+        ? item.jenis
+        : 'Lainnya';
     final locationParts = <String>[
       if (item.district.isNotEmpty) item.district,
       if (item.city.isNotEmpty) item.city,
@@ -181,8 +177,8 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
       lokasi: locationParts.isNotEmpty
           ? locationParts.join(', ')
           : item.address.isNotEmpty
-              ? item.address
-              : '-',
+          ? item.address
+          : '-',
       harga: _formatMoneyCompact(item.investmentValue),
       tahun: item.year > 0 ? item.year.toString() : '-',
       infomemoImages: const [],
@@ -241,439 +237,395 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     return value.toStringAsFixed(6);
   }
 
+  void _openProjectDetail(PointJatimProjectModel item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => LayananDetailScreen(item: item)),
+    );
+  }
+
+  PointJatimProjectModel _projectFromHighlight(PointJatimHighlightModel item) {
+    final title = item.title.trim().toLowerCase();
+    final image = item.image.trim();
+
+    for (final project in _projects) {
+      if (project.title.trim().toLowerCase() == title) {
+        return project;
+      }
+    }
+
+    for (final project in _projects) {
+      if (image.isNotEmpty && project.image.trim() == image) {
+        return project;
+      }
+    }
+
+    return PointJatimProjectModel(
+      image: item.image,
+      category: 'Point Jatim',
+      title: item.title,
+      lokasi: item.subtitle,
+      harga: '-',
+      tahun: '-',
+      infomemoImages: const [],
+      deskripsi: item.subtitle,
+      wilayah: item.subtitle,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final filteredProjects =
-        _projects.where((item) {
-      final matchKategori =
-          selectedKategori == 'Semua'
-              ? true
-              : item.category == selectedKategori;
-      final matchWilayah =
-          selectedWilayah == 'Semua'
-              ? true
-              : item.wilayah == selectedWilayah;
-      final matchKomoditi =
-          selectedKomoditi == 'Semua'
-              ? true
-              : item.komoditi == selectedKomoditi;
+    final filteredProjects = _projects.where((item) {
+      final matchKategori = selectedKategori == 'Semua'
+          ? true
+          : item.category == selectedKategori;
+      final matchWilayah = selectedWilayah == 'Semua'
+          ? true
+          : item.wilayah == selectedWilayah;
+      final matchKomoditi = selectedKomoditi == 'Semua'
+          ? true
+          : item.komoditi == selectedKomoditi;
 
-      final matchSearch = item.title
-          .toLowerCase()
-          .contains(
-            searchController.text.toLowerCase(),
-          );
+      final matchSearch = item.title.toLowerCase().contains(
+        searchController.text.toLowerCase(),
+      );
 
-      return matchKategori &&
-          matchWilayah &&
-          matchKomoditi &&
-          matchSearch;
+      return matchKategori && matchWilayah && matchKomoditi && matchSearch;
     }).toList();
 
-  return Scaffold(
-    backgroundColor: const Color(0xff1E4FD8),
+    return Scaffold(
+      backgroundColor: const Color(0xff1E4FD8),
 
-    body: Stack(
-      children: [
+      body: Stack(
+        children: [
+          /// BACKGROUND
+          Container(
+            width: double.infinity,
+            height: 260,
 
-        /// BACKGROUND
-        Container(
-          width: double.infinity,
-          height: 260,
-
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                'assets/images/latar_belakang.png',
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/latar_belakang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
             ),
           ),
-        ),
 
-        Column(
-          children: [
+          Column(
+            children: [
+              /// HEADER
+              _buildHeader(context),
 
-            /// HEADER
-            _buildHeader(context),
+              const SizedBox(height: 10),
 
-            const SizedBox(height: 10),
+              /// BODY
+              Expanded(
+                child: Container(
+                  width: double.infinity,
 
-            /// BODY
-            Expanded(
-              child: Container(
-                width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Color(0xffF7F7F7),
 
-                decoration: const BoxDecoration(
-                  color: Color(0xffF7F7F7),
-
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(34),
-                    topRight: Radius.circular(34),
-                  ),
-                ),
-
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                    bottom: 30,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(34),
+                      topRight: Radius.circular(34),
+                    ),
                   ),
 
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 20, bottom: 30),
 
-                      /// SEARCH
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                        ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// SEARCH
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
 
-                        child: TextFormField(
-                          controller: searchController,
+                          child: TextFormField(
+                            controller: searchController,
 
-                          onChanged: (value) {
-                            setState(() {});
-                          },
+                            onChanged: (value) {
+                              setState(() {});
+                            },
 
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xFF2F2F2F),
-                            fontFamily: 'Onest',
-                          ),
-
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-
-                            hintText: 'Cari Data',
-
-                            hintStyle: const TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
-                              color: Color(0xFFA0A0A0),
+                              color: Color(0xFF2F2F2F),
                               fontFamily: 'Onest',
-                              fontWeight: FontWeight.w400,
                             ),
 
-                            prefixIcon: const Padding(
-                              padding: EdgeInsets.only(
-                                left: 11,
-                                right: 1,
-                              ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
 
-                              child: Icon(
-                                Icons.search,
+                              hintText: 'Cari Data',
+
+                              hintStyle: const TextStyle(
+                                fontSize: 16,
                                 color: Color(0xFFA0A0A0),
-                                size: 30,
+                                fontFamily: 'Onest',
+                                fontWeight: FontWeight.w400,
                               ),
-                            ),
 
-                            contentPadding:
-                                const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 20,
-                            ),
+                              prefixIcon: const Padding(
+                                padding: EdgeInsets.only(left: 11, right: 1),
 
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(18),
-
-                              borderSide: const BorderSide(
-                                color: Color(0xFFE2E2E2),
-                                width: 1.2,
+                                child: Icon(
+                                  Icons.search,
+                                  color: Color(0xFFA0A0A0),
+                                  size: 30,
+                                ),
                               ),
-                            ),
 
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(18),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 20,
+                              ),
 
-                              borderSide: const BorderSide(
-                                color: Color(0xFF0E63FF),
-                                width: 1.4,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFE2E2E2),
+                                  width: 1.2,
+                                ),
+                              ),
+
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF0E63FF),
+                                  width: 1.4,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
-                      /// KATEGORI
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            _showFilterSheet();
-                          },
-                          child: Container(
-                            height: 55,
-                            padding:
-                                const EdgeInsets.symmetric(
-                              horizontal: 14,
-                            ),
-
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.circular(14),
-                              border: Border.all(
-                                color:
-                                    Colors.grey.shade300,
+                        /// KATEGORI
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              _showFilterSheet();
+                            },
+                            child: Container(
+                              height: 55,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
                               ),
-                            ),
 
-                            child: Row(
-                              children: [
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.grey.shade300),
+                              ),
 
-                                Icon(
-                                  Icons.grid_view_rounded,
-                                  color:
-                                      Colors.grey.shade400,
-                                  size: 20,
-                                ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.grid_view_rounded,
+                                    color: Colors.grey.shade400,
+                                    size: 20,
+                                  ),
 
-                                const SizedBox(width: 12),
+                                  const SizedBox(width: 12),
 
-                                Expanded(
-                                  child: Text(
-                                    'Filter',
-                                    style: TextStyle(
-                                      color: Colors
-                                          .grey.shade500,
-                                      fontSize: 16,
+                                  Expanded(
+                                    child: Text(
+                                      'Filter',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
-                                ),
 
-                                Icon(
-                                  Icons
-                                      .keyboard_arrow_down_rounded,
-                                  color:
-                                      Colors.grey.shade400,
-                                ),
-                              ],
+                                  Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 22),
+                        const SizedBox(height: 22),
 
-                      /// PROJECT TERBARU
-                      Container(
-                        width: double.infinity,
-                        color: const Color(0xff2F61E8),
-                        padding:
-                            const EdgeInsets.symmetric(
-                          vertical: 20,
-                        ),
+                        /// PROJECT TERBARU
+                        Container(
+                          width: double.infinity,
+                          color: const Color(0xff2F61E8),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
 
-                        child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                          children: [
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
 
-                            const Padding(
-                              padding:
-                                  EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-
-                              child: Text(
-                                'Project Terbaru',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight:
-                                      FontWeight.w700,
+                                child: Text(
+                                  'Project Terbaru',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                            SizedBox(
-                              height: 255,
+                              SizedBox(
+                                height: 255,
 
-                              child: ListView.separated(
-                                scrollDirection:
-                                    Axis.horizontal,
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
 
-                                padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                  horizontal: 16,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+
+                                  itemBuilder: (context, index) {
+                                    final item = _highlights[index];
+
+                                    return _buildHighlightCard(item);
+                                  },
+
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(width: 14),
+
+                                  itemCount: _highlights.length,
                                 ),
-
-                                itemBuilder:
-                                    (context, index) {
-
-                                  final item =
-                                      _highlights[
-                                          index];
-
-                                  return _buildHighlightCard(
-                                    item,
-                                  );
-                                },
-
-                                separatorBuilder:
-                                    (_, __) =>
-                                        const SizedBox(
-                                  width: 14,
-                                ),
-
-                                itemCount:
-                                    _highlights
-                                        .length,
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      /// TITLE
-                      const Padding(
-                        padding:
-                            EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-
-                        child: Text(
-                          'List Project Ready to Offer',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight:
-                                FontWeight.w700,
-                            color: Color(0xff1D1D1D),
+                            ],
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 18),
+                        const SizedBox(height: 24),
 
-                      /// PROJECT LIST
-                      if (filteredProjects.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 20,
-                          ),
+                        /// TITLE
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+
                           child: Text(
-                            'Data tidak ditemukan',
+                            'List Project Ready to Offer',
                             style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 14,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff1D1D1D),
                             ),
                           ),
-                        )
-                      else
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics:
-                              const NeverScrollableScrollPhysics(),
-
-                          itemCount:
-                              filteredProjects.length,
-
-                          itemBuilder: (context, index) {
-
-                            final item =
-                                filteredProjects[index];
-
-                            return _buildProjectCard(
-                              context,
-                              item,
-                            );
-                          },
                         ),
-                    ],
+
+                        const SizedBox(height: 18),
+
+                        /// PROJECT LIST
+                        if (filteredProjects.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 20,
+                            ),
+                            child: Text(
+                              'Data tidak ditemukan',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 14,
+                              ),
+                            ),
+                          )
+                        else
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+
+                            itemCount: filteredProjects.length,
+
+                            itemBuilder: (context, index) {
+                              final item = filteredProjects[index];
+
+                              return _buildProjectCard(context, item);
+                            },
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildHeader(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(
-      16,
-      55,
-      16,
-      0,
-    ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 55, 16, 0),
 
-    child: Row(
-      children: [
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
 
-        GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-
-          child: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-
-        const Expanded(
-          child: Center(
-            child: Text(
-              'POINT JATIM',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
-              ),
-            ),
-          ),
-        ),
-
-        Row(
-          children: [
-
-            const Icon(
-              Icons.bookmark_border_rounded,
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
               color: Colors.white,
+              size: 20,
             ),
+          ),
 
-            const SizedBox(width: 12),
-
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        const PointJatimInfoScreen(),
-                  ),
-                );
-              },
-
-              child: const Icon(
-                Icons.info_outline_rounded,
-                color: Colors.white,
+          const Expanded(
+            child: Center(
+              child: Text(
+                'POINT JATIM',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                ),
               ),
             ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
+          ),
+
+          Row(
+            children: [
+              const LayananFavoriteButton(
+                serviceName: 'Point Jatim',
+                lookupQuery: 'Point Jatim',
+              ),
+
+              const SizedBox(width: 2),
+
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PointJatimInfoScreen(),
+                    ),
+                  );
+                },
+
+                child: const Icon(
+                  Icons.info_outline_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildPointJatimImage(
     String image, {
@@ -684,13 +636,11 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     final resolvedImage = image.trim();
     if (resolvedImage.isEmpty ||
         resolvedImage == PointJatimAssets.fallbackImage) {
-      return _buildImagePlaceholder(
-        height: height,
-        width: width,
-      );
+      return _buildImagePlaceholder(height: height, width: width);
     }
 
-    final isNetwork = resolvedImage.startsWith('http://') ||
+    final isNetwork =
+        resolvedImage.startsWith('http://') ||
         resolvedImage.startsWith('https://');
 
     if (isNetwork) {
@@ -704,16 +654,10 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
             return child;
           }
 
-          return _buildImagePlaceholder(
-            height: height,
-            width: width,
-          );
+          return _buildImagePlaceholder(height: height, width: width);
         },
         errorBuilder: (context, error, stackTrace) {
-          return _buildImagePlaceholder(
-            height: height,
-            width: width,
-          );
+          return _buildImagePlaceholder(height: height, width: width);
         },
       );
     }
@@ -724,10 +668,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
       width: width,
       fit: fit,
       errorBuilder: (context, error, stackTrace) {
-        return _buildImagePlaceholder(
-          height: height,
-          width: width,
-        );
+        return _buildImagePlaceholder(height: height, width: width);
       },
     );
   }
@@ -750,94 +691,77 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     );
   }
 
-  Widget _buildHighlightCard(
-    PointJatimHighlightModel item,
-  ) {
-    return Container(
-      width: 168,
-      decoration: BoxDecoration(
-        color: Colors.white,
+  Widget _buildHighlightCard(PointJatimHighlightModel item) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
         borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16),
-            ),
-            child: _buildPointJatimImage(
-              item.image,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    height: 1.35,
-                  ),
+        onTap: () => _openProjectDetail(_projectFromHighlight(item)),
+        child: SizedBox(
+          width: 168,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  item.subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
+                child: _buildPointJatimImage(
+                  item.image,
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      item.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildProjectCard(
-    BuildContext context,
-    PointJatimProjectModel item,
-  ) {
+  Widget _buildProjectCard(BuildContext context, PointJatimProjectModel item) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => LayananDetailScreen(
-              item: item,
-            ),
-          ),
-        );
-      },
+      onTap: () => _openProjectDetail(item),
       child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: Colors.grey.shade300,
-          ),
+          border: Border.all(color: Colors.grey.shade300),
         ),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
@@ -853,8 +777,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
             Padding(
               padding: const EdgeInsets.all(14),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -862,11 +785,8 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(8),
-                      border: Border.all(
-                        color: const Color(0xff2F61E8),
-                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xff2F61E8)),
                     ),
                     child: Text(
                       item.category,
@@ -913,9 +833,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                       ),
                       Text(
                         item.tahun,
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                        ),
+                        style: TextStyle(color: Colors.grey.shade500),
                       ),
                     ],
                   ),
@@ -934,12 +852,9 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
     required ValueChanged<String?> onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       dropdownColor: Colors.white,
-      style: const TextStyle(
-        color: Color(0xff1D1D1D),
-        fontSize: 16,
-      ),
+      style: const TextStyle(color: Color(0xff1D1D1D), fontSize: 16),
       icon: const Icon(
         Icons.keyboard_arrow_down_rounded,
         color: Color(0xff666666),
@@ -953,30 +868,23 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
-          ),
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(
-            color: Color(0xff2F61E8),
-          ),
+          borderSide: const BorderSide(color: Color(0xff2F61E8)),
         ),
       ),
       items: items.map((item) {
         return DropdownMenuItem(
           value: item,
-          child: Text(
-            item,
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: Text(item, overflow: TextOverflow.ellipsis),
         );
       }).toList(),
       onChanged: onChanged,
     );
   }
-  
+
   void _showFilterSheet() {
     showModalBottomSheet(
       context: context,
@@ -984,50 +892,34 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
       isScrollControlled: true,
 
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(30),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
 
       builder: (context) {
-
         String tempKategori = selectedKategori;
         String tempWilayah = selectedWilayah;
         String tempKomoditi = selectedKomoditi;
 
         return StatefulBuilder(
           builder: (context, setModalState) {
-
             return Padding(
-              padding: const EdgeInsets.fromLTRB(
-                24,
-                24,
-                24,
-                30,
-              ),
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 30),
 
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
-
                   const Text(
                     'Filter',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 22),
 
                   const Text(
                     'Kategori',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
 
                   const SizedBox(height: 12),
@@ -1046,9 +938,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
 
                   const Text(
                     'Wilayah',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
 
                   const SizedBox(height: 12),
@@ -1067,9 +957,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
 
                   const Text(
                     'Komoditi',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
 
                   const SizedBox(height: 12),
@@ -1088,42 +976,33 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
 
                   Row(
                     children: [
-
                       Expanded(
                         child: SizedBox(
                           height: 52,
 
-                        child: OutlinedButton(
-                          onPressed: () {
+                          child: OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedKategori = 'Semua';
+                                selectedWilayah = 'Semua';
+                                selectedKomoditi = 'Semua';
+                              });
 
-                            setState(() {
-                              selectedKategori =
-                                  'Semua';
-                              selectedWilayah =
-                                  'Semua';
-                              selectedKomoditi =
-                                  'Semua';
-                            });
+                              Navigator.pop(context);
+                            },
 
-                            Navigator.pop(context);
-                          },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xff2F61E8),
 
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xff2F61E8),
+                              side: const BorderSide(color: Color(0xff2F61E8)),
 
-                            side: const BorderSide(
-                              color: Color(0xff2F61E8),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
                             ),
 
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
+                            child: const Text('Reset'),
                           ),
-
-                          child: const Text(
-                            'Reset',
-                          ),
-                        ),
                         ),
                       ),
 
@@ -1132,17 +1011,13 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                       Expanded(
                         child: SizedBox(
                           height: 52,
-                          
+
                           child: ElevatedButton(
                             onPressed: () {
-
                               setState(() {
-                                selectedKategori =
-                                    tempKategori;
-                                selectedWilayah =
-                                    tempWilayah;
-                                selectedKomoditi =
-                                    tempKomoditi;
+                                selectedKategori = tempKategori;
+                                selectedWilayah = tempWilayah;
+                                selectedKomoditi = tempKomoditi;
                               });
 
                               Navigator.pop(context);
@@ -1157,9 +1032,7 @@ class _PointJatimHomeScreenState extends State<PointJatimHomeScreen> {
                               ),
                             ),
 
-                            child: const Text(
-                              'Terapkan',
-                            ),
+                            child: const Text('Terapkan'),
                           ),
                         ),
                       ),

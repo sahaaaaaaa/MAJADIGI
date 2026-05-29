@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
 import '../../services/harga_pokok_service.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'detail_bawang.dart';
 import 'harga_malang.dart';
 import 'informasi_harga.dart';
@@ -258,6 +259,10 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
                             ),
                           ),
                         ),
+                      ),
+                      const LayananFavoriteButton(
+                        serviceName: 'Harga Bahan Pokok',
+                        lookupQuery: 'Harga',
                       ),
                       IconButton(
                         onPressed: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'islamic_center_dummy.dart';
 import 'islamic_center_detail_fasilitas.dart';
 import 'islamic_center_info_screen.dart';
@@ -11,24 +12,15 @@ class IslamicCenterHomeScreen extends StatefulWidget {
       _IslamicCenterHomeScreenState();
 }
 
-class _IslamicCenterHomeScreenState
-    extends State<IslamicCenterHomeScreen> {
-
-  TextEditingController searchController =
-      TextEditingController();
+class _IslamicCenterHomeScreenState extends State<IslamicCenterHomeScreen> {
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
-    final filteredFasilitas =
-        IslamicCenterDummy.fasilitas.where((item) {
-
-      return item.title
-          .toLowerCase()
-          .contains(
-            searchController.text
-                .toLowerCase(),
-          );
+    final filteredFasilitas = IslamicCenterDummy.fasilitas.where((item) {
+      return item.title.toLowerCase().contains(
+        searchController.text.toLowerCase(),
+      );
     }).toList();
 
     return Scaffold(
@@ -36,7 +28,6 @@ class _IslamicCenterHomeScreenState
 
       body: Stack(
         children: [
-
           /// BACKGROUND
           Container(
             width: double.infinity,
@@ -44,9 +35,7 @@ class _IslamicCenterHomeScreenState
 
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/latar_belakang.png',
-                ),
+                image: AssetImage('assets/images/latar_belakang.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
               ),
@@ -55,7 +44,6 @@ class _IslamicCenterHomeScreenState
 
           Column(
             children: [
-
               /// APPBAR
               _buildAppBar(),
 
@@ -79,15 +67,12 @@ class _IslamicCenterHomeScreenState
                     padding: const EdgeInsets.all(20),
 
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
-
                         /// SEARCH
                         TextFormField(
-                          controller:
-                              searchController,
+                          controller: searchController,
 
                           onChanged: (value) {
                             setState(() {});
@@ -101,50 +86,32 @@ class _IslamicCenterHomeScreenState
 
                             hintStyle: const TextStyle(
                               fontSize: 14,
-                              color: Color(
-                                0xFFA0A0A0,
-                              ),
+                              color: Color(0xFFA0A0A0),
                             ),
 
                             prefixIcon: const Icon(
                               Icons.search,
-                              color: Color(
-                                0xFFA0A0A0,
-                              ),
+                              color: Color(0xFFA0A0A0),
                             ),
 
-                            contentPadding:
-                                const EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20,
                               vertical: 16,
                             ),
 
-                            enabledBorder:
-                                OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(
-                                14,
-                              ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
 
-                              borderSide:
-                                  BorderSide(
-                                color: Colors
-                                    .grey.shade300,
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
                               ),
                             ),
 
-                            focusedBorder:
-                                OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(
-                                14,
-                              ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
 
-                              borderSide:
-                                  const BorderSide(
-                                color: Color(
-                                  0xff1E4FD8,
-                                ),
+                              borderSide: const BorderSide(
+                                color: Color(0xff1E4FD8),
                               ),
                             ),
                           ),
@@ -157,10 +124,8 @@ class _IslamicCenterHomeScreenState
                           'Fasilitas Gedung',
                           style: TextStyle(
                             fontSize: 22,
-                            fontWeight:
-                                FontWeight.w700,
-                            color:
-                                Color(0xff1D1D1D),
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff1D1D1D),
                           ),
                         ),
 
@@ -170,23 +135,14 @@ class _IslamicCenterHomeScreenState
                         ListView.builder(
                           shrinkWrap: true,
 
-                          physics:
-                              const NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
 
-                          itemCount:
-                              filteredFasilitas
-                                  .length,
+                          itemCount: filteredFasilitas.length,
 
-                          itemBuilder:
-                              (context, index) {
+                          itemBuilder: (context, index) {
+                            final item = filteredFasilitas[index];
 
-                            final item =
-                                filteredFasilitas[
-                                    index];
-
-                            return _buildFacilityCard(
-                              item,
-                            );
+                            return _buildFacilityCard(item);
                           },
                         ),
 
@@ -206,16 +162,10 @@ class _IslamicCenterHomeScreenState
   /// APPBAR
   Widget _buildAppBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        16,
-        55,
-        16,
-        0,
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 55, 16, 0),
 
       child: Row(
         children: [
-
           InkWell(
             onTap: () {
               Navigator.pop(context);
@@ -243,33 +193,23 @@ class _IslamicCenterHomeScreenState
 
           Row(
             children: [
-
-              IconButton(
-                onPressed: () {},
-
-                icon: const Icon(
-                  Icons.bookmark_border,
-                  color: Colors.white,
-                ),
+              const LayananFavoriteButton(
+                serviceName: 'Islamic Center',
+                lookupQuery: 'Islamic Center',
               ),
 
               InkWell(
                 onTap: () {
-
                   Navigator.push(
                     context,
 
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const IslamicCenterInfoScreen(),
+                      builder: (_) => const IslamicCenterInfoScreen(),
                     ),
                   );
                 },
 
-                child: const Icon(
-                  Icons.info_outline,
-                  color: Colors.white,
-                ),
+                child: const Icon(Icons.info_outline, color: Colors.white),
               ),
             ],
           ),
@@ -279,35 +219,25 @@ class _IslamicCenterHomeScreenState
   }
 
   /// FACILITY CARD
-  Widget _buildFacilityCard(
-    IslamicCenterFacilityModel item,
-  ) {
+  Widget _buildFacilityCard(IslamicCenterFacilityModel item) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(
-        bottom: 18,
-      ),
+      margin: const EdgeInsets.only(bottom: 18),
 
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20),
 
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        border: Border.all(color: Colors.grey.shade300),
       ),
 
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
 
         children: [
-
           /// IMAGE
           ClipRRect(
-            borderRadius:
-                const BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -324,18 +254,15 @@ class _IslamicCenterHomeScreenState
             padding: const EdgeInsets.all(14),
 
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 /// TITLE
                 Text(
                   item.title,
                   style: const TextStyle(
                     fontSize: 18,
-                    fontWeight:
-                        FontWeight.w700,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
 
@@ -358,35 +285,25 @@ class _IslamicCenterHomeScreenState
                   spacing: 8,
                   runSpacing: 8,
 
-                  children:
-                      item.tags.map((tag) {
-
+                  children: item.tags.map((tag) {
                     return Container(
-                      padding:
-                          const EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 6,
                       ),
 
                       decoration: BoxDecoration(
-                        color: const Color(
-                          0xffEEF3FF,
-                        ),
+                        color: const Color(0xffEEF3FF),
 
-                        borderRadius:
-                            BorderRadius.circular(
-                          8,
-                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
 
                       child: Text(
                         tag,
                         style: const TextStyle(
-                          color:
-                              Color(0xff1E4FD8),
+                          color: Color(0xff1E4FD8),
                           fontSize: 11,
-                          fontWeight:
-                              FontWeight.w500,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     );
@@ -402,41 +319,27 @@ class _IslamicCenterHomeScreenState
 
                   child: OutlinedButton(
                     onPressed: () {
-
                       Navigator.push(
                         context,
 
                         MaterialPageRoute(
                           builder: (_) =>
-                              IslamicCenterDetailFasilitas(
-                            facility: item,
-                          ),
+                              IslamicCenterDetailFasilitas(facility: item),
                         ),
                       );
                     },
 
-                    style:
-                        OutlinedButton.styleFrom(
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(
-                          30,
-                        ),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
 
-                      side: BorderSide(
-                        color:
-                            Colors.grey.shade300,
-                      ),
+                      side: BorderSide(color: Colors.grey.shade300),
                     ),
 
                     child: const Text(
                       'Lihat Detail',
-                      style: TextStyle(
-                        color:
-                            Color(0xff1D1D1D),
-                      ),
+                      style: TextStyle(color: Color(0xff1D1D1D)),
                     ),
                   ),
                 ),

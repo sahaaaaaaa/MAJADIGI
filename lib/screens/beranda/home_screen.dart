@@ -4,19 +4,16 @@ import 'home_service_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'layanan_lain.dart';
 import 'layanan_daerah.dart';
+import '../../widgets/asset_icon_image.dart';
 import '../../widgets/layanan_item.dart';
+import '../../services/auth_service.dart';
 import '../../services/layanan_service.dart';
-
-import '../destinasi_wisata/destinasi_wisata_screen.dart';
-import '../harga_barang/harga_bahan_pokok_screen.dart';
-import '../klinik_hoax/klinik_hoax_home_screen.dart';
-import '../open_data/open_data_screen.dart';
-import '../rsud_provjatim/rsud_jatim.dart';
-import '../rssa/rssa_screen.dart';
-import '../transjatim/transjatim_screen.dart';
+import '../service_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.refreshVersion = 0});
+
+  final int refreshVersion;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,6 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Timer? _bannerTimer;
   bool _hasLoadedLayanan = false;
   List<LayananModel> _installedLayanan = [];
+
+  String get _firstName => AuthService.currentSession?.firstName ?? 'Pengguna';
 
   final List<String> banners = [
     "assets/images/welcome_hero2.jpg",
@@ -73,6 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshVersion != widget.refreshVersion) {
+      _loadInstalledLayanan();
+    }
+  }
+
+  @override
   void dispose() {
     _bannerTimer?.cancel();
     _controller.dispose();
@@ -100,11 +107,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  List<HomeServiceItem> get _homeServices {
-    return _installedLayanan
-        .map(homeServiceFromLayanan)
-        .whereType<HomeServiceItem>()
-        .toList();
+  Future<void> _openLayananLain() async {
+    await Navigator.push<void>(
+      context,
+      MaterialPageRoute(builder: (_) => const LayananLainScreen()),
+    );
+
+    if (!mounted) {
+      return;
+    }
+    await _loadInstalledLayanan();
   }
 
   @override
@@ -145,11 +157,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const SizedBox(width: 12),
 
-                          const Column(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
 
                             children: [
-                              Text(
+                              const Text(
                                 "Selamat Datang",
                                 style: TextStyle(
                                   color: Colors.white70,
@@ -158,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
 
                               Text(
-                                "Arief W.",
-                                style: TextStyle(
+                                _firstName,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -170,9 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const Spacer(),
 
-                          const Icon(Icons.search, color: Colors.white),
+                          IconButton(
+                            onPressed: _showLayananSearchSheet,
+                            icon: const Icon(Icons.search, color: Colors.white),
+                          ),
 
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 4),
 
                           const Icon(
                             Icons.notifications_none,
@@ -222,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                             color: _currentPage == index
                                 ? Colors.white
-                                : Colors.white.withOpacity(0.5),
+                                : Colors.white.withValues(alpha: 0.5),
 
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -256,14 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
 
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const LayananLainScreen(),
-                              ),
-                            );
-                          },
+                          onTap: _openLayananLain,
                           child: const Text(
                             "Semua layanan",
                             style: TextStyle(color: Colors.grey),
@@ -275,116 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 20),
 
                     // GRID MENU
-                    GridView.count(
-                      crossAxisCount: 4,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        LayananItem(
-                          title: "Klinik Hoaks",
-                          image: "assets/images/klinik_hoax.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const KlinikHoaksHomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "Destinasi Wisata",
-                          image: "assets/images/destinasi_wisata.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const DestinasiWisataScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "Open Data",
-                          image: "assets/images/open_data.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const OpenDataScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "Harga",
-                          image: "assets/images/khas_jatim.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const HargaBahanPokokScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "RSUD Haji",
-                          image: "assets/images/rsud_haji.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const RsudHajiScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "Transjatim",
-                          image: "assets/images/transjatim_ajaib.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const TransjatimScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "RSSA",
-                          image: "assets/images/rsud_saifulanwar.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const RssaScreen(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        LayananItem(
-                          title: "Lainnya",
-                          image: "assets/images/grid_lainnya.png",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const LayananLainScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                    _buildLayananSection(),
 
                     const SizedBox(height: 28),
 
@@ -816,17 +715,379 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _showLayananSearchSheet() async {
+    final searchController = TextEditingController();
+    Timer? searchDebounce;
+    var results = <LayananModel>[];
+    var isLoading = false;
+    var currentQuery = '';
+    String? errorMessage;
+    int? installingLayananId;
+    var isSheetOpen = true;
+
+    Future<void> loadResults(StateSetter setModalState, String query) async {
+      final keyword = query.trim();
+      currentQuery = keyword;
+
+      if (keyword.isEmpty) {
+        setModalState(() {
+          results = [];
+          errorMessage = null;
+          isLoading = false;
+        });
+        return;
+      }
+
+      setModalState(() {
+        isLoading = true;
+        errorMessage = null;
+      });
+
+      try {
+        final layanan = await _layananService.getPublicLayanan(search: keyword);
+        if (!mounted || !isSheetOpen || currentQuery != keyword) {
+          return;
+        }
+
+        setModalState(() {
+          results = layanan;
+          isLoading = false;
+        });
+      } catch (_) {
+        if (!mounted || !isSheetOpen || currentQuery != keyword) {
+          return;
+        }
+
+        setModalState(() {
+          results = [];
+          isLoading = false;
+          errorMessage = 'Pencarian layanan belum dapat dimuat.';
+        });
+      }
+    }
+
+    Future<void> installLayanan(
+      StateSetter setModalState,
+      LayananModel layanan,
+    ) async {
+      if (AuthService.currentSession == null) {
+        setModalState(() {
+          errorMessage = 'Silakan login untuk install layanan.';
+        });
+        return;
+      }
+
+      setModalState(() {
+        installingLayananId = layanan.id;
+        errorMessage = null;
+      });
+
+      try {
+        await _layananService.installLayanan(layanan.id);
+        await _loadInstalledLayanan();
+        final refreshed = currentQuery.isEmpty
+            ? <LayananModel>[]
+            : await _layananService.getPublicLayanan(search: currentQuery);
+        if (!mounted || !isSheetOpen) {
+          return;
+        }
+
+        setModalState(() {
+          results = refreshed;
+          installingLayananId = null;
+        });
+        _showHomeSnackBar('${layanan.name} berhasil diinstall.');
+      } catch (_) {
+        if (!mounted || !isSheetOpen) {
+          return;
+        }
+
+        setModalState(() {
+          installingLayananId = null;
+          errorMessage = 'Gagal install layanan.';
+        });
+      }
+    }
+
+    void scheduleSearch(StateSetter setModalState, String query) {
+      searchDebounce?.cancel();
+      searchDebounce = Timer(
+        const Duration(milliseconds: 350),
+        () => loadResults(setModalState, query),
+      );
+    }
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return FractionallySizedBox(
+              heightFactor: 0.82,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(
+                  20,
+                  18,
+                  20,
+                  MediaQuery.of(context).viewInsets.bottom + 20,
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 44,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE1E5EC),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Cari Layanan',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: searchController,
+                      autofocus: true,
+                      textInputAction: TextInputAction.search,
+                      onChanged: (value) =>
+                          scheduleSearch(setModalState, value),
+                      onSubmitted: (value) => loadResults(setModalState, value),
+                      decoration: InputDecoration(
+                        hintText: 'Cari layanan...',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: searchController.text.isEmpty
+                            ? null
+                            : IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  searchController.clear();
+                                  loadResults(setModalState, '');
+                                },
+                              ),
+                        filled: true,
+                        fillColor: const Color(0xFFF5F7FB),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    if (errorMessage != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        errorMessage!,
+                        style: const TextStyle(color: Color(0xFFFF2E63)),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: Builder(
+                        builder: (context) {
+                          if (isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            );
+                          }
+
+                          if (currentQuery.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                'Ketik nama layanan yang ingin dicari.',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            );
+                          }
+
+                          if (results.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                'Layanan tidak ditemukan.',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            );
+                          }
+
+                          return ListView.separated(
+                            itemCount: results.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 10),
+                            itemBuilder: (context, index) {
+                              final layanan = results[index];
+                              return _buildSearchResultTile(
+                                layanan: layanan,
+                                isInstalling: installingLayananId == layanan.id,
+                                onOpen: () {
+                                  Navigator.pop(sheetContext);
+                                  Future.microtask(
+                                    () => _openLayananFromSearch(layanan),
+                                  );
+                                },
+                                onInstall: () =>
+                                    installLayanan(setModalState, layanan),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).whenComplete(() {
+      isSheetOpen = false;
+      searchDebounce?.cancel();
+      searchController.dispose();
+    });
+  }
+
+  Widget _buildSearchResultTile({
+    required LayananModel layanan,
+    required bool isInstalling,
+    required VoidCallback onOpen,
+    required VoidCallback onInstall,
+  }) {
+    final homeService = homeServiceFromLayanan(layanan);
+    final image = homeService?.image ?? 'assets/images/logo_majadigi.png';
+
+    return Material(
+      color: const Color(0xFFF8FAFF),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: layanan.isInstalled ? onOpen : null,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                padding: const EdgeInsets.all(7),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: AssetIconImage(asset: image, fit: BoxFit.contain),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      layanan.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      [
+                        if (layanan.categoryName.isNotEmpty)
+                          layanan.categoryName,
+                        layanan.isInstalled ? 'Terpasang' : 'Belum terpasang',
+                      ].join(' • '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              if (layanan.isInstalled)
+                const Icon(Icons.chevron_right, color: Color(0xFF0D57E7))
+              else
+                SizedBox(
+                  height: 36,
+                  child: ElevatedButton(
+                    onPressed: isInstalling ? null : onInstall,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0D57E7),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                    child: isInstalling
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : const Text('Install'),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openLayananFromSearch(LayananModel layanan) {
+    final homeService = homeServiceFromLayanan(layanan);
+    if (homeService != null) {
+      Navigator.push(context, MaterialPageRoute(builder: homeService.builder));
+      return;
+    }
+
+    _showLayananPopup(
+      context: context,
+      title: layanan.name,
+      image: 'assets/images/logo_majadigi.png',
+      desc: layanan.description.isEmpty
+          ? 'Detail layanan belum tersedia.'
+          : layanan.description,
+    );
+  }
+
+  void _showHomeSnackBar(String message) {
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
   Widget _buildLayananSection() {
     if (!_hasLoadedLayanan) {
       return const SizedBox(
         height: 96,
-        child: Center(
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
       );
     }
 
-    final services = _homeServices;
+    final services = _installedLayanan;
     if (services.isEmpty) {
       return Container(
         width: double.infinity,
@@ -845,34 +1106,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final hasMoreServices = services.length > 8;
-    final visibleServices =
-        hasMoreServices ? services.take(7).toList() : services;
-    final serviceItems = visibleServices.map((service) {
-      return LayananItem(
-        title: service.title,
-        image: service.image,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: service.builder),
-          );
-        },
-      );
-    }).toList();
+    final visibleServices = hasMoreServices
+        ? services.take(7).toList()
+        : services;
+    final serviceItems = <Widget>[
+      ...visibleServices.map(_buildInstalledLayananItem),
+    ];
 
     if (hasMoreServices) {
       serviceItems.add(
         LayananItem(
           title: 'Lainnya',
           image: 'assets/images/grid_lainnya.png',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => LayananLainScreen(services: services),
-              ),
-            );
-          },
+          onTap: _openLayananLain,
         ),
       );
     }
@@ -882,6 +1128,37 @@ class _HomeScreenState extends State<HomeScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: serviceItems,
+    );
+  }
+
+  LayananItem _buildInstalledLayananItem(LayananModel layanan) {
+    final homeService = homeServiceFromLayanan(layanan);
+    final backendIcon = layanan.iconUrl.trim();
+
+    return LayananItem(
+      title: homeService?.title ?? layananDisplayTitle(layanan.name),
+      image: backendIcon.startsWith('http')
+          ? backendIcon
+          : homeService?.image ??
+                layananLogoAssetPath(layananLogoAssetName(layanan.name)),
+      onTap: () => _openInstalledLayanan(layanan),
+    );
+  }
+
+  void _openInstalledLayanan(LayananModel layanan) {
+    final homeService = homeServiceFromLayanan(layanan);
+    if (homeService != null) {
+      Navigator.push(context, MaterialPageRoute(builder: homeService.builder));
+      return;
+    }
+
+    _showLayananPopup(
+      context: context,
+      title: layananDisplayTitle(layanan.name),
+      image: layananLogoAssetPath(layananLogoAssetName(layanan.name)),
+      desc: layanan.description.isEmpty
+          ? 'Detail layanan belum tersedia.'
+          : layanan.description,
     );
   }
 }
