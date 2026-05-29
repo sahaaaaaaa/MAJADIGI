@@ -31,6 +31,8 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   bool _isLoading = false;
   List<HomeServiceItem> _services = [];
 
+  bool pariwisataOpen = true;
+
   @override
   void initState() {
     super.initState();
