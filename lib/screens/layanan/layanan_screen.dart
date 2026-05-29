@@ -54,6 +54,37 @@ class _LayananScreenState extends State<LayananScreen> {
       "title": "Infrastruktur",
       "image": "assets/images/kategori/infrastuktur.png",
     },
+
+    {
+      "title": "Sosial",
+      "image":
+          "assets/images/kategori/sosial.png",
+    },    
+
+    {
+      "title": "Lingkungan Hidup",
+      "image":
+          "assets/images/kategori/lingkungan_hidup.png",
+    }, 
+
+    {
+      "title": "PPID",
+      "image":
+          "assets/images/kategori/PPID.png",
+    }, 
+
+    {
+      "title": "Kebencanaan",
+      "image":
+          "assets/images/kategori/kebencanaan.png",
+    }, 
+
+    {
+      "title": "Pemerintahan & Desa",
+      "image":
+          "assets/images/kategori/pemerintahDesa.png",
+    },
+    
   ];
 
   List<Recommendation> get filteredRecommendations {

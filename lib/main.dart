@@ -22,7 +22,7 @@ class MajadigiApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
 
-      home: const SplashScreen(),
+      home: const WelcomeScreen(),
 
       routes: {'/login': (context) => const WelcomeScreen()},
     );

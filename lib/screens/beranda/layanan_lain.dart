@@ -22,6 +22,8 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   int? _installingLayananId;
   List<LayananModel> _services = [];
 
+  bool pariwisataOpen = true;
+
   @override
   void initState() {
     super.initState();
