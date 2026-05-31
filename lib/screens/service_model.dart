@@ -310,7 +310,6 @@ final List<Recommendation> recommendations = [
     kategori: 'Sosial',
     nawaBhakti: 'Jatim Harmoni',
     screen: const IslamicCenterHomeScreen(),
-    nawaBhakti: 'Jatim Harmoni',
   ),
   Recommendation(
     id: 5, 
