@@ -54,7 +54,7 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
       }
 
       setState(() {
-        _services = services.isEmpty ? _fallbackServices : services;
+        _services = services;
         _isLoading = false;
       });
     } catch (_) {
@@ -62,35 +62,12 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
         return;
       }
 
-      final fallbackServices = _fallbackServices;
       setState(() {
-        _services = fallbackServices;
+        _services = [];
         _isLoading = false;
-        _errorMessage = fallbackServices.isEmpty
-            ? 'Layanan belum dapat dimuat.'
-            : null;
+        _errorMessage = 'Layanan belum dapat dimuat.';
       });
     }
-  }
-
-  List<LayananModel> get _fallbackServices {
-    return backendLayananFallbackRecommendations
-        .where((item) => item.kategori == widget.kategori)
-        .map(
-          (item) => LayananModel(
-            id: item.id,
-            name: item.title,
-            description: item.description,
-            iconUrl: layananLogoAssetPath(item.logo),
-            categoryName: item.kategori,
-            nawaBhaktiSatya: item.nawaBhakti ?? '',
-            isInstalled: false,
-            isFavorite: false,
-            isFeatured: false,
-            installCount: 0,
-          ),
-        )
-        .toList();
   }
 
   String _categoryName(LayananModel service) {
@@ -134,6 +111,13 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
             final isInstalled = sheetService.isInstalled;
 
             Future<void> installService() async {
+              if (!sheetService.isAvailable) {
+                setModalState(() {
+                  sheetError = 'Layanan belum tersedia';
+                });
+                return;
+              }
+
               if (AuthService.currentSession == null) {
                 setModalState(() {
                   sheetError = 'Silakan login untuk install layanan.';

@@ -22,8 +22,6 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   int? _installingLayananId;
   List<LayananModel> _services = [];
 
-  bool pariwisataOpen = true;
-
   @override
   void initState() {
     super.initState();
@@ -51,7 +49,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
       setState(() {
         _services = _installedFirst(services);
         _isLoading = false;
-        final grouped = _groupedServices;
+        final grouped = _unavailableGroupedServices;
         if (_expandedCategories.isEmpty && grouped.isNotEmpty) {
           _expandedCategories.add(grouped.keys.first);
         }
@@ -70,7 +68,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
 
   Map<String, List<LayananModel>> get _groupedServices {
     final grouped = <String, List<LayananModel>>{};
-    for (final service in _services) {
+    for (final service in _services.where((item) => !item.isAvailable)) {
       final category = _categoryName(service);
       grouped.putIfAbsent(category, () => <LayananModel>[]).add(service);
     }
@@ -78,6 +76,14 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
     final entries = grouped.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
     return Map<String, List<LayananModel>>.fromEntries(entries);
+  }
+
+  Map<String, List<LayananModel>> get _unavailableGroupedServices {
+    return _groupedServices;
+  }
+
+  List<LayananModel> get _installableServices {
+    return _services.where((item) => item.isAvailable).take(10).toList();
   }
 
   String _categoryName(LayananModel service) {
@@ -102,6 +108,11 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   Future<void> _handleServiceTap(LayananModel service) async {
     if (service.isInstalled) {
       _openInstalledService(service);
+      return;
+    }
+
+    if (!service.isAvailable) {
+      _showSnackBar('Layanan belum tersedia');
       return;
     }
 
@@ -159,6 +170,11 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   }
 
   Future<void> _installService(LayananModel service) async {
+    if (!service.isAvailable) {
+      _showSnackBar('Layanan belum tersedia');
+      return;
+    }
+
     setState(() {
       _installingLayananId = service.id;
     });
@@ -300,7 +316,7 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
           const Expanded(
             child: Center(
               child: Text(
-                'Layanan Lain',
+                'Semua layanan',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
@@ -345,7 +361,8 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
       );
     }
 
-    final grouped = _groupedServices;
+    final installableServices = _installableServices;
+    final grouped = _unavailableGroupedServices;
 
     return RefreshIndicator(
       onRefresh: _loadServices,
@@ -356,13 +373,30 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          _buildServiceGrid(_services),
-          const SizedBox(height: 24),
-          const Divider(height: 1),
-          const SizedBox(height: 8),
-          ...grouped.entries.map((entry) {
-            return _buildCategorySection(entry.key, entry.value);
-          }),
+          if (installableServices.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Text(
+                'Belum ada layanan yang dapat diinstall.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
+              ),
+            )
+          else
+            _buildServiceGrid(installableServices),
+          if (grouped.isNotEmpty) ...[
+            const SizedBox(height: 28),
+            const Divider(height: 1),
+            const SizedBox(height: 18),
+            const Text(
+              'Layanan lainnya',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            ...grouped.entries.map((entry) {
+              return _buildCategorySection(entry.key, entry.value);
+            }),
+          ],
         ],
       ),
     );

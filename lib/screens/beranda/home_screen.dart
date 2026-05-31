@@ -770,6 +770,13 @@ class _HomeScreenState extends State<HomeScreen> {
       StateSetter setModalState,
       LayananModel layanan,
     ) async {
+      if (!layanan.isAvailable) {
+        setModalState(() {
+          errorMessage = 'Layanan belum tersedia';
+        });
+        return;
+      }
+
       if (AuthService.currentSession == null) {
         setModalState(() {
           errorMessage = 'Silakan login untuk install layanan.';
