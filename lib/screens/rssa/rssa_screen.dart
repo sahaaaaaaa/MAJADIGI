@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../services/rsud_saiful_anwar_service.dart';
+import '../../widgets/layanan_favorite_button.dart';
 import 'informasi_rssa_screen.dart';
 
 class RssaScreen extends StatefulWidget {
@@ -224,12 +225,9 @@ class _RssaScreenState extends State<RssaScreen> {
 
                       Row(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.bookmark_border,
-                              color: Colors.white,
-                            ),
+                          const LayananFavoriteButton(
+                            serviceName: 'RSUD Dr. Saiful Anwar',
+                            lookupQuery: 'Saiful Anwar',
                           ),
 
                           IconButton(

@@ -1,15 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:majadigi/services/open_data_service.dart';
 import 'fitur_detail_data_set.dart';
 import 'package:majadigi/screens/open_data/open_data_dummy.dart';
 
-class FiturDataSetScreen extends StatefulWidget  {
-  
+class FiturDataSetScreen extends StatefulWidget {
   final String? selectedKategori;
 
-  const FiturDataSetScreen({
-    super.key,
-    this.selectedKategori,
-  });
+  const FiturDataSetScreen({super.key, this.selectedKategori});
 
   @override
   State<FiturDataSetScreen> createState() => _FiturDataSetScreenState();
@@ -18,42 +17,129 @@ class FiturDataSetScreen extends StatefulWidget  {
 class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
   List<String> selectedOrganisasi = [];
   List<String> selectedTopik = [];
+  late final OpenDataService _openDataService;
+  late final TextEditingController _searchController;
+  Timer? _searchDebounce;
+  bool _isLoading = true;
+  String? _errorMessage;
+  List<HighlightDataModel> _datasets = [];
+  List<String> _organizationItems = [];
+  List<String> _topicItems = [];
+  int _totalDataset = 0;
 
-  @override 
-  void initState() { 
-    super.initState(); 
-    if (widget.selectedKategori != null) { 
-      selectedTopik = [widget.selectedKategori!]; 
-    } 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedKategori != null) {
+      selectedTopik = [widget.selectedKategori!];
+    }
+    _openDataService = OpenDataService();
+    _searchController = TextEditingController();
+    _loadInitialData();
   }
-  
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    _searchController.dispose();
+    _openDataService.dispose();
+    super.dispose();
+  }
+
   List<HighlightDataModel> get filteredDataset {
+    return _datasets.where((item) {
+      final matchTopik =
+          selectedTopik.isEmpty ||
+          selectedTopik.any(
+            (e) => e.toLowerCase().trim() == item.kategori.toLowerCase().trim(),
+          );
 
-  return dummyHighlightData.where((item) {
+      final matchOrganisasi =
+          selectedOrganisasi.isEmpty ||
+          selectedOrganisasi.any(
+            (e) => e.toLowerCase().trim() == item.instansi.toLowerCase().trim(),
+          );
 
-    final matchTopik =
-        selectedTopik.isEmpty ||
+      return matchTopik && matchOrganisasi;
+    }).toList();
+  }
 
-        selectedTopik.any(
-          (e) =>
-              e.toLowerCase().trim() ==
-              item.kategori.toLowerCase().trim(),
-        );
+  Future<void> _loadInitialData() async {
+    try {
+      final results = await Future.wait([
+        _openDataService.getOrganizations(),
+        _openDataService.getTopics(),
+      ]);
 
-    final matchOrganisasi =
-        selectedOrganisasi.isEmpty ||
+      if (!mounted) {
+        return;
+      }
 
-        selectedOrganisasi.any(
-          (e) =>
-              e.toLowerCase().trim() ==
-              item.instansi.toLowerCase().trim(),
-        );
+      final organizations =
+          (results[0] as OpenDataListResponse<OpenDataOrganization>).items;
+      final topics = (results[1] as OpenDataListResponse<OpenDataTopic>).items;
 
-    return matchTopik && matchOrganisasi;
+      setState(() {
+        _organizationItems = organizations.map((item) => item.name).toList();
+        _topicItems = topics.map((item) => item.name).toList();
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _organizationItems = dummyOrganisasi;
+        _topicItems = dummyTopik;
+      });
+    }
 
-  }).toList();
-  
-}
+    await _loadDatasets();
+  }
+
+  Future<void> _loadDatasets() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final response = await _openDataService.getDatasets(
+        search: _searchController.text,
+        perPage: 20,
+        where: buildOpenDataWhere(
+          topicName: selectedTopik.length == 1 ? selectedTopik.first : '',
+          organizationName: selectedOrganisasi.length == 1
+              ? selectedOrganisasi.first
+              : '',
+        ),
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _datasets = response.items.map(_datasetToHighlight).toList();
+        _totalDataset = response.pagination.totalData;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _datasets = dummyHighlightData;
+        _totalDataset = dummyHighlightData.length;
+        _isLoading = false;
+        _errorMessage = 'Dataset belum dapat dimuat dari server.';
+      });
+    }
+  }
+
+  void _onSearchChanged(String _) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 450), _loadDatasets);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +148,13 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
 
       body: Stack(
         children: [
-
           // BACKGROUND
           Container(
             width: double.infinity,
             height: 260,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/latar_belakang.png',
-                ),
+                image: AssetImage('assets/images/latar_belakang.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
               ),
@@ -80,13 +163,11 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
 
           Column(
             children: [
-
               // APPBAR
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 55, 18, 0),
                 child: Row(
                   children: [
-
                     InkWell(
                       onTap: () => Navigator.pop(context),
 
@@ -136,7 +217,6 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         // SEARCH
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -144,23 +224,20 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: Colors.grey.shade200,
-                            ),
+                            border: Border.all(color: Colors.grey.shade200),
                           ),
 
                           child: Row(
                             children: [
-
-                              Icon(
-                                Icons.search,
-                                color: Colors.grey[500],
-                              ),
+                              Icon(Icons.search, color: Colors.grey[500]),
 
                               const SizedBox(width: 12),
 
                               Expanded(
                                 child: TextField(
+                                  controller: _searchController,
+                                  onChanged: _onSearchChanged,
+                                  onSubmitted: (_) => _loadDatasets(),
                                   decoration: InputDecoration(
                                     hintText: "Cari Dataset",
                                     hintStyle: TextStyle(
@@ -180,11 +257,12 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
                         // FILTER
                         Row(
                           children: [
-
                             Expanded(
                               child: _buildDropdown(
                                 title: "Pilih Organisasi",
-                                items: dummyOrganisasi,
+                                items: _organizationItems.isEmpty
+                                    ? dummyOrganisasi
+                                    : _organizationItems,
                                 selectedItems: selectedOrganisasi,
                               ),
                             ),
@@ -194,7 +272,9 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
                             Expanded(
                               child: _buildDropdown(
                                 title: "Pilih Topik",
-                                items: dummyTopik,
+                                items: _topicItems.isEmpty
+                                    ? dummyTopik
+                                    : _topicItems,
                                 selectedItems: selectedTopik,
                               ),
                             ),
@@ -204,7 +284,7 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
                         const SizedBox(height: 20),
 
                         Text(
-                          "40.213 Dataset ditemukan.",
+                          "${formatOpenDataNumber(_totalDataset)} Dataset ditemukan.",
                           style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 13,
@@ -213,20 +293,29 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
 
                         const SizedBox(height: 20),
 
-                        // LIST DATA
-                        Column(
-                          children: filteredDataset.map((item) {
-                            return _buildDataCard(
-                              item: item,
-                              title: item.title,
-                              category: item.kategori,
-                              instansi: item.instansi,
-                              tahun: item.tahun,
-                              tanggal: item.tanggal,
-                              status: item.status,
-                            );
-                          }).toList(),
-                        ),
+                        if (_errorMessage != null) ...[
+                          _buildInfoBox(_errorMessage!),
+                          const SizedBox(height: 16),
+                        ],
+
+                        if (_isLoading)
+                          _buildLoadingBox()
+                        else if (filteredDataset.isEmpty)
+                          _buildInfoBox("Dataset tidak ditemukan.")
+                        else
+                          Column(
+                            children: filteredDataset.map((item) {
+                              return _buildDataCard(
+                                item: item,
+                                title: item.title,
+                                category: item.kategori,
+                                instansi: item.instansi,
+                                tahun: item.tahun,
+                                tanggal: item.tanggal,
+                                status: item.status,
+                              );
+                            }).toList(),
+                          ),
 
                         const SizedBox(height: 40),
                       ],
@@ -242,469 +331,446 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
   }
 
   Widget _buildDropdown({
-  required String title,
-  required List<String> items,
-  required List<String> selectedItems,
-}) {
-  return InkWell(
-    onTap: () {
-      showDialog(
-        context: context,
-        builder: (context) {
+    required String title,
+    required List<String> items,
+    required List<String> selectedItems,
+  }) {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setModalState) {
+                return Dialog(
+                  backgroundColor: Colors.white,
 
-          return StatefulBuilder(
-            builder: (context, setModalState) {
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
 
-              return Dialog(
-                backgroundColor: Colors.white,
+                  child: Container(
+                    height: 520,
+                    padding: const EdgeInsets.all(24),
 
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
-                ),
+                    child: Column(
+                      children: [
+                        // TITLE
+                        Text(
+                          title.replaceAll("Pilih ", ""),
 
-                child: Container(
-                  height: 520,
-                  padding: const EdgeInsets.all(24),
-
-                  child: Column(
-                    children: [
-
-                      // TITLE
-                      Text(
-                        title.replaceAll("Pilih ", ""),
-
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1D1B25),
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1D1B25),
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                      // LIST
-                      Expanded(
-                        child: ListView.separated(
+                        // LIST
+                        Expanded(
+                          child: ListView.separated(
+                            itemCount: items.length,
 
-                          itemCount: items.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 12),
 
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 12),
+                            itemBuilder: (context, index) {
+                              final item = items[index];
 
-                          itemBuilder: (context, index) {
+                              final isSelected = selectedItems.contains(item);
 
-                            final item = items[index];
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(18),
 
-                            final isSelected =
-                                selectedItems.contains(item);
+                                onTap: () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedItems.remove(item);
+                                    } else {
+                                      selectedItems.add(item);
+                                    }
+                                  });
 
-                            return InkWell(
+                                  setModalState(() {});
+                                },
 
-                              borderRadius: BorderRadius.circular(18),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 14,
+                                  ),
 
-                              onTap: () {
-
-                                setState(() {
-
-                                  if (isSelected) {
-                                    selectedItems.remove(item);
-                                  } else {
-                                    selectedItems.add(item);
-                                  }
-                                });
-
-                                setModalState(() {});
-                              },
-
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 14,
-                                ),
-
-                                decoration: BoxDecoration(
-
-                                  color: isSelected
-                                      ? const Color(0xFFEAF2FF)
-                                      : Colors.white,
-
-                                  borderRadius:
-                                      BorderRadius.circular(18),
-
-                                  border: Border.all(
+                                  decoration: BoxDecoration(
                                     color: isSelected
-                                        ? const Color(0xFF0D57E7)
-                                        : Colors.grey.shade200,
+                                        ? const Color(0xFFEAF2FF)
+                                        : Colors.white,
+
+                                    borderRadius: BorderRadius.circular(18),
+
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? const Color(0xFF0D57E7)
+                                          : Colors.grey.shade200,
+                                    ),
+                                  ),
+
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+
+                                    children: [
+                                      AnimatedContainer(
+                                        duration: const Duration(
+                                          milliseconds: 200,
+                                        ),
+
+                                        width: 22,
+                                        height: 22,
+
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? const Color(0xFF0D57E7)
+                                              : Colors.white,
+
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
+
+                                          border: Border.all(
+                                            color: isSelected
+                                                ? const Color(0xFF0D57E7)
+                                                : Colors.grey.shade400,
+                                            width: 1.5,
+                                          ),
+                                        ),
+
+                                        child: isSelected
+                                            ? const Icon(
+                                                Icons.check,
+                                                size: 16,
+                                                color: Colors.white,
+                                              )
+                                            : null,
+                                      ),
+
+                                      const SizedBox(width: 14),
+
+                                      Expanded(
+                                        child: Text(
+                                          item,
+
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            height: 1.5,
+
+                                            color: isSelected
+                                                ? const Color(0xFF0D57E7)
+                                                : const Color(0xFF2B2B2B),
+
+                                            fontWeight: isSelected
+                                                ? FontWeight.w600
+                                                : FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-
-                                  children: [
-
-                                    AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 200),
-
-                                      width: 22,
-                                      height: 22,
-
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? const Color(0xFF0D57E7)
-                                            : Colors.white,
-
-                                        borderRadius:
-                                            BorderRadius.circular(6),
-
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? const Color(0xFF0D57E7)
-                                              : Colors.grey.shade400,
-                                          width: 1.5,
-                                        ),
-                                      ),
-
-                                      child: isSelected
-                                          ? const Icon(
-                                              Icons.check,
-                                              size: 16,
-                                              color: Colors.white,
-                                            )
-                                          : null,
-                                    ),
-
-                                    const SizedBox(width: 14),
-
-                                    Expanded(
-                                      child: Text(
-                                        item,
-
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          height: 1.5,
-
-                                          color: isSelected
-                                              ? const Color(0xFF0D57E7)
-                                              : const Color(0xFF2B2B2B),
-
-                                          fontWeight: isSelected
-                                              ? FontWeight.w600
-                                              : FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
-      );
-    },
+                );
+              },
+            );
+          },
+        ).then((_) => _loadDatasets());
+      },
 
-    child: Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 14,
-      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
 
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: Colors.grey.shade200,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.grey.shade200),
         ),
-      ),
 
-      child: Row(
-        children: [
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                selectedItems.isEmpty
+                    ? title
+                    : "${selectedItems.length} dipilih",
 
-          Expanded(
-            child: Text(
+                overflow: TextOverflow.ellipsis,
 
-              selectedItems.isEmpty
-                  ? title
-                  : "${selectedItems.length} dipilih",
-
-              overflow: TextOverflow.ellipsis,
-
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 13,
+                style: TextStyle(color: Colors.grey[700], fontSize: 13),
               ),
             ),
-          ),
 
-          Icon(
-            Icons.keyboard_arrow_down,
-            color: Colors.grey[600],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _buildDataCard({
-
-  required HighlightDataModel item,
-
-  required String title,
-  required String category,
-  required String instansi,
-  required String tahun,
-  required String tanggal,
-  required String status,
-}) {
-
-  return InkWell(
-
-    borderRadius: BorderRadius.circular(20),
-
-    onTap: () {
-
-      Navigator.push(
-
-        context,
-
-        MaterialPageRoute(
-
-          builder: (_) =>
-              FiturDetailDataSetScreen(
-            item: item,
-          ),
+            Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+          ],
         ),
-      );
-    },
+      ),
+    );
+  }
 
-    child: Container(
+  Widget _buildLoadingBox() {
+    return Container(
+      height: 140,
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
-
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.grey.shade200,
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(color: Color(0xFF0D57E7)),
+      ),
+    );
+  }
+
+  Widget _buildInfoBox(String message) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Text(
+        message,
+        style: TextStyle(color: Colors.grey[700], fontSize: 13, height: 1.4),
+      ),
+    );
+  }
+
+  Widget _buildDataCard({
+    required HighlightDataModel item,
+
+    required String title,
+    required String category,
+    required String instansi,
+    required String tahun,
+    required String tanggal,
+    required String status,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+
+      onTap: () {
+        Navigator.push(
+          context,
+
+          MaterialPageRoute(
+            builder: (_) => FiturDetailDataSetScreen(item: item),
+          ),
+        );
+      },
+
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 18),
+        padding: const EdgeInsets.all(18),
+
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                CircleAvatar(
+                  radius: 24,
+
+                  backgroundColor: _getCategoryColor(
+                    category,
+                  ).withOpacity(0.12),
+
+                  child: Icon(
+                    _getCategoryIcon(category),
+                    color: _getCategoryColor(category),
+                  ),
+                ),
+
+                const SizedBox(width: 14),
+
+                Expanded(
+                  child: Text(
+                    title,
+
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 18),
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                Icon(Icons.apartment, size: 14, color: Colors.grey[600]),
+
+                const SizedBox(width: 8),
+
+                Expanded(
+                  child: Text(
+                    instansi,
+
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 12,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 14),
+
+            Row(
+              children: [
+                Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
+
+                const SizedBox(width: 6),
+
+                Text(
+                  tahun,
+
+                  style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                ),
+
+                const Spacer(),
+
+                Icon(
+                  Icons.grid_view_rounded,
+                  size: 14,
+                  color: Colors.grey[600],
+                ),
+
+                const SizedBox(width: 6),
+
+                Text(
+                  category,
+
+                  style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            Row(
+              children: [
+                Icon(
+                  Icons.access_time_filled,
+                  size: 14,
+                  color: Colors.grey[600],
+                ),
+
+                const SizedBox(width: 6),
+
+                Text(
+                  tanggal,
+
+                  style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                ),
+
+                const Spacer(),
+
+                const Icon(Icons.check_circle, size: 14, color: Colors.green),
+
+                const SizedBox(width: 6),
+
+                Text(
+                  status,
+
+                  style: const TextStyle(color: Colors.green, fontSize: 12),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-
-        children: [
-
-          Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-
-            children: [
-
-              CircleAvatar(
-                radius: 24,
-
-                backgroundColor:
-                    _getCategoryColor(category)
-                        .withOpacity(0.12),
-
-                child: Icon(
-                  _getCategoryIcon(category),
-                  color:
-                      _getCategoryColor(category),
-                ),
-              ),
-
-              const SizedBox(width: 14),
-
-              Expanded(
-                child: Text(
-                  title,
-
-                  style: const TextStyle(
-                    fontWeight:
-                        FontWeight.bold,
-                    fontSize: 16,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 18),
-
-          Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-
-            children: [
-
-              Icon(
-                Icons.apartment,
-                size: 14,
-                color: Colors.grey[600],
-              ),
-
-              const SizedBox(width: 8),
-
-              Expanded(
-                child: Text(
-                  instansi,
-
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 12,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 14),
-
-          Row(
-            children: [
-
-              Icon(
-                Icons.calendar_today,
-                size: 14,
-                color: Colors.grey[600],
-              ),
-
-              const SizedBox(width: 6),
-
-              Text(
-                tahun,
-
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 12,
-                ),
-              ),
-
-              const Spacer(),
-
-              Icon(
-                Icons.grid_view_rounded,
-                size: 14,
-                color: Colors.grey[600],
-              ),
-
-              const SizedBox(width: 6),
-
-              Text(
-                category,
-
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          Row(
-            children: [
-
-              Icon(
-                Icons.access_time_filled,
-                size: 14,
-                color: Colors.grey[600],
-              ),
-
-              const SizedBox(width: 6),
-
-              Text(
-                tanggal,
-
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 12,
-                ),
-              ),
-
-              const Spacer(),
-
-              const Icon(
-                Icons.check_circle,
-                size: 14,
-                color: Colors.green,
-              ),
-
-              const SizedBox(width: 6),
-
-              Text(
-                status,
-
-                style: const TextStyle(
-                  color: Colors.green,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-  
-
-IconData _getCategoryIcon(String category) {
-
-  switch (category) {
-
-    case "Kesehatan":
-      return Icons.local_hospital;
-
-    case "Kependudukan":
-      return Icons.badge;
-
-    case "Lingkungan Hidup":
-      return Icons.eco;
-
-    case "Ekonomi":
-      return Icons.payments;
-
-    default:
-      return Icons.dataset;
+    );
   }
-}
 
-Color _getCategoryColor(String category) {
+  IconData _getCategoryIcon(String category) {
+    switch (category) {
+      case "Kesehatan":
+        return Icons.local_hospital;
 
-  switch (category) {
+      case "Kependudukan":
+        return Icons.badge;
 
-    case "Kesehatan":
-      return Colors.blue;
+      case "Lingkungan Hidup":
+        return Icons.eco;
 
-    case "Kependudukan":
-      return Colors.indigo;
+      case "Ekonomi":
+        return Icons.payments;
 
-    case "Lingkungan Hidup":
-      return Colors.green;
-
-    case "Ekonomi":
-      return Colors.orange;
-
-    default:
-      return Colors.grey;
+      default:
+        return Icons.dataset;
+    }
   }
-}
+
+  Color _getCategoryColor(String category) {
+    switch (category) {
+      case "Kesehatan":
+        return Colors.blue;
+
+      case "Kependudukan":
+        return Colors.indigo;
+
+      case "Lingkungan Hidup":
+        return Colors.green;
+
+      case "Ekonomi":
+        return Colors.orange;
+
+      default:
+        return Colors.grey;
+    }
+  }
+
+  HighlightDataModel _datasetToHighlight(OpenDataDataset dataset) {
+    return HighlightDataModel(
+      title: dataset.name,
+      instansi: dataset.organizationName.isEmpty
+          ? '-'
+          : dataset.organizationName,
+      tahun: dataset.dimension.isEmpty ? '-' : dataset.dimension,
+      kategori: dataset.topicName.isEmpty ? 'Dataset' : dataset.topicName,
+      tanggal: formatOpenDataDate(dataset.updatedAt),
+      status: dataset.status.isEmpty ? '-' : dataset.status,
+      slug: dataset.slug,
+      schema: dataset.schema,
+      table: dataset.table,
+      organisasiImage: dataset.organizationImage,
+      description: stripHtml(dataset.description),
+      countView: dataset.viewCount,
+      countDownload: dataset.downloadCount,
+    );
+  }
 }

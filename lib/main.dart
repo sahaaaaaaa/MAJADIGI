@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 //import 'screens/onboarding/login_screen.dart';
+import 'screens/onboarding/splash_screen.dart';
 import 'screens/onboarding/welcome_screen.dart';
-import 'widgets/main_navigation.dart';
 
 void main() {
   runApp(const MajadigiApp());
@@ -24,9 +24,7 @@ class MajadigiApp extends StatelessWidget {
 
       home: const WelcomeScreen(),
 
-      routes: {
-        '/login': (context) => const WelcomeScreen(),
-      },
+      routes: {'/login': (context) => const WelcomeScreen()},
     );
   }
 }

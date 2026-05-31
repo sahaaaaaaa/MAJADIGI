@@ -39,6 +39,10 @@ Recommendation recommendationFromLayanan(LayananModel layanan) {
     description: layanan.description,
     logo: layananLogoAssetName(layanan.name),
     kategori: layananCategoryName(layanan.name, layanan.categoryName),
+    nawaBhakti: layananNawaBhaktiSatyaName(
+      layanan.name,
+      layanan.nawaBhaktiSatya,
+    ),
   );
 }
 
@@ -55,7 +59,7 @@ String layananCategoryName(String name, String fallback) {
     return 'Sosial';
   }
   if (normalized.contains('open data')) {
-    return 'PPID';
+    return 'Kependudukan';
   }
   if (normalized.contains('klinik hoaks')) {
     return 'Multisektor (Khusus)';
@@ -95,6 +99,23 @@ String layananDisplayTitle(String name) {
   return name;
 }
 
+String layananNawaBhaktiSatyaName(String name, String fallback) {
+  final normalized = name.toLowerCase();
+
+  if (normalized.contains('transjatim') ||
+      normalized.contains('nomor darurat')) {
+    return 'Jatim Akses';
+  }
+  if (normalized.contains('islamic')) {
+    return 'Jatim Harmoni';
+  }
+  if (normalized.contains('saiful anwar') || normalized.contains('rsud haji')) {
+    return 'Jatim Sehat';
+  }
+
+  return fallback;
+}
+
 String layananLogoAssetName(String name) {
   final normalized = name.toLowerCase();
 
@@ -108,7 +129,7 @@ String layananLogoAssetName(String name) {
     return 'khas_jatim.png';
   }
   if (normalized.contains('nomor darurat')) {
-    return 'klinik_hoax.png';
+    return 'icons/ambulans.svg';
   }
   if (normalized.contains('rsud haji')) {
     return 'rsud_haji.png';
@@ -168,8 +189,9 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     id: 4,
     title: 'Nomor Darurat',
     description: 'Layanan cepat tanggap darurat 24 jam',
-    logo: 'klinik_hoax.png',
+    logo: 'icons/ambulans.svg',
     kategori: 'Kependudukan',
+    nawaBhakti: 'Jatim Akses',
   ),
   Recommendation(
     id: 5,
@@ -177,6 +199,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Pelayanan kesehatan berkualitas dan islami',
     logo: 'rsud_haji.png',
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
     id: 6,
@@ -184,6 +207,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Layanan kesehatan rujukan utama Jawa Timur',
     logo: 'rsud_saifulanwar.png',
     kategori: 'Kesehatan',
+    nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
     id: 7,
@@ -191,6 +215,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Informasi rute transportasi publik Jatim',
     logo: 'transjatim_ajaib.png',
     kategori: 'Kependudukan',
+    nawaBhakti: 'Jatim Akses',
   ),
   Recommendation(
     id: 8,
@@ -206,6 +231,7 @@ final List<Recommendation> backendLayananFallbackRecommendations = [
     description: 'Pusat informasi dan kegiatan keagamaan',
     logo: 'islamic_center.png',
     kategori: 'Ekonomi & Bisnis',
+    nawaBhakti: 'Jatim Harmoni',
     screen: const IslamicCenterHomeScreen(),
   ),
   Recommendation(
@@ -243,7 +269,8 @@ List<NewsArticle> dummyNews = [
     date: "08 April 2026",
     category: "Hoaks",
     imageUrl: "assets/news1.png",
-    content: "Beredar unggahan di media sosial yang menampilkan pertemuan antara Duta Besar Amerika Serikat dan Ketua Umum PBNU...",
+    content:
+        "Beredar unggahan di media sosial yang menampilkan pertemuan antara Duta Besar Amerika Serikat dan Ketua Umum PBNU...",
   ),
   // Tambahkan berita lainnya sesuai desain
 ];
@@ -268,19 +295,20 @@ final List<Recommendation> recommendations = [
     nawaBhakti: 'Jatim Sehat',
   ),
   Recommendation(
-    id: 3, 
-    title: 'Destinasi Wisata', 
-    description: 'Eksplorasi keindahan alam dan budaya Jatim', 
-    logo: 'destinasi_wisata.png', 
-    kategori: 'Pariwisata & Kebudayaan' ,
+    id: 3,
+    title: 'Destinasi Wisata',
+    description: 'Eksplorasi keindahan alam dan budaya Jatim',
+    logo: 'destinasi_wisata.png',
+    kategori: 'Pariwisata & Kebudayaan',
     screen: const DestinasiWisataScreen(),
   ),
   Recommendation(
-    id: 4, 
-    title: 'Islamic Center', 
-    description: 'Pusat informasi dan kegiatan keagamaan', 
-    logo: 'islamic_center.png', 
-    kategori: 'Sosial' ,
+    id: 4,
+    title: 'Islamic Center',
+    description: 'Pusat informasi dan kegiatan keagamaan',
+    logo: 'islamic_center.png',
+    kategori: 'Sosial',
+    nawaBhakti: 'Jatim Harmoni',
     screen: const IslamicCenterHomeScreen(),
     nawaBhakti: 'Jatim Harmoni',
   ),
@@ -293,10 +321,10 @@ final List<Recommendation> recommendations = [
     screen: const OpenDataScreen(),
   ),
   Recommendation(
-    id: 6, 
-    title: 'Klinik Hoaks', 
-    description: 'Verifikasi informasi dan cek fakta digital', 
-    logo: 'klinik_hoax.png', 
+    id: 6,
+    title: 'Klinik Hoaks',
+    description: 'Verifikasi informasi dan cek fakta digital',
+    logo: 'klinik_hoax.png',
     kategori: 'Multisektor (Khusus)',
     screen: KlinikHoaksHomeScreen(),
   ),
@@ -328,12 +356,12 @@ final List<Recommendation> recommendations = [
     screen: const TransjatimScreen(),
   ),
   Recommendation(
-    id: 10, 
-    title: 'Point Jatim', 
-    description: 'Sistem poin terintegrasi layanan warga', 
-    logo: 'point_jatim.png', 
+    id: 10,
+    title: 'Point Jatim',
+    description: 'Sistem poin terintegrasi layanan warga',
+    logo: 'point_jatim.png',
     kategori: 'Kependudukan',
-    screen: PointJatimHomeScreen()
+    screen: PointJatimHomeScreen(),
   ),
   Recommendation(
     id: 11, 
@@ -357,7 +385,7 @@ final List<Recommendation> recommendations = [
     title: 'Peta potensi tembakau',
     description: 'Koleksi khas semua tentang Jawa Timur',
     logo: 'klinik_hoax.png',
-    kategori:'Ekonomi & Bisnis',
+    kategori: 'Ekonomi & Bisnis',
     nawaBhakti: 'Jatim Agro',
   ),
 

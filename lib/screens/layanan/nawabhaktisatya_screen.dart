@@ -6,17 +6,14 @@ class NawaBhaktiScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final List<Map<String, String>> nawaList = [
-
       {
         "title": "Jatim Agro",
 
         "description":
             "Pengembangan komoditas unggulan dan dukungan infrastruktur untuk mencapai ketahanan pangan nasional",
 
-        "image":
-            "assets/images/nawa/jatim_agro.png",
+        "image": "assets/images/nawa/jatim_agro.png",
       },
 
       {
@@ -25,8 +22,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Peningkatan layanan kesehatan yang mudah diakses dan berkualitas bagi masyarakat Jawa Timur",
 
-        "image":
-            "assets/images/nawa/jatim_sehat.png",
+        "image": "assets/images/nawa/jatim_sehat.png",
       },
 
       {
@@ -35,8 +31,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Pelayanan dan akses pendidikan yang lebih merata untuk seluruh masyarakat",
 
-        "image":
-            "assets/images/nawa/jatim_cerdas.png",
+        "image": "assets/images/nawa/jatim_cerdas.png",
       },
 
       {
@@ -45,8 +40,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Percepatan pengentasan kemiskinan dan peningkatan kesejahteraan masyarakat",
 
-        "image":
-            "assets/images/nawa/jatim_sejahtera.png",
+        "image": "assets/images/nawa/jatim_sejahtera.png",
       },
 
       {
@@ -55,8 +49,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Perkuat konektivitas dan aglomerasi antar wilayah di Jawa Timur",
 
-        "image":
-            "assets/images/nawa/jatim_akses.png",
+        "image": "assets/images/nawa/jatim_akses.png",
       },
 
       {
@@ -65,8 +58,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Optimalisasi pemerintahan efektif, efisien, dan anti korupsi",
 
-        "image":
-            "assets/images/nawa/jatim_berkah.png",
+        "image": "assets/images/nawa/jatim_berkah.png",
       },
 
       {
@@ -75,8 +67,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Harmoni dalam toleransi, kesetaraan, dan kehidupan sosial masyarakat",
 
-        "image":
-            "assets/images/nawa/jatim_harmoni.png",
+        "image": "assets/images/nawa/jatim_harmoni.png",
       },
 
       {
@@ -85,8 +76,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Pengembangan ekonomi hijau dan keberlanjutan lingkungan hidup",
 
-        "image":
-            "assets/images/nawa/jatim_lestari.png",
+        "image": "assets/images/nawa/jatim_lestari.png",
       },
 
       {
@@ -95,8 +85,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Ekonomi inklusif dan lapangan pekerjaan yang lebih luas",
 
-        "image":
-            "assets/images/nawa/jatim_kerja.png",
+        "image": "assets/images/nawa/jatim_kerja.png",
       },
     ];
 
@@ -105,18 +94,16 @@ class NawaBhaktiScreen extends StatelessWidget {
 
       itemCount: nawaList.length,
 
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
 
         crossAxisSpacing: 14,
         mainAxisSpacing: 14,
 
-        childAspectRatio: 0.74,
+        childAspectRatio: 0.68,
       ),
 
       itemBuilder: (context, index) {
-
         final item = nawaList[index];
 
         return GestureDetector(
@@ -125,11 +112,9 @@ class NawaBhaktiScreen extends StatelessWidget {
               context,
 
               MaterialPageRoute(
-                builder: (_) =>
-                    NawaDetailScreen(
+                builder: (_) => NawaDetailScreen(
                   title: item["title"]!,
-                  description:
-                      item["description"]!,
+                  description: item["description"]!,
                   image: item["image"]!,
                 ),
               ),
@@ -142,38 +127,28 @@ class NawaBhaktiScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
 
-              borderRadius:
-                  BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(22),
 
-              border: Border.all(
-                color: const Color(
-                  0xffEAEAEA,
-                ),
-              ),
+              border: Border.all(color: const Color(0xffEAEAEA)),
             ),
 
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 /// ICON
                 Container(
                   width: 58,
                   height: 58,
 
-                  padding:
-                      const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
 
                   decoration: const BoxDecoration(
                     color: Color(0xffF5F7FF),
                     shape: BoxShape.circle,
                   ),
 
-                  child: Image.asset(
-                    item["image"]!,
-                  ),
+                  child: Image.asset(item["image"]!),
                 ),
 
                 const SizedBox(height: 16),
@@ -184,8 +159,7 @@ class NawaBhaktiScreen extends StatelessWidget {
 
                   maxLines: 2,
 
-                  overflow:
-                      TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
 
                   style: const TextStyle(
                     fontSize: 18,
@@ -197,20 +171,20 @@ class NawaBhaktiScreen extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 /// DESCRIPTION
-                Text(
-                  item["description"]!,
+                Flexible(
+                  child: Text(
+                    item["description"]!,
 
-                  maxLines: 4,
+                    maxLines: 4,
 
-                  overflow:
-                      TextOverflow.ellipsis,
+                    overflow: TextOverflow.ellipsis,
 
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.5,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
 
-                    color:
-                        Colors.grey.shade600,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
                 ),
               ],

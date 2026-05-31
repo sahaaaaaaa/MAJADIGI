@@ -1,48 +1,32 @@
 import 'package:flutter/material.dart';
 
+import '../../services/auth_service.dart';
 import '../../services/layanan_service.dart';
-import '../../widgets/layanan_item.dart';
+import '../../widgets/asset_icon_image.dart';
+import '../service_model.dart';
 import 'home_service_item.dart';
-import 'package:majadigi/screens/islamic_center/islamic_center_home_screen.dart';
-import 'package:majadigi/screens/klinik_hoax/klinik_hoax_home_screen.dart';
-import 'package:majadigi/screens/open_data/open_data_screen.dart';
-import 'package:majadigi/screens/point_jatim/point_jatim_home_screen.dart';
-
-import '../destinasi_wisata/destinasi_wisata_screen.dart';
-import '../../widgets/layanan_item.dart';
-import '../harga_barang/harga_bahan_pokok_screen.dart';
-import '../nomor darurat/nomor_darurat.dart';
-import '../rsud_provjatim/rsud_jatim.dart';
-import '../rssa/rssa_screen.dart';
-import '../transjatim/transjatim_screen.dart';
 
 class LayananLainScreen extends StatefulWidget {
-  const LayananLainScreen({super.key, this.services});
-
-  final List<HomeServiceItem>? services;
+  const LayananLainScreen({super.key});
 
   @override
-  State<LayananLainScreen> createState() =>
-      _LayananLainScreenState();
+  State<LayananLainScreen> createState() => _LayananLainScreenState();
 }
 
 class _LayananLainScreenState extends State<LayananLainScreen> {
   final LayananService _layananService = LayananService();
-  bool _isLoading = false;
-  List<HomeServiceItem> _services = [];
+  final Set<String> _expandedCategories = <String>{};
+
+  bool _isLoading = true;
+  String? _errorMessage;
+  int? _installingLayananId;
+  List<LayananModel> _services = [];
 
   bool pariwisataOpen = true;
 
   @override
   void initState() {
     super.initState();
-
-    final services = widget.services;
-    if (services != null) {
-      _services = services;
-      return;
-    }
-
     _loadServices();
   }
 
@@ -55,180 +39,207 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
   Future<void> _loadServices() async {
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
 
     try {
-      final layanan = await _layananService.getInstalledLayanan();
+      final services = await _layananService.getPublicLayanan();
       if (!mounted) {
         return;
       }
+
       setState(() {
-        _services = layanan
-            .map(homeServiceFromLayanan)
-            .whereType<HomeServiceItem>()
-            .toList();
+        _services = _installedFirst(services);
         _isLoading = false;
+        final grouped = _groupedServices;
+        if (_expandedCategories.isEmpty && grouped.isNotEmpty) {
+          _expandedCategories.add(grouped.keys.first);
+        }
       });
     } catch (_) {
       if (!mounted) {
         return;
       }
+
       setState(() {
         _isLoading = false;
+        _errorMessage = 'Layanan belum dapat dimuat.';
       });
     }
   }
 
-  // ================= POPUP =================
-  void _showLayananPopup({
-    required String title,
-    required String image,
-    required String desc,
-  }) {
-    showModalBottomSheet(
+  Map<String, List<LayananModel>> get _groupedServices {
+    final grouped = <String, List<LayananModel>>{};
+    for (final service in _services) {
+      final category = _categoryName(service);
+      grouped.putIfAbsent(category, () => <LayananModel>[]).add(service);
+    }
+
+    final entries = grouped.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    return Map<String, List<LayananModel>>.fromEntries(entries);
+  }
+
+  String _categoryName(LayananModel service) {
+    return layananCategoryName(service.name, service.categoryName);
+  }
+
+  List<LayananModel> _installedFirst(List<LayananModel> services) {
+    final installed = <LayananModel>[];
+    final notInstalled = <LayananModel>[];
+
+    for (final service in services) {
+      if (service.isInstalled) {
+        installed.add(service);
+      } else {
+        notInstalled.add(service);
+      }
+    }
+
+    return [...installed, ...notInstalled];
+  }
+
+  Future<void> _handleServiceTap(LayananModel service) async {
+    if (service.isInstalled) {
+      _openInstalledService(service);
+      return;
+    }
+
+    await _confirmInstall(service);
+  }
+
+  void _openInstalledService(LayananModel service) {
+    final homeService = homeServiceFromLayanan(service);
+    if (homeService != null) {
+      Navigator.push(context, MaterialPageRoute(builder: homeService.builder));
+      return;
+    }
+
+    _showServiceDetail(service);
+  }
+
+  Future<void> _confirmInstall(LayananModel service) async {
+    if (AuthService.currentSession == null) {
+      _showSnackBar('Silakan login untuk install layanan.');
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Install layanan?'),
+          content: Text(
+            'Apakah anda ingin install ${layananDisplayTitle(service.name)} agar layanan ini muncul di Beranda?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0E63FF),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Install'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      await _installService(service);
+    }
+  }
+
+  Future<void> _installService(LayananModel service) async {
+    setState(() {
+      _installingLayananId = service.id;
+    });
+
+    try {
+      await _layananService.installLayanan(service.id);
+      final refreshed = await _layananService.getPublicLayanan();
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _services = _installedFirst(refreshed);
+        _installingLayananId = null;
+      });
+      _showSnackBar('${layananDisplayTitle(service.name)} berhasil diinstall.');
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _installingLayananId = null;
+      });
+      _showSnackBar('Gagal install layanan.');
+    }
+  }
+
+  void _showServiceDetail(LayananModel service) {
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-
       backgroundColor: Colors.transparent,
-
       builder: (context) {
         return Container(
           padding: const EdgeInsets.all(24),
-
           decoration: const BoxDecoration(
             color: Colors.white,
-
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(34),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
           ),
-
           child: Column(
             mainAxisSize: MainAxisSize.min,
-
             children: [
               Container(
                 width: 60,
                 height: 5,
-
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-
               const SizedBox(height: 30),
-
-              Image.asset(
-                image,
-                height: 90,
-              ),
-
+              _serviceLogo(service, size: 90),
               const SizedBox(height: 24),
-
               Text(
-                title,
+                layananDisplayTitle(service.name),
                 textAlign: TextAlign.center,
-
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF0B1B53),
                 ),
               ),
-
-              const SizedBox(height: 14),
-
+              const SizedBox(height: 8),
               Text(
-                desc,
+                _categoryName(service),
+                style: const TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                service.description.isEmpty
+                    ? 'Detail layanan belum tersedia.'
+                    : service.description,
                 textAlign: TextAlign.center,
-
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey.shade600,
                   height: 1.5,
                 ),
               ),
-
-              const SizedBox(height: 30),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 54,
-
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFFE9EEF9),
-
-                        borderRadius:
-                            BorderRadius.circular(
-                          40,
-                        ),
-                      ),
-
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-
-                        child: const Text(
-                          "Detail Layanan",
-
-                          style: TextStyle(
-                            color:
-                                Color(0xFF0E63FF),
-
-                            fontWeight:
-                                FontWeight.w600,
-
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 14),
-
-                  Expanded(
-                    child: Container(
-                      height: 54,
-
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFF0E63FF),
-
-                        borderRadius:
-                            BorderRadius.circular(
-                          40,
-                        ),
-                      ),
-
-                      child: TextButton(
-                        onPressed: () {},
-
-                        child: const Text(
-                          "Install",
-
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight:
-                                FontWeight.w600,
-
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
             ],
           ),
         );
@@ -236,143 +247,32 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
     );
   }
 
+  void _showSnackBar(String message) {
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
-
       body: Column(
         children: [
-          // ================= HEADER =================
-          Container(
-            height: 140,
-
-            padding: const EdgeInsets.only(
-              top: 40,
-              left: 16,
-              right: 16,
-            ),
-
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  "assets/images/latar_belakang.png",
-                ),
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-              ),
-            ),
-
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
-
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-
-                const Expanded(
-                  child: Center(
-                    child: Text(
-                      "Layanan Lain",
-
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 40),
-              ],
-            ),
-          ),
-
-          // ================= CONTENT =================
+          _buildHeader(),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.all(16),
-
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
               decoration: const BoxDecoration(
                 color: Colors.white,
-
-                borderRadius:
-                    BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
-
-              child: ListView(
-                children: [
-                  const Text(
-                    'Semua layanan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-
-                  _gridFeatured(),
-
-                  const SizedBox(height: 20),
-
-                  const Divider(),
-
-                  // ================= PARIWISATA =================
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        pariwisataOpen =
-                            !pariwisataOpen;
-                      });
-                    },
-
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment
-                              .spaceBetween,
-
-                      children: [
-                        const Text(
-                          "Pariwisata & Kebudayaan",
-
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight:
-                                FontWeight.bold,
-                          ),
-                        ),
-
-                        Icon(
-                          pariwisataOpen
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  if (pariwisataOpen) ...[
-                    const SizedBox(height: 16),
-
-                    _gridPariwisata(),
-                  ],
-
-                  const Divider(),
-
-                  _simpleItem("Pendidikan"),
-                  _simpleItem("Ketenagakerjaan"),
-                  _simpleItem("Ekonomi & Bisnis"),
-                  _simpleItem("Kesehatan"),
-                  _simpleItem("Kependudukan"),
-                ],
-              ),
+              child: _buildContent(),
             ),
           ),
         ],
@@ -380,341 +280,250 @@ class _LayananLainScreenState extends State<LayananLainScreen> {
     );
   }
 
-  // ================= FEATURED =================
-  Widget _gridFeatured() {
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
-
-      physics:
-          const NeverScrollableScrollPhysics(),
-
-      children: [
-        LayananItem(
-          title: "Klinik Hoaks",
-          image:
-              "assets/images/klinik_hoax.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const KlinikHoaksHomeScreen(),
-              ),
-            );
-          },
+  Widget _buildHeader() {
+    return Container(
+      height: 160,
+      padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/latar_belakang.png'),
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
         ),
-
-        LayananItem(
-          title: "Destinasi Wisata",
-          image:
-              "assets/images/destinasi_wisata.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const DestinasiWisataScreen(),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+          const Expanded(
+            child: Center(
+              child: Text(
+                'Layanan Lain',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Open Data",
-          image:
-              "assets/images/open_data.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const OpenDataScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Harga Bahan",
-          image:
-              "assets/images/khas_jatim.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const HargaBahanPokokScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "RSUD Haji",
-          image:
-              "assets/images/rsud_haji.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const RsudHajiScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Transjatim",
-          image:
-              "assets/images/transjatim_ajaib.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const TransjatimScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "RSSA",
-          image:
-              "assets/images/rsud_saifulanwar.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const RssaScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Nomor Darurat",
-          image:
-              "assets/images/klinik_hoax.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const NomorDaruratScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Point Jatim",
-          image:
-              "assets/images/point_jatim.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const PointJatimHomeScreen(),
-              ),
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Islamic Center",
-          image:
-              "assets/images/islamic_center.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const IslamicCenterHomeScreen(),
-              ),
-            );
-          },
-        ),
-      ],
+            ),
+          ),
+          const SizedBox(width: 40),
+        ],
+      ),
     );
   }
 
-  // ================= PARIWISATA =================
-  Widget _gridPariwisata() {
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+    }
 
-      physics:
-          const NeverScrollableScrollPhysics(),
-
-      children: [
-        LayananItem(
-          title: "Nganjuk Smart City",
-          image:
-              "assets/images/nganjuk_smartcity.png",
-
-          onTap: () {
-            _showLayananPopup(
-              title: "Nganjuk Smart City",
-
-              image:
-                  "assets/images/nganjuk_smartcity.png",
-
-              desc:
-                  "Aplikasi Nganjuk Smart City portal layanan digital Kabupaten Nganjuk.",
-            );
-          },
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_errorMessage!, style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: _loadServices,
+              child: const Text('Muat ulang'),
+            ),
+          ],
         ),
+      );
+    }
 
-        LayananItem(
-          title: "Pusaka Jatim",
-          image:
-              "assets/images/klinik_hoax.png",
-
-          onTap: () {
-            _showLayananPopup(
-              title: "Pusaka Jatim",
-
-              image:
-                  "assets/images/klinik_hoax.png",
-
-              desc:
-                  "Platform informasi budaya dan warisan Jawa Timur.",
-            );
-          },
+    if (_services.isEmpty) {
+      return const Center(
+        child: Text(
+          'Belum ada layanan tersedia.',
+          style: TextStyle(color: Colors.grey),
         ),
+      );
+    }
 
-        LayananItem(
-          title: "Paket Kunjungan",
-          image:
-              "assets/images/logo_majadigi.png",
+    final grouped = _groupedServices;
 
-          onTap: () {
-            _showLayananPopup(
-              title:
-                  "Paket Kunjungan Agrowisata",
-
-              image:
-                  "assets/images/logo_majadigi.png",
-
-              desc:
-                  "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Khas Jatim",
-          image:
-              "assets/images/khas_jatim.png",
-
-          onTap: () {
-            _showLayananPopup(
-              title: "Khas Jatim",
-
-              image:
-                  "assets/images/khas_jatim.png",
-
-              desc:
-                  "Layanan informasi produk unggulan dan UMKM khas Jawa Timur.",
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Cak Durasim",
-          image:
-              "assets/images/cak_durasim.png",
-
-          onTap: () {
-            _showLayananPopup(
-              title: "Cak Durasim",
-
-              image:
-                  "assets/images/cak_durasim.png",
-
-              desc:
-                  "Pusat pertunjukan seni dan budaya Jawa Timur.",
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Virtual Tour",
-          image:
-              "assets/images/klinik_hoax.png",
-
-          onTap: () {
-            _showLayananPopup(
-              title: "Virtual Tour",
-
-              image:
-                  "assets/images/klinik_hoax.png",
-
-              desc:
-                  "Tur virtual wisata dan budaya Jawa Timur secara online.",
-            );
-          },
-        ),
-
-        LayananItem(
-          title: "Destinasi Wisata",
-          image:
-              "assets/images/destinasi_wisata.png",
-
-          onTap: () {
-            Navigator.push(
-              context,
-
-              MaterialPageRoute(
-                builder: (_) =>
-                    const DestinasiWisataScreen(),
-              ),
-            );
-          },
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: _loadServices,
+      child: ListView(
+        children: [
+          const Text(
+            'Semua layanan',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _buildServiceGrid(_services),
+          const SizedBox(height: 24),
+          const Divider(height: 1),
+          const SizedBox(height: 8),
+          ...grouped.entries.map((entry) {
+            return _buildCategorySection(entry.key, entry.value);
+          }),
+        ],
+      ),
     );
   }
 
-  // ================= SIMPLE ITEM =================
-  Widget _simpleItem(String title) {
+  Widget _buildServiceGrid(List<LayananModel> services) {
+    return GridView.builder(
+      itemCount: services.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 18,
+        crossAxisSpacing: 10,
+        childAspectRatio: 0.68,
+      ),
+      itemBuilder: (context, index) {
+        return _buildServiceTile(services[index]);
+      },
+    );
+  }
+
+  Widget _buildCategorySection(String category, List<LayananModel> services) {
+    final isExpanded = _expandedCategories.contains(category);
+
     return Column(
       children: [
-        ListTile(
-          title: Text(title),
-
-          trailing:
-              const Icon(Icons.expand_more),
+        InkWell(
+          onTap: () {
+            setState(() {
+              if (isExpanded) {
+                _expandedCategories.remove(category);
+              } else {
+                _expandedCategories.add(category);
+              }
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    category,
+                    style: TextStyle(
+                      fontSize: isExpanded ? 18 : 17,
+                      fontWeight: isExpanded
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${services.length}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 13),
+                ),
+                const SizedBox(width: 10),
+                Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
+              ],
+            ),
+          ),
         ),
-
-        const Divider(),
+        if (isExpanded) ...[
+          const SizedBox(height: 4),
+          _buildServiceGrid(services),
+          const SizedBox(height: 16),
+        ],
+        const Divider(height: 1),
       ],
     );
+  }
+
+  Widget _buildServiceTile(LayananModel service) {
+    final isInstalled = service.isInstalled;
+    final isInstalling = _installingLayananId == service.id;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: isInstalling ? null : () => _handleServiceTap(service),
+      child: Opacity(
+        opacity: isInstalled || isInstalling ? 1 : 0.55,
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                SizedBox.square(
+                  dimension: 58,
+                  child: Center(child: _serviceLogo(service, size: 56)),
+                ),
+                Positioned(
+                  right: -6,
+                  top: -5,
+                  child: _statusBadge(service, isInstalling: isInstalling),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              layananDisplayTitle(service.name),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13, height: 1.25),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _statusBadge(LayananModel service, {required bool isInstalling}) {
+    if (isInstalling) {
+      return Container(
+        width: 20,
+        height: 20,
+        padding: const EdgeInsets.all(4),
+        decoration: const BoxDecoration(
+          color: Color(0xFF0E63FF),
+          shape: BoxShape.circle,
+        ),
+        child: const CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
+    if (service.isInstalled) {
+      return const Icon(Icons.check_circle, size: 20, color: Color(0xFF23A55A));
+    }
+
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: const BoxDecoration(
+        color: Color(0xFFFFB020),
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(Icons.add, size: 14, color: Colors.white),
+    );
+  }
+
+  Widget _serviceLogo(LayananModel service, {required double size}) {
+    final homeService = homeServiceFromLayanan(service);
+    final assetPath =
+        homeService?.image ??
+        layananLogoAssetPath(layananLogoAssetName(service.name));
+
+    if (service.iconUrl.startsWith('http')) {
+      return Image.network(
+        service.iconUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return AssetIconImage(asset: assetPath, width: size, height: size);
+        },
+      );
+    }
+
+    return AssetIconImage(asset: assetPath, width: size, height: size);
   }
 }

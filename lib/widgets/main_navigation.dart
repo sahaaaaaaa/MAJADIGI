@@ -5,9 +5,6 @@ import '../screens/layanan/layanan_screen.dart';
 import '../screens/tersimpan/tersimpan_screen.dart';
 import '../screens/akun/akun_screen.dart';
 
-import '../screens/service_model.dart';
-
-
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
@@ -17,14 +14,13 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+  int _homeRefreshVersion = 0;
+  int _savedRefreshVersion = 0;
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    LayananScreen(),
-    TersimpanScreen(
-      selectedIds: {1,2,3,4,5,6,7,8}, // Set kosong untuk sementara
-      allData: recommendations, // List kosong untuk sementara
-    ),
+  List<Widget> get _pages => [
+    HomeScreen(refreshVersion: _homeRefreshVersion),
+    const LayananScreen(),
+    TersimpanScreen(refreshVersion: _savedRefreshVersion),
     const AkunScreen(),
   ];
 
@@ -32,96 +28,60 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _pages[_currentIndex],
-      
+      body: IndexedStack(index: _currentIndex, children: _pages),
 
-      bottomNavigationBar: 
-      SafeArea(child: Container(
-        height: 90,
-        margin: const EdgeInsets.fromLTRB(
-          20,
-          0,
-          20,
-          20,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 90,
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+
+            borderRadius: BorderRadius.circular(40),
+
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+
+          child: Row(
+            children: [
+              Expanded(child: _navItem(Icons.home_filled, "Beranda", 0)),
+
+              Expanded(
+                child: _navItem(Icons.storefront_outlined, "Layanan", 1),
+              ),
+
+              Expanded(child: _navItem(Icons.bookmark_border, "Tersimpan", 2)),
+
+              Expanded(child: _navItem(Icons.person_outline, "Akun", 3)),
+            ],
+          ),
         ),
-
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 10,
-        ),
-
-        decoration: BoxDecoration(
-          color: Colors.white,
-
-          borderRadius:
-              BorderRadius.circular(40),
-
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(
-                0.08,
-              ),
-
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-
-        child: Row(
-          children: [
-
-            Expanded(
-              child: _navItem(
-                Icons.home_filled,
-                "Beranda",
-                0,
-              ),
-            ),
-
-            Expanded(
-              child: _navItem(
-                Icons.storefront_outlined,
-                "Layanan",
-                1,
-              ),
-            ),
-
-            Expanded(
-              child: _navItem(
-                Icons.bookmark_border,
-                "Tersimpan",
-                2,
-              ),
-            ),
-
-            Expanded(
-              child: _navItem(
-                Icons.person_outline,
-                "Akun",
-                3,
-              ),
-            ),
-          ],
-        ),
-      ),
       ),
     );
   }
 
-  Widget _navItem(
-    IconData icon,
-    String label,
-    int index,
-  ) {
-
-    final isActive =
-        _currentIndex == index;
+  Widget _navItem(IconData icon, String label, int index) {
+    final isActive = _currentIndex == index;
 
     return GestureDetector(
       onTap: () {
-
         setState(() {
+          if (index == 0) {
+            _homeRefreshVersion++;
+          }
+          if (index == 2) {
+            _savedRefreshVersion++;
+          }
           _currentIndex = index;
         });
       },
@@ -129,42 +89,26 @@ class _MainNavigationState extends State<MainNavigation> {
       child: SizedBox(
         height: 70,
         child: AnimatedContainer(
-          duration: const Duration(
-            milliseconds: 250,
-          ),
+          duration: const Duration(milliseconds: 250),
 
           width: double.infinity,
 
-          padding:
-              const EdgeInsets.symmetric(
-            horizontal: 4,
-            vertical: 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
 
           decoration: BoxDecoration(
-            color: isActive
-                ? const Color(
-                    0xffE9F0FF,
-                  )
-                : Colors.transparent,
+            color: isActive ? const Color(0xffE9F0FF) : Colors.transparent,
 
-            borderRadius:
-                BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(24),
           ),
 
           child: Column(
             mainAxisSize: MainAxisSize.min,
 
             children: [
-
               Icon(
                 icon,
 
-                color: isActive
-                    ? const Color(
-                        0xff2F61E8,
-                      )
-                    : Colors.grey,
+                color: isActive ? const Color(0xff2F61E8) : Colors.grey,
 
                 size: 24,
               ),
@@ -177,17 +121,11 @@ class _MainNavigationState extends State<MainNavigation> {
                 overflow: TextOverflow.ellipsis,
 
                 style: TextStyle(
-                  color: isActive
-                      ? const Color(
-                          0xff2F61E8,
-                        )
-                      : Colors.grey,
+                  color: isActive ? const Color(0xff2F61E8) : Colors.grey,
 
                   fontSize: 12,
 
-                  fontWeight: isActive
-                      ? FontWeight.w600
-                      : FontWeight.w400,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),
             ],
