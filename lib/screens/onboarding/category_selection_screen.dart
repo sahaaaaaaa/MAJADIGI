@@ -25,12 +25,12 @@ class _PilihKategori extends State<PilihKategori> {
   final Set<int> _selectedIds = {};
   List<Recommendation> _layananRecommendations = [];
   bool isSubmitting = false;
+  bool _isLoadingLayanan = true;
+  String? _loadErrorMessage;
 
   List<Recommendation> get _availableRecommendations {
-  return _layananRecommendations.isEmpty
-      ? recommendations
-      : _layananRecommendations;
-}
+    return _layananRecommendations;
+  }
 
   @override
   void initState() {
@@ -48,15 +48,31 @@ class _PilihKategori extends State<PilihKategori> {
 
   Future<void> _loadLayanan() async {
     try {
+      setState(() {
+        _isLoadingLayanan = true;
+        _loadErrorMessage = null;
+      });
+
       final layanan = await layananService.getPublicLayanan();
       if (!mounted) {
         return;
       }
       setState(() {
-        _layananRecommendations =
-            layanan.map(recommendationFromLayanan).toList();
+        _layananRecommendations = layanan
+            .map(recommendationFromLayanan)
+            .toList();
+        _isLoadingLayanan = false;
       });
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _layananRecommendations = [];
+        _isLoadingLayanan = false;
+        _loadErrorMessage = 'Layanan belum dapat dimuat.';
+      });
+    }
   }
 
   Future<void> _finishSelection({required bool allowEmpty}) async {
@@ -69,7 +85,12 @@ class _PilihKategori extends State<PilihKategori> {
       return;
     }
 
-    final selectedIds = _selectedIds.toList()..sort();
+    final installableIds = _availableRecommendations
+        .where((item) => isInstallableLayananName(item.title))
+        .map((item) => item.id)
+        .toSet();
+    final selectedIds = _selectedIds.where(installableIds.contains).toList()
+      ..sort();
 
     setState(() {
       isSubmitting = true;
@@ -107,14 +128,13 @@ class _PilihKategori extends State<PilihKategori> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Jumlah layanan = ${_availableRecommendations.length}");
     return Scaffold(
       backgroundColor: const Color(0xFF0D57E7),
       body: SafeArea(
@@ -127,7 +147,7 @@ class _PilihKategori extends State<PilihKategori> {
                 width: 520,
                 height: 320,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -186,7 +206,7 @@ class _PilihKategori extends State<PilihKategori> {
                                 _buildTitleSection(),
                                 const SizedBox(height: 26),
                                 _buildCategorySection(),
-                              ]
+                              ],
                             ),
                           ),
                         ),
@@ -304,84 +324,43 @@ class _PilihKategori extends State<PilihKategori> {
     );
   }
 
-  Widget _buildServiceCard(Recommendation item) {
-  // Cek apakah ID item ini ada dalam list yang dipilih
-    bool isSelected = _selectedIds.contains(item.id);
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (isSelected) {
-            _selectedIds.remove(item.id);
-          } else {
-            _selectedIds.add(item.id);
-          }
-        });
-      },
-      child: Container(
-        width: double.infinity, 
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected 
-                ? const Color(0xFF0E63FF) 
-                : const Color(0xFFE2E2E2),
-            width: isSelected ? 1.5 : 1.0,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Image.asset(layananLogoAssetPath(item.logo), height: 40),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          item.description,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Icon(
-              isSelected ? Icons.check : Icons.add,
-              color: isSelected 
-                  ? const Color(0xFF0E63FF) 
-                  : Colors.grey,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildCategorySection() {
-    final categories = [
-      'Pariwisata & Kebudayaan', 'Pendidikan', 'Ketenagakerjaan', 
-      'Ekonomi & Bisnis', 'Kesehatan', 'Kependudukan', 'Multisektor (Khusus)', 
-      'Infrastruktur', 'Sosial', 'Lingkungan Hidup', 
-      'Pemerintah & Desa', 'Kebencanaan'
-    ];
+    if (_isLoadingLayanan) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 28),
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+
+    if (_loadErrorMessage != null) {
+      return Column(
+        children: [
+          Text(
+            _loadErrorMessage!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 12),
+          TextButton(onPressed: _loadLayanan, child: const Text('Muat ulang')),
+        ],
+      );
+    }
+
+    final categories =
+        _availableRecommendations
+            .map((item) => item.kategori)
+            .where((item) => item.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
+
+    if (categories.isEmpty) {
+      return const Text(
+        'Belum ada layanan tersedia.',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.grey),
+      );
+    }
 
     return Wrap(
       spacing: 10,
@@ -391,86 +370,86 @@ class _PilihKategori extends State<PilihKategori> {
             .where((r) => r.kategori == cat && _selectedIds.contains(r.id))
             .length;
         bool isSelected = count > 0;
-        
+
         return GestureDetector(
           onTap: () {
             showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => LayananSheetContent(
-              kategori: cat,
-              allData: _availableRecommendations,
-              initialSelectedIds: _selectedIds,
-              onToggle: (id) {
-                setState(() {
-                  if (_selectedIds.contains(id)) {
-                    _selectedIds.remove(id);
-                  } else {
-                    _selectedIds.add(id);
-                  }
-                });
-              },
-            ),
-          );
-        },
-          child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFE8F1FF) : Colors.white,
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(
-              color: isSelected 
-                  ? const Color(0xFF0E63FF) 
-                  : const Color(0xFFE2E2E2),
-              width: 1.3,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                cat,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: isSelected 
-                      ? const Color(0xFF0E63FF) 
-                      : const Color(0xFF2F2F2F),
-                ),
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => LayananSheetContent(
+                kategori: cat,
+                allData: _availableRecommendations,
+                initialSelectedIds: _selectedIds,
+                onToggle: (id) {
+                  setState(() {
+                    if (_selectedIds.contains(id)) {
+                      _selectedIds.remove(id);
+                    } else {
+                      _selectedIds.add(id);
+                    }
+                  });
+                },
               ),
-
-              /// COUNT (KURUNG)
-              if (isSelected && count > 0) ...[
-                const SizedBox(width: 4),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFFE8F1FF) : Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: isSelected
+                    ? const Color(0xFF0E63FF)
+                    : const Color(0xFFE2E2E2),
+                width: 1.3,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 Text(
-                  '($count)',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontFamily: 'Onest',
-                    color: Color(0xFF0E63FF),
+                  cat,
+                  style: TextStyle(
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
+                    color: isSelected
+                        ? const Color(0xFF0E63FF)
+                        : const Color(0xFF2F2F2F),
                   ),
                 ),
+
+                /// COUNT (KURUNG)
+                if (isSelected && count > 0) ...[
+                  const SizedBox(width: 4),
+                  Text(
+                    '($count)',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontFamily: 'Onest',
+                      color: Color(0xFF0E63FF),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+
+                const SizedBox(width: 6),
+
+                /// ICON DI KANAN
+                Icon(
+                  isSelected ? Icons.check : Icons.add,
+                  size: 18,
+                  color: isSelected
+                      ? const Color(0xFF0E63FF)
+                      : const Color(0xFF9E9E9E),
+                ),
               ],
-
-              const SizedBox(width: 6),
-
-              /// ICON DI KANAN
-              Icon(
-                isSelected ? Icons.check : Icons.add,
-                size: 18,
-                color: isSelected 
-                    ? const Color(0xFF0E63FF) 
-                    : const Color(0xFF9E9E9E),
-              ),
-            ],
+            ),
           ),
-        ),
-      );
-    }).toList(),
-  );
-}
+        );
+      }).toList(),
+    );
+  }
 
   Widget _buildBottomButtons() {
     return Row(
@@ -511,8 +490,9 @@ class _PilihKategori extends State<PilihKategori> {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor:
-              isPrimary ? const Color(0xFF0E63FF) : const Color(0xFFDCE7F8),
+          backgroundColor: isPrimary
+              ? const Color(0xFF0E63FF)
+              : const Color(0xFFDCE7F8),
           foregroundColor: isPrimary ? Colors.white : const Color(0xFF0E63FF),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),

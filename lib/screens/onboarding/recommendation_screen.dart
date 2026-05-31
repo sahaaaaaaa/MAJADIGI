@@ -23,6 +23,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
   final Set<int> _selectedIds = {};
   List<Recommendation> _layananRecommendations = [];
+  bool _isLoadingLayanan = true;
+  String? _loadErrorMessage;
 
   List<Recommendation> get _visibleRecommendations {
     if (widget.data.isNotEmpty) {
@@ -31,7 +33,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     if (_layananRecommendations.isNotEmpty) {
       return _layananRecommendations;
     }
-    return backendLayananFallbackRecommendations;
+    return const [];
   }
 
   @override
@@ -48,17 +50,33 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
   Future<void> _loadLayanan() async {
     try {
+      setState(() {
+        _isLoadingLayanan = true;
+        _loadErrorMessage = null;
+      });
+
       final layanan = await _layananService.getPublicLayanan();
       if (!mounted) {
         return;
       }
       setState(() {
-        _layananRecommendations =
-            layanan.map(recommendationFromLayanan).toList();
+        _layananRecommendations = layanan
+            .map(recommendationFromLayanan)
+            .toList();
+        _isLoadingLayanan = false;
       });
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _layananRecommendations = [];
+        _isLoadingLayanan = false;
+        _loadErrorMessage = 'Rekomendasi layanan belum dapat dimuat.';
+      });
+    }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +91,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                 width: 520,
                 height: 320,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -221,66 +239,106 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   }
 
   Widget _buildStepContent() {
-  return Container(
-    width: 400,
-    padding: const EdgeInsets.fromLTRB(12, 24, 12, 12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Column(
-      children: [
-        // Judul Frame
-        const Text(
-          'Rekomendasi',
+    return Container(
+      width: 400,
+      padding: const EdgeInsets.fromLTRB(12, 24, 12, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          // Judul Frame
+          const Text(
+            'Rekomendasi',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Onest',
+              fontWeight: FontWeight.w600, // SemiBold
+              fontSize: 24,
+              height: 32 / 24,
+              color: Color(0xFF081131),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Penjelasan Frame
+          const Text(
+            'Rekomendasi Layanan populer sesuai tempat tinggal anda',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Onest',
+              fontWeight: FontWeight.w400, // Regular
+              fontSize: 14,
+              height: 20 / 14,
+              color: Color(0xFF666666),
+            ),
+          ),
+          const SizedBox(height: 26),
+          _buildRecommendationList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecommendationList() {
+    if (_isLoadingLayanan && widget.data.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 28),
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+
+    if (_loadErrorMessage != null && widget.data.isEmpty) {
+      return Column(
+        children: [
+          Text(
+            _loadErrorMessage!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 12),
+          TextButton(onPressed: _loadLayanan, child: const Text('Muat ulang')),
+        ],
+      );
+    }
+
+    if (_visibleRecommendations.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 28),
+        child: Text(
+          'Belum ada layanan tersedia.',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Onest',
-            fontWeight: FontWeight.w600, // SemiBold
-            fontSize: 24,
-            height: 32 / 24,
-            color: Color(0xFF081131),
-          ),
+          style: TextStyle(color: Colors.grey),
         ),
-        const SizedBox(height: 8),
-        // Penjelasan Frame
-        const Text(
-          'Rekomendasi Layanan populer sesuai tempat tinggal anda',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Onest',
-            fontWeight: FontWeight.w400, // Regular
-            fontSize: 14,
-            height: 20 / 14,
-            color: Color(0xFF666666),
-          ),
-        ),
-        const SizedBox(height: 26),
-        // List Pilihan (Grid 2 Kolom)
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            mainAxisExtent: 145, 
-          ),
-          itemCount: _visibleRecommendations.length,
-          itemBuilder: (context, index) {
-            return _buildRecommendationCard(_visibleRecommendations[index]);
-          },
-        ),
-      ],
-    ),
-  );
-}
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        mainAxisExtent: 145,
+      ),
+      itemCount: _visibleRecommendations.length,
+      itemBuilder: (context, index) {
+        return _buildRecommendationCard(_visibleRecommendations[index]);
+      },
+    );
+  }
 
   Widget _buildRecommendationCard(Recommendation item) {
     bool isSelected = _selectedIds.contains(item.id);
 
     return GestureDetector(
       onTap: () {
+        if (!isInstallableLayananName(item.title)) {
+          _showMessage('Layanan belum tersedia');
+          return;
+        }
+
         if (isSelected) {
           _selectedIds.remove(item.id); // Batal pilih (uncheck)
         } else {
@@ -294,37 +352,62 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           color: isSelected ? const Color(0xFFF4F8FF) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF0065FF) : const Color(0xFFE8E8E8), 
+            color: isSelected
+                ? const Color(0xFF0065FF)
+                : const Color(0xFFE8E8E8),
             width: isSelected ? 1.5 : 1,
           ),
         ),
-        child: Stack( 
+        child: Stack(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
                   layananLogoAssetPath(item.logo),
-                  width: 32, height: 32,
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.business, color: Colors.blue),
+                  width: 32,
+                  height: 32,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.business, color: Colors.blue),
                 ),
                 const SizedBox(height: 12),
-                Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(
+                  item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(item.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: Color(0xFF666666))),
+                Text(
+                  item.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF666666),
+                  ),
+                ),
               ],
             ),
             if (isSelected)
               const Positioned(
                 top: 0,
                 right: 0,
-                child: Icon(Icons.check_circle, color: Color(0xFF0065FF), size: 20),
+                child: Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF0065FF),
+                  size: 20,
+                ),
               ),
           ],
         ),
       ),
     );
   }
+
   Widget _buildBottomButtons() {
     return Row(
       children: [
@@ -377,15 +460,27 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   }
 
   void _openCategorySelection({required bool includeSelection}) {
+    final installableIds = _visibleRecommendations
+        .where((item) => isInstallableLayananName(item.title))
+        .map((item) => item.id)
+        .toSet();
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PilihKategori(
           registrationData: widget.registrationData,
-          initialSelectedIds:
-              includeSelection ? Set<int>.from(_selectedIds) : const <int>{},
+          initialSelectedIds: includeSelection
+              ? _selectedIds.where(installableIds.contains).toSet()
+              : const <int>{},
         ),
       ),
     );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
