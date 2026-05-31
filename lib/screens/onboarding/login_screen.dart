@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:majadigi/features/auth/presentation/auth_controller.dart';
 import 'register_screen.dart';
 import '../../widgets/main_navigation.dart';
 import '../../services/auth_service.dart';
@@ -14,7 +15,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AuthService authService = AuthService();
 
   bool rememberMe = false;
   bool obscurePassword = true;
@@ -24,7 +24,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    authService.dispose();
     super.dispose();
   }
 
@@ -42,16 +41,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      await authService.login(email: email, password: password);
+      await ref
+          .read(authControllerProvider.notifier)
+          .login(email: email, password: password);
 
       if (!mounted) return;
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const MainNavigation()),
+        (route) => false,
       );
     } on ApiException catch (error) {
       if (!mounted) return;
       showMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      showMessage('Gagal login.');
     } finally {
       if (mounted) {
         setState(() {

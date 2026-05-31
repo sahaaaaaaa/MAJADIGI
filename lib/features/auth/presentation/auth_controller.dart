@@ -52,8 +52,27 @@ class AuthController extends AsyncNotifier<AuthSession?> {
     }
   }
 
+  Future<AuthSession> register({
+    required RegisterRequest request,
+    List<int> layananIds = const [],
+  }) async {
+    state = const AsyncLoading<AuthSession?>();
+
+    try {
+      final session = await ref
+          .read(authRepositoryProvider)
+          .register(request: request, layananIds: layananIds);
+
+      state = AsyncData<AuthSession?>(session);
+      return session;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      rethrow;
+    }
+  }
+
   Future<void> logout() async {
-    await ref.read(authRepositoryProvider).deleteAccount();
+    await ref.read(authRepositoryProvider).logout();
     state = const AsyncData<AuthSession?>(null);
   }
 

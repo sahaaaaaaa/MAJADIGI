@@ -21,6 +21,19 @@ class AuthRepository {
     return session;
   }
 
+  Future<AuthSession> register({
+    required RegisterRequest request,
+    List<int> layananIds = const [],
+  }) async {
+    final session = await _authService.register(
+      request: request,
+      layananIds: layananIds,
+    );
+
+    await saveSession(session);
+    return session;
+  }
+
   Future<AuthSession?> restoreSession() async {
     try {
       final session = await _localStorage.readSession();

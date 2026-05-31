@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:majadigi/features/auth/presentation/auth_controller.dart';
 import 'bottom_sheet_screen.dart';
 import '../service_model.dart';
 import 'loading_screen.dart';
 import '../../services/auth_service.dart';
 import '../../services/layanan_service.dart';
 
-class PilihKategori extends StatefulWidget {
+class PilihKategori extends ConsumerStatefulWidget {
   final RegisterRequest? registrationData;
   final Set<int> initialSelectedIds;
 
@@ -16,11 +18,10 @@ class PilihKategori extends StatefulWidget {
   });
 
   @override
-  State<PilihKategori> createState() => _PilihKategori();
+  ConsumerState<PilihKategori> createState() => _PilihKategori();
 }
 
-class _PilihKategori extends State<PilihKategori> {
-  final AuthService authService = AuthService();
+class _PilihKategori extends ConsumerState<PilihKategori> {
   final LayananService layananService = LayananService();
   final Set<int> _selectedIds = {};
   List<Recommendation> _layananRecommendations = [];
@@ -41,7 +42,6 @@ class _PilihKategori extends State<PilihKategori> {
 
   @override
   void dispose() {
-    authService.dispose();
     layananService.dispose();
     super.dispose();
   }
@@ -97,10 +97,9 @@ class _PilihKategori extends State<PilihKategori> {
     });
 
     try {
-      await authService.register(
-        request: widget.registrationData!,
-        layananIds: selectedIds,
-      );
+      await ref
+          .read(authControllerProvider.notifier)
+          .register(request: widget.registrationData!, layananIds: selectedIds);
 
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

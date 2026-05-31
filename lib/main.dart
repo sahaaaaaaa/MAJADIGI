@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:majadigi/features/auth/presentation/auth_gate.dart';
 import 'package:majadigi/screens/onboarding/login_screen.dart';
+import 'package:majadigi/screens/onboarding/splash_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MajadigiApp()));
@@ -21,7 +21,7 @@ class MajadigiApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
 
-      home: const AuthGate(),
+      home: const SplashScreen(),
 
       routes: {'/login': (context) => const LoginScreen()},
     );
