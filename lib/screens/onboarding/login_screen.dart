@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:majadigi/features/auth/presentation/auth_controller.dart';
 import 'register_screen.dart';
 import '../../widgets/main_navigation.dart';
 import '../../services/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AuthService authService = AuthService();
 
   bool rememberMe = false;
   bool obscurePassword = true;
@@ -23,7 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    authService.dispose();
     super.dispose();
   }
 
@@ -41,16 +41,22 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await authService.login(email: email, password: password);
+      await ref
+          .read(authControllerProvider.notifier)
+          .login(email: email, password: password);
 
       if (!mounted) return;
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const MainNavigation()),
+        (route) => false,
       );
     } on ApiException catch (error) {
       if (!mounted) return;
       showMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      showMessage('Gagal login.');
     } finally {
       if (mounted) {
         setState(() {
@@ -61,9 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -228,18 +234,11 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: const Color(0xFFE2E2E2),
-              width: 1,
-            ),
+            border: Border.all(color: const Color(0xFFE2E2E2), width: 1),
           ),
           child: const Row(
             children: [
-              Icon(
-                Icons.language,
-                size: 18,
-                color: Color(0xFF4F4F4F),
-              ),
+              Icon(Icons.language, size: 18, color: Color(0xFF4F4F4F)),
               SizedBox(width: 6),
               Text(
                 'Bahasa Indonesia',
@@ -262,14 +261,8 @@ class _LoginScreenState extends State<LoginScreen> {
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: 'Email',
-        hintStyle: const TextStyle(
-          color: Color(0xFF9B9B9B),
-          fontSize: 16,
-        ),
-        prefixIcon: const Icon(
-          Icons.mail_outline,
-          color: Color(0xFF2E2E2E),
-        ),
+        hintStyle: const TextStyle(color: Color(0xFF9B9B9B), fontSize: 16),
+        prefixIcon: const Icon(Icons.mail_outline, color: Color(0xFF2E2E2E)),
         filled: true,
         fillColor: const Color(0xFFF2F6FB),
         contentPadding: const EdgeInsets.symmetric(
@@ -278,17 +271,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(
-            color: Color(0xFF0E63FF),
-            width: 1.4,
-          ),
+          borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(
-            color: Color(0xFF0E63FF),
-            width: 1.6,
-          ),
+          borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.6),
         ),
       ),
     );
@@ -300,14 +287,8 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: obscurePassword,
       decoration: InputDecoration(
         hintText: 'Kata sandi',
-        hintStyle: const TextStyle(
-          color: Color(0xFF9B9B9B),
-          fontSize: 16,
-        ),
-        prefixIcon: const Icon(
-          Icons.lock_outline,
-          color: Color(0xFF8C8C8C),
-        ),
+        hintStyle: const TextStyle(color: Color(0xFF9B9B9B), fontSize: 16),
+        prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF8C8C8C)),
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {
@@ -315,7 +296,9 @@ class _LoginScreenState extends State<LoginScreen> {
             });
           },
           icon: Icon(
-            obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            obscurePassword
+                ? Icons.visibility_outlined
+                : Icons.visibility_off_outlined,
             color: const Color(0xFF8C8C8C),
           ),
         ),
@@ -327,17 +310,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(
-            color: Color(0xFFE0E0E0),
-            width: 1.2,
-          ),
+          borderSide: const BorderSide(color: Color(0xFFE0E0E0), width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(
-            color: Color(0xFF0E63FF),
-            width: 1.4,
-          ),
+          borderSide: const BorderSide(color: Color(0xFF0E63FF), width: 1.4),
         ),
       ),
     );
@@ -359,7 +336,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: rememberMe ? const Color(0xFF0E63FF) : Colors.transparent,
+                  color: rememberMe
+                      ? const Color(0xFF0E63FF)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: rememberMe
@@ -369,11 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 child: rememberMe
-                    ? const Icon(
-                        Icons.check,
-                        size: 18,
-                        color: Colors.white,
-                      )
+                    ? const Icon(Icons.check, size: 18, color: Colors.white)
                     : null,
               ),
               const SizedBox(width: 10),
@@ -392,9 +367,7 @@ class _LoginScreenState extends State<LoginScreen> {
         TextButton(
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Fitur lupa sandi belum dibuat'),
-              ),
+              const SnackBar(content: Text('Fitur lupa sandi belum dibuat')),
             );
           },
           child: const Text(
@@ -435,10 +408,7 @@ class _LoginScreenState extends State<LoginScreen> {
               )
             : const Text(
                 "Masuk",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
       ),
     );
@@ -450,17 +420,13 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const Text(
           'Belum punya akun? ',
-          style: TextStyle(
-            fontSize: 15,
-            color: Color(0xFF555555),
-          ),
+          style: TextStyle(fontSize: 15, color: Color(0xFF555555)),
         ),
         GestureDetector(
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const RegisterScreen()),
+              MaterialPageRoute(builder: (_) => const RegisterScreen()),
             );
           },
           child: const Text(

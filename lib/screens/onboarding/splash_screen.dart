@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:majadigi/screens/onboarding/welcome_screen.dart';
+import 'package:majadigi/features/auth/presentation/auth_gate.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          MaterialPageRoute(builder: (context) => const AuthGate()),
         );
       }
     }); //navigateToNextScreen
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+    return Scaffold(
       body: Stack(
         children: [
           Container(
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
-          
+
           SafeArea(
             child: SizedBox(
               width: double.infinity,

@@ -1,7 +1,7 @@
 name: majadigi
 description: "A new Flutter project."
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -18,15 +18,21 @@ dependencies:
   image_picker: ^1.0.7
   url_launcher: ^6.3.0
   fl_chart: ^0.68.0
-  
 
   cupertino_icons: ^1.0.8
+  flutter_riverpod: ^3.3.1
+  flutter_secure_storage: ^10.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^6.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo_majadigi.png"
 
 flutter:
   uses-material-design: true
@@ -47,7 +53,7 @@ flutter:
     - assets/images/kategori/pendidikan.png
     - assets/images/kategori/pariwisata_&_kebudayaan.png
     - assets/images/kategori/multisektor_(khusus).png
-    - assets/images/kategori/pemerintah_&_desa.png
+    - assets/images/kategori/pemerintah_&_Desa.png
     - assets/images/kategori/sosial.png
     - assets/images/kategori/lingkungan_hidup.png
     - assets/images/kategori/PPID.png
@@ -67,7 +73,7 @@ flutter:
     - assets/images/transjatim_ajaib.png
     - assets/images/grid_lainnya.png
     - assets/images/SKOPI.png
-    - assets/images/Kidungan.jpg
+    - assets/images/kidungan.jpg
     - assets/images/LogoJawaTimur.png
     - assets/images/siparimanta.jpg
     - assets/images/e_kwu_cabdin_pasuruan.jpg
@@ -181,7 +187,7 @@ flutter:
     - assets/images/pointJatim/pengembangan_susu_sapi.png
     - assets/images/pointJatim/peternakan_sapi_perah_terintegrasi.png
     - assets/images/pointJatim/rsud_kajuruhan.png
-    
+
     # svg icons
     - assets/images/icons/ambulans.svg
     - assets/images/icons/call.svg
@@ -203,7 +209,7 @@ flutter:
     - assets/images/icons/marker-pin-02.svg
     - assets/images/icons/ellipse2.svg
     - assets/images/icons/clock_white.svg
-   
+
     # open data
     - assets/images/openData/open_data_banner1.png
     - assets/images/openData/open_data_banner2.png
@@ -214,13 +220,10 @@ flutter:
     - assets/images/openData/kependudukan.png
     - assets/images/openData/kesehatan.png
     - assets/images/openData/lingkungan.png
-    - assets/images/openData/pemerintah.png 
+    - assets/images/openData/pemerintah.png
     - assets/images/openData/pendidikan.png
     - assets/images/openData/sosial.png
     - assets/images/openData/tataruang.png
-
-    
-  
 
   # To add assets to your application, add an assets section, like this:
   # assets:

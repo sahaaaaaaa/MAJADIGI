@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:majadigi/features/auth/presentation/auth_controller.dart';
 
 import '../../services/auth_service.dart';
 import '../onboarding/login_screen.dart';
@@ -6,14 +10,14 @@ import 'bahasa_screen.dart';
 import 'edit_akun_screen.dart';
 import 'ubah_password_screen.dart';
 
-class AkunScreen extends StatefulWidget {
+class AkunScreen extends ConsumerStatefulWidget {
   const AkunScreen({super.key});
 
   @override
-  State<AkunScreen> createState() => _AkunScreenState();
+  ConsumerState<AkunScreen> createState() => _AkunScreenState();
 }
 
-class _AkunScreenState extends State<AkunScreen> {
+class _AkunScreenState extends ConsumerState<AkunScreen> {
   final AuthService _authService = AuthService();
   AuthProfile? _profile;
   bool _isLoadingProfile = true;
@@ -98,7 +102,7 @@ class _AkunScreenState extends State<AkunScreen> {
     setDialogState(() {});
 
     try {
-      await _authService.deleteAccount();
+      await ref.read(authControllerProvider.notifier).deleteAccount();
       if (!mounted) {
         return;
       }
@@ -183,7 +187,7 @@ class _AkunScreenState extends State<AkunScreen> {
                                     setDialogState(() {
                                       isDeleting = true;
                                     });
-                                    _deleteAccount(setDialogState);
+                                    unawaited(_deleteAccount(setDialogState));
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFFF2D55),
@@ -220,8 +224,11 @@ class _AkunScreenState extends State<AkunScreen> {
     );
   }
 
-  void _logout() {
-    AuthService.clearSession();
+  Future<void> _logout() async {
+    await ref.read(authControllerProvider.notifier).logout();
+    if (!mounted) {
+      return;
+    }
     _goToLogin();
   }
 
@@ -388,7 +395,13 @@ class _AkunScreenState extends State<AkunScreen> {
                           onTap: _showDeleteDialog,
                         ),
                         _divider(),
-                        _item(Icons.logout, 'Logout', onTap: _logout),
+                        _item(
+                          Icons.logout,
+                          'Logout',
+                          onTap: () {
+                            unawaited(_logout());
+                          },
+                        ),
                       ],
                     ),
                   ),

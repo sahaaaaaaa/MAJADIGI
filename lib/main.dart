@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
-//import 'screens/onboarding/login_screen.dart';
-import 'screens/onboarding/splash_screen.dart';
-import 'screens/onboarding/welcome_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:majadigi/screens/onboarding/login_screen.dart';
+import 'package:majadigi/screens/onboarding/splash_screen.dart';
 
 void main() {
-  runApp(const MajadigiApp());
+  runApp(const ProviderScope(child: MajadigiApp()));
 }
 
 class MajadigiApp extends StatelessWidget {
@@ -22,9 +21,9 @@ class MajadigiApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
 
-      home: const WelcomeScreen(),
+      home: const SplashScreen(),
 
-      routes: {'/login': (context) => const WelcomeScreen()},
+      routes: {'/login': (context) => const LoginScreen()},
     );
   }
 }

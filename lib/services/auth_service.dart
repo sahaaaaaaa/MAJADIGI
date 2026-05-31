@@ -68,6 +68,10 @@ class AuthUser {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'email': email, 'role': role};
+  }
+
   factory AuthUser.fromJson(Map<String, dynamic> json) {
     return AuthUser(
       id: json['id']?.toString() ?? '',
@@ -141,6 +145,23 @@ class AuthProfile {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'phone': phone,
+      'address': address,
+      'kabupaten_kota': kabupatenKota,
+      'kecamatan': kecamatan,
+      'nik': nik,
+      'birth_date': birthDate,
+      'gender': gender,
+      'photo_url': photoUrl,
+    };
+  }
+
   factory AuthProfile.fromJson(Map<String, dynamic> json) {
     return AuthProfile(
       id: json['id']?.toString() ?? '',
@@ -199,6 +220,16 @@ class AuthSession {
       user: user ?? this.user,
       profile: profile ?? this.profile,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'access_token': accessToken,
+      'token_type': tokenType,
+      'expires_in': expiresIn,
+      'user': user.toJson(),
+      if (profile != null) 'profile': profile!.toJson(),
+    };
   }
 
   factory AuthSession.fromJson(Map<String, dynamic> json) {
