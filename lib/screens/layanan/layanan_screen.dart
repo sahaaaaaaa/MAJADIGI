@@ -73,13 +73,13 @@ class _LayananScreenState
       "title":
           "Multisektor (Khusus)",
       "image":
-          "assets/images/kategori/multisektor.png",
+          "assets/images/kategori/multisektor_(khusus).png",
     },
 
     {
       "title": "Infrastruktur",
       "image":
-          "assets/images/kategori/infrastuktur.png",
+          "assets/images/kategori/infrastruktur.png",
     },
 
     {
@@ -109,7 +109,7 @@ class _LayananScreenState
     {
       "title": "Pemerintahan & Desa",
       "image":
-          "assets/images/kategori/pemerintahDesa.png",
+          "assets/images/kategori/pemerintah_&_desa.png",
     },
     
   ];

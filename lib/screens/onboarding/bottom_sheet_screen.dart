@@ -39,6 +39,10 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
       return matchKategori && matchSearch;
     }).toList();
 
+    for (var item in widget.allData) {
+      print(item.kategori);
+    }
+
     return Container(
       // 1. Latar belakang putih dengan sudut oval di kanan & kiri atas
       decoration: const BoxDecoration(

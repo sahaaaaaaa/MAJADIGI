@@ -40,14 +40,14 @@ flutter:
 
     # kategori
     - assets/images/kategori/ekonomi_&_bisnis.png
-    - assets/images/kategori/infrastuktur.png
+    - assets/images/kategori/infrastruktur.png
     - assets/images/kategori/kependudukan.png
     - assets/images/kategori/kesehatan.png
     - assets/images/kategori/ketenagakerjaan.png
     - assets/images/kategori/pendidikan.png
     - assets/images/kategori/pariwisata_&_kebudayaan.png
-    - assets/images/kategori/multisektor.png
-    - assets/images/kategori/pemerintahDesa.png
+    - assets/images/kategori/multisektor_(khusus).png
+    - assets/images/kategori/pemerintah_&_desa.png
     - assets/images/kategori/sosial.png
     - assets/images/kategori/lingkungan_hidup.png
     - assets/images/kategori/PPID.png

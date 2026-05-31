@@ -27,10 +27,10 @@ class _PilihKategori extends State<PilihKategori> {
   bool isSubmitting = false;
 
   List<Recommendation> get _availableRecommendations {
-    return _layananRecommendations.isEmpty
-        ? backendLayananFallbackRecommendations
-        : _layananRecommendations;
-  }
+  return _layananRecommendations.isEmpty
+      ? recommendations
+      : _layananRecommendations;
+}
 
   @override
   void initState() {
@@ -114,6 +114,7 @@ class _PilihKategori extends State<PilihKategori> {
 
   @override
   Widget build(BuildContext context) {
+    print("Jumlah layanan = ${_availableRecommendations.length}");
     return Scaffold(
       backgroundColor: const Color(0xFF0D57E7),
       body: SafeArea(
@@ -378,7 +379,7 @@ class _PilihKategori extends State<PilihKategori> {
     final categories = [
       'Pariwisata & Kebudayaan', 'Pendidikan', 'Ketenagakerjaan', 
       'Ekonomi & Bisnis', 'Kesehatan', 'Kependudukan', 'Multisektor (Khusus)', 
-      'Infrastruktur', 'Sosial', 'Lingkungan Hidup', 'PPID', 
+      'Infrastruktur', 'Sosial', 'Lingkungan Hidup', 
       'Pemerintah & Desa', 'Kebencanaan'
     ];
 

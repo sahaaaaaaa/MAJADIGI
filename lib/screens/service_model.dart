@@ -522,7 +522,7 @@ final List<Recommendation> recommendations = [
     title: 'SIKIPO JATIM',
     description: 'Sistem Keterbukaan Informasi Publik Online',
     logo: 'LogoJawaTimur.png',
-    kategori: 'Pemerintahan & Desa',
+    kategori: 'Pemerintah & Desa',
     nawaBhakti: 'Jatim Berkah & Amanah',
   ),
   Recommendation(
@@ -530,7 +530,7 @@ final List<Recommendation> recommendations = [
     title: 'Rumah ASN',
     description: 'Ruang menjawab aspirasi ASN dan masyarakat umum seputar kepegawaian',
     logo: 'rumahAsn.png',
-    kategori: 'Pemerintahan & Desa',
+    kategori: 'Pemerintah & Desa',
     nawaBhakti: 'Jatim Berkah & Amanah',
   ),
   Recommendation(
@@ -586,7 +586,7 @@ final List<Recommendation> recommendations = [
     title: 'Klinik BUMDesa',
     description: 'Klinik Badan Usaha Milik Desa',
     logo: 'LogoJawaTimur.png',
-    kategori: 'Pemerintahan & Desa',
+    kategori: 'Pemerintah & Desa',
   ),
   Recommendation(
     id: 41,
