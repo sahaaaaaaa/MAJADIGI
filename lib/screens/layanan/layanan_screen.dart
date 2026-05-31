@@ -46,13 +46,25 @@ class _LayananScreenState extends State<LayananScreen> {
     },
 
     {
+<<<<<<< HEAD
+      "title":
+          "Multisektor (Khusus)",
+      "image":
+          "assets/images/kategori/multisektor_(khusus).png",
+=======
       "title": "Multisektor (Khusus)",
       "image": "assets/images/kategori/multisektor.png",
+>>>>>>> fa085f3e0db6f2d5b437760761428edfcfc5c44b
     },
 
     {
       "title": "Infrastruktur",
+<<<<<<< HEAD
+      "image":
+          "assets/images/kategori/infrastruktur.png",
+=======
       "image": "assets/images/kategori/infrastuktur.png",
+>>>>>>> fa085f3e0db6f2d5b437760761428edfcfc5c44b
     },
 
     {
@@ -82,7 +94,7 @@ class _LayananScreenState extends State<LayananScreen> {
     {
       "title": "Pemerintahan & Desa",
       "image":
-          "assets/images/kategori/pemerintahDesa.png",
+          "assets/images/kategori/pemerintah_&_desa.png",
     },
     
   ];
