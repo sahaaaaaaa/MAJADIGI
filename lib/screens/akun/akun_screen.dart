@@ -228,7 +228,9 @@ class _AkunScreenState extends State<AkunScreen> {
   void _goToLogin() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(builder: (_) => const LoginScreen(
+        showBackButton: false,
+      )),
       (route) => false,
     );
   }

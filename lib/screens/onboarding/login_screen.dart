@@ -4,8 +4,13 @@ import '../../widgets/main_navigation.dart';
 import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final bool showBackButton;
 
+  const LoginScreen({
+    super.key,
+    this.showBackButton = true,
+  });
+  
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -91,32 +96,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.fromLTRB(24, 14, 24, 12),
                   child: Row(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_back_ios_new,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            SizedBox(width: 6),
-                            Text(
-                              'Kembali',
-                              style: TextStyle(
+                      if (widget.showBackButton)
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: const Row(
+                            children: [
+                              Icon(
+                                Icons.arrow_back_ios_new,
                                 color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                size: 20,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 6),
+                              Text(
+                                'Kembali',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
-                  ),
+                  )
                 ),
                 Expanded(
                   child: Container(

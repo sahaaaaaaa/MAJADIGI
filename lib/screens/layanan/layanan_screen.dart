@@ -46,25 +46,16 @@ class _LayananScreenState extends State<LayananScreen> {
     },
 
     {
-<<<<<<< HEAD
       "title":
           "Multisektor (Khusus)",
       "image":
           "assets/images/kategori/multisektor_(khusus).png",
-=======
-      "title": "Multisektor (Khusus)",
-      "image": "assets/images/kategori/multisektor.png",
->>>>>>> fa085f3e0db6f2d5b437760761428edfcfc5c44b
     },
 
     {
       "title": "Infrastruktur",
-<<<<<<< HEAD
       "image":
           "assets/images/kategori/infrastruktur.png",
-=======
-      "image": "assets/images/kategori/infrastuktur.png",
->>>>>>> fa085f3e0db6f2d5b437760761428edfcfc5c44b
     },
 
     {
@@ -221,6 +212,7 @@ class _LayananScreenState extends State<LayananScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color(0xFF0D57E7),
 
@@ -324,52 +316,25 @@ class _LayananScreenState extends State<LayananScreen> {
                           ),
 
                           child: Row(
-                            children: List.generate(tabs.length, (index) {
-                              final isActive = selectedTab == index;
+                             children: [
+                              _buildTab(
+                                text: "Layanan",
+                                width: width * 0.24,
+                                index: 0,
+                              ),
 
-                              return Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedTab = index;
-                                    });
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 250),
+                              _buildTab(
+                                text: "Nawa Bhakti Satya",
+                                width: width * 0.42,
+                                index: 1,
+                              ),
 
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-
-                                    decoration: BoxDecoration(
-                                      color: isActive
-                                          ? const Color(0xffE9F0FF)
-                                          : Colors.transparent,
-
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-
-                                    child: Center(
-                                      child: Text(
-                                        tabs[index],
-
-                                        style: TextStyle(
-                                          fontSize: 13,
-
-                                          fontWeight: isActive
-                                              ? FontWeight.w600
-                                              : FontWeight.w400,
-
-                                          color: isActive
-                                              ? const Color(0xff2F61E8)
-                                              : Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
+                              _buildTab(
+                                text: "Katalog",
+                                width: width * 0.24,
+                                index: 2,
+                              ),
+                            ],
                           ),
                         ),
 
@@ -405,6 +370,52 @@ class _LayananScreenState extends State<LayananScreen> {
       ),
     );
   }
+
+  Widget _buildTab({
+  required String text,
+  required double width,
+  required int index,
+}) {
+  final isActive = selectedTab == index;
+  
+  return GestureDetector(
+    onTap: () {
+      setState(() {
+        selectedTab = index;
+      });
+    },
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      width: width,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+
+      decoration: BoxDecoration(
+        color: isActive
+            ? const Color(0xffE9F0FF)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(24),
+      ),
+
+      child: Center(
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight:
+                isActive ? FontWeight.w600 : FontWeight.w400,
+            color: isActive
+                ? const Color(0xff2F61E8)
+                : Colors.grey,
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
   Widget _buildLayananGrid() {
     return GridView.builder(
