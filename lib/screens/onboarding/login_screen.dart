@@ -5,7 +5,7 @@ import 'register_screen.dart';
 import '../../widgets/main_navigation.dart';
 import '../../services/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget  {
   final bool showBackButton;
 
   const LoginScreen({

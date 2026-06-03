@@ -266,6 +266,7 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
             ),
           ),
           SafeArea(
+            bottom: false,
             child: Column(
               children: [
                 Padding(
@@ -335,6 +336,7 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
                       ),
                     ),
                     child: ListView(
+                      padding: const EdgeInsets.only(bottom: 120),
                       children: [
                         const Text(
                           'Informasi Lain',

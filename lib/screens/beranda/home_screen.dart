@@ -122,16 +122,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
-
-      body: SafeArea(
+  extendBody: true,
+  backgroundColor: Colors.transparent,
+  body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               // HEADER + SLIDER
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(
+                  top: 20,
+                  bottom: 70,
+                ),
 
                 decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -144,9 +147,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     // HEADER TOP
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-
+            Padding(
+  padding: const EdgeInsets.fromLTRB(
+    16,
+    12,
+    16,
+    0,
+  ),
                       child: Row(
                         children: [
                           const CircleAvatar(
@@ -249,12 +256,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // MAIN CONTENT
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                ),
+              Transform.translate(
+  offset: const Offset(0, -30),
+
+  child: Container(
+    padding: const EdgeInsets.all(20),
+
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(30),
+      ),
+    ),
+    
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -697,6 +711,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
+  ),
               ),
             ],
           ),
@@ -1124,7 +1139,7 @@ class _HomeScreenState extends State<HomeScreen> {
       serviceItems.add(
         LayananItem(
           title: 'Lainnya',
-          image: 'assets/images/grid_lainnya.png',
+          image: 'assets/images/icons/lainnya.svg',
           onTap: _openLayananLain,
         ),
       );
