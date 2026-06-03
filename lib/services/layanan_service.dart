@@ -78,6 +78,24 @@ class LayananModel {
   }
 }
 
+extension LayananAvailability on LayananModel {
+  bool get isAvailable => isInstallableLayananName(name);
+}
+
+class LayananCategoryModel {
+  LayananCategoryModel({required this.id, required this.name});
+
+  final int id;
+  final String name;
+
+  factory LayananCategoryModel.fromJson(Map<String, dynamic> json) {
+    return LayananCategoryModel(
+      id: _toInt(json['id']),
+      name: json['nama']?.toString() ?? '',
+    );
+  }
+}
+
 class LayananService {
   LayananService({http.Client? client}) : _client = client ?? http.Client();
 
@@ -99,6 +117,11 @@ class LayananService {
       includeOptionalAuth: true,
     );
     return _listFromPayload(decoded);
+  }
+
+  Future<List<LayananCategoryModel>> getPublicCategories() async {
+    final decoded = await _get('/public/layanan/categories');
+    return _categoryListFromPayload(decoded);
   }
 
   Future<List<LayananModel>> getInstalledLayanan({String search = ''}) async {
@@ -287,6 +310,36 @@ class LayananService {
         .where((item) => item.id > 0 && item.name.isNotEmpty)
         .toList();
   }
+
+  List<LayananCategoryModel> _categoryListFromPayload(
+    Map<String, dynamic> decoded,
+  ) {
+    final rawData = decoded['data'];
+    if (rawData is! List) {
+      return const [];
+    }
+
+    return rawData
+        .whereType<Map<String, dynamic>>()
+        .map(LayananCategoryModel.fromJson)
+        .where((item) => item.id > 0 && item.name.isNotEmpty)
+        .toList();
+  }
+}
+
+bool isInstallableLayananName(String name) {
+  final normalized = name.toLowerCase();
+
+  return normalized.contains('open data') ||
+      normalized.contains('klinik hoaks') ||
+      normalized.contains('harga bahan pokok') ||
+      normalized.contains('nomor darurat') ||
+      normalized.contains('rsud haji') ||
+      normalized.contains('saiful anwar') ||
+      normalized.contains('transjatim') ||
+      normalized.contains('point jatim') ||
+      normalized.contains('islamic') ||
+      normalized.contains('destinasi wisata');
 }
 
 int _toInt(dynamic value) {

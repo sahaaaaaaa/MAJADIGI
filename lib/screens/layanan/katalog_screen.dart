@@ -46,9 +46,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
       }
 
       setState(() {
-        _services = _rankedServices(
-          services.isEmpty ? _fallbackServices : services,
-        );
+        _services = _rankedServices(services);
         _isLoading = false;
       });
     } catch (_) {
@@ -56,34 +54,12 @@ class _KatalogScreenState extends State<KatalogScreen> {
         return;
       }
 
-      final fallbackServices = _fallbackServices;
       setState(() {
-        _services = _rankedServices(fallbackServices);
+        _services = [];
         _isLoading = false;
-        _errorMessage = fallbackServices.isEmpty
-            ? 'Katalog layanan belum dapat dimuat.'
-            : null;
+        _errorMessage = 'Katalog layanan belum dapat dimuat.';
       });
     }
-  }
-
-  List<LayananModel> get _fallbackServices {
-    return backendLayananFallbackRecommendations
-        .map(
-          (item) => LayananModel(
-            id: item.id,
-            name: item.title,
-            description: item.description,
-            iconUrl: layananLogoAssetPath(item.logo),
-            categoryName: item.kategori,
-            nawaBhaktiSatya: item.nawaBhakti ?? '',
-            isInstalled: false,
-            isFavorite: false,
-            isFeatured: false,
-            installCount: 0,
-          ),
-        )
-        .toList();
   }
 
   List<LayananModel> _rankedServices(List<LayananModel> services) {
@@ -142,6 +118,13 @@ class _KatalogScreenState extends State<KatalogScreen> {
             final isInstalled = sheetService.isInstalled;
 
             Future<void> installService() async {
+              if (!sheetService.isAvailable) {
+                setModalState(() {
+                  sheetError = 'Layanan belum tersedia';
+                });
+                return;
+              }
+
               if (AuthService.currentSession == null) {
                 setModalState(() {
                   sheetError = 'Silakan login untuk install layanan.';

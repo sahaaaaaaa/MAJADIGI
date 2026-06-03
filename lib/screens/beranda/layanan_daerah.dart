@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../services/auth_service.dart';
+import '../../services/layanan_service.dart';
+import '../../widgets/asset_icon_image.dart';
+import '../service_model.dart';
+import 'home_service_item.dart';
+
 class SemuaLayananDaerahScreen extends StatefulWidget {
   const SemuaLayananDaerahScreen({super.key});
 
@@ -8,9 +14,14 @@ class SemuaLayananDaerahScreen extends StatefulWidget {
       _SemuaLayananDaerahScreenState();
 }
 
-class _SemuaLayananDaerahScreenState
-    extends State<SemuaLayananDaerahScreen> {
+class _SemuaLayananDaerahScreenState extends State<SemuaLayananDaerahScreen> {
+  final LayananService _layananService = LayananService();
+
   String selectedDaerah = "Jawa Timur";
+  bool _isLoading = true;
+  String? _errorMessage;
+  int? _installingLayananId;
+  List<LayananModel> _layanan = [];
 
   final List<String> daerahList = [
     "Jawa Timur",
@@ -29,126 +40,158 @@ class _SemuaLayananDaerahScreenState
     "Kabupaten Gresik",
   ];
 
-  final List<Map<String, String>> layanan = [
-    {
-      "title": "Paket Kunjungan Agrowisata",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
-    },
-    {
-      "title": "Islamic Center",
-      "image": "assets/images/islamic_center.png",
-      "desc":
-          "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
-    },
-    {
-      "title": "BAPENDA Jawa Timur",
-      "image": "assets/images/open_data.png",
-      "desc":
-          "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
-    },
-    {
-      "title": "SAPA BANSOS",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
-    },
-    {
-      "title": "RS Paru Manguharjo",
-      "image": "assets/images/rsud_haji.png",
-      "desc":
-          "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
-    },
-    {
-      "title": "RS Paru Jember",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
-    },
-    {
-      "title": "Forum Konsultasi Disnak",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
-    },
-    {
-      "title": "Rumah ASN",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
-    },
-    {
-      "title": "RSUD Haji Prov. Jatim",
-      "image": "assets/images/rsud_haji.png",
-      "desc":
-          "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
-    },
-    {
-      "title": "SIMPEL K3",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
-    },
-    {
-      "title": "Beasiswa LPPD Jatim",
-      "image": "assets/images/logo_majadigi.png",
-      "desc":
-          "Informasi dan pendaftaran program beasiswa pendidikan Jawa Timur.",
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadLayanan();
+  }
+
+  @override
+  void dispose() {
+    _layananService.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadLayanan() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final layanan = await _layananService.getPublicLayanan();
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _layanan = layanan;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _layanan = [];
+        _isLoading = false;
+        _errorMessage = 'Layanan belum dapat dimuat.';
+      });
+    }
+  }
+
+  Future<void> _installService(LayananModel service) async {
+    if (!service.isAvailable) {
+      _showSnackBar('Layanan belum tersedia');
+      return;
+    }
+
+    if (AuthService.currentSession == null) {
+      _showSnackBar('Silakan login untuk install layanan.');
+      return;
+    }
+
+    setState(() {
+      _installingLayananId = service.id;
+    });
+
+    try {
+      await _layananService.installLayanan(service.id);
+      final refreshed = await _layananService.getPublicLayanan();
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _layanan = refreshed;
+        _installingLayananId = null;
+      });
+      _showSnackBar('${layananDisplayTitle(service.name)} berhasil diinstall.');
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _installingLayananId = null;
+      });
+      _showSnackBar('Gagal install layanan.');
+    }
+  }
+
+  void _openServiceDetail(LayananModel service) {
+    final homeService = homeServiceFromLayanan(service);
+    if (service.isInstalled && homeService != null) {
+      Navigator.push(context, MaterialPageRoute(builder: homeService.builder));
+      return;
+    }
+
+    _showLayananDetail(service);
+  }
+
+  void _showSnackBar(String message) {
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  String _serviceLogoPath(LayananModel service) {
+    final backendIcon = service.iconUrl.trim();
+    if (backendIcon.startsWith('http') || backendIcon.startsWith('assets/')) {
+      return backendIcon;
+    }
+    if (backendIcon.isNotEmpty) {
+      return layananLogoAssetPath(backendIcon);
+    }
+
+    final homeService = homeServiceFromLayanan(service);
+    return homeService?.image ??
+        layananLogoAssetPath(layananLogoAssetName(service.name));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-
       body: Stack(
         children: [
-          // BACKGROUND HEADER
           Container(
             width: double.infinity,
             height: 170,
-
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  "assets/images/latar_belakang.png",
-                ),
+                image: AssetImage("assets/images/latar_belakang.png"),
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
               ),
             ),
           ),
-
           SafeArea(
             child: Column(
               children: [
-                // HEADER
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
                   ),
-
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-
+                        onTap: () => Navigator.pop(context),
                         child: const Icon(
                           Icons.arrow_back_ios_new,
                           color: Colors.white,
                         ),
                       ),
-
                       const Expanded(
                         child: Text(
                           "Semua Layanan",
                           textAlign: TextAlign.center,
-
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 22,
@@ -156,164 +199,41 @@ class _SemuaLayananDaerahScreenState
                           ),
                         ),
                       ),
-
                       const SizedBox(width: 24),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 12),
-
-                // CONTENT
                 Expanded(
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
-
                     decoration: const BoxDecoration(
                       color: Color(0xFFF5F5F5),
-
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(30),
                       ),
                     ),
-
-                    child: ListView(
-                      children: [
-                        // DROPDOWN
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(30),
-
-                            border: Border.all(
-                              color: const Color(0xFF1D4F91),
-                              width: 1.5,
+                    child: RefreshIndicator(
+                      onRefresh: _loadLayanan,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          _buildDaerahDropdown(),
+                          const SizedBox(height: 20),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: Image.asset(
+                              "assets/images/mapsjatim.png",
+                              height: 220,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
                           ),
-
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: selectedDaerah,
-                              isExpanded: true,
-
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down,
-                              ),
-
-                              items:
-                                  daerahList.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedDaerah = value!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // MAP
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(18),
-
-                          child: Image.asset(
-                            "assets/images/mapsjatim.png",
-                            height: 220,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // LIST LAYANAN
-                        ...layanan.map(
-                          (item) => GestureDetector(
-                            onTap: () {
-                              _showLayananDetail(
-                                context,
-                                item["title"]!,
-                                item["image"]!,
-                                item["desc"]!,
-                              );
-                            },
-
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.only(
-                                bottom: 12,
-                              ),
-
-                              padding:
-                                  const EdgeInsets.all(
-                                16,
-                              ),
-
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  16,
-                                ),
-
-                                border: Border.all(
-                                  color: const Color(
-                                    0xFFE8E8E8,
-                                  ),
-                                ),
-                              ),
-
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    item["image"]!,
-                                    width: 42,
-                                    height: 42,
-                                    fit: BoxFit.contain,
-                                  ),
-
-                                  const SizedBox(
-                                      width: 14),
-
-                                  Expanded(
-                                    child: Text(
-                                      item["title"]!,
-                                      style:
-                                          const TextStyle(
-                                        fontWeight:
-                                            FontWeight
-                                                .w500,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-
-                                  const Icon(
-                                    Icons
-                                        .arrow_forward_ios,
-                                    size: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                          const SizedBox(height: 20),
+                          _buildLayananContent(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -325,139 +245,231 @@ class _SemuaLayananDaerahScreenState
     );
   }
 
-  void _showLayananDetail(
-    BuildContext context,
-    String title,
-    String image,
-    String desc,
-  ) {
-    showModalBottomSheet(
+  Widget _buildDaerahDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: const Color(0xFF1D4F91), width: 1.5),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedDaerah,
+          isExpanded: true,
+          icon: const Icon(Icons.keyboard_arrow_down),
+          items: daerahList.map((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedDaerah = value!;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLayananContent() {
+    if (_isLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 32),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Column(
+        children: [
+          Text(
+            _errorMessage!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 12),
+          TextButton(onPressed: _loadLayanan, child: const Text('Muat ulang')),
+        ],
+      );
+    }
+
+    if (_layanan.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 32),
+        child: Center(
+          child: Text(
+            'Belum ada layanan tersedia.',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: _layanan.map((item) {
+        final isInstalling = _installingLayananId == item.id;
+
+        return GestureDetector(
+          onTap: isInstalling ? null : () => _openServiceDetail(item),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8E8E8)),
+            ),
+            child: Row(
+              children: [
+                AssetIconImage(
+                  asset: _serviceLogoPath(item),
+                  width: 42,
+                  height: 42,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    layananDisplayTitle(item.name),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                if (isInstalling)
+                  const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                else
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  void _showLayananDetail(LayananModel service) {
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-
-      builder: (context) {
+      builder: (sheetContext) {
         return Container(
           padding: const EdgeInsets.all(24),
-
           decoration: const BoxDecoration(
             color: Colors.white,
-
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(32),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
           ),
-
           child: Column(
             mainAxisSize: MainAxisSize.min,
-
             children: [
               Container(
                 width: 60,
                 height: 5,
-
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-
               const SizedBox(height: 28),
-
-              Image.asset(
-                image,
+              AssetIconImage(
+                asset: _serviceLogoPath(service),
                 width: 90,
                 height: 90,
                 fit: BoxFit.contain,
               ),
-
               const SizedBox(height: 24),
-
               Text(
-                title,
+                layananDisplayTitle(service.name),
                 textAlign: TextAlign.center,
-
-               style: const TextStyle(
-  fontSize: 22,
-  fontWeight: FontWeight.w700,
-  color: Color(0xFF0D1B4C),
-),
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF0D1B4C),
+                ),
               ),
-
               const SizedBox(height: 16),
-
               Text(
-                desc,
+                service.description.isEmpty
+                    ? 'Detail layanan belum tersedia.'
+                    : service.description,
                 textAlign: TextAlign.center,
-
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.grey,
                   height: 1.5,
                 ),
               ),
-
               const SizedBox(height: 32),
-
               Row(
                 children: [
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 54,
-
-                      decoration: BoxDecoration(
-                        color: const Color(
-                          0xFFEAF1FF,
+                      child: TextButton(
+                        onPressed: () {
+                          final homeService = homeServiceFromLayanan(service);
+                          Navigator.pop(sheetContext);
+                          if (service.isInstalled && homeService != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: homeService.builder),
+                            );
+                          } else {
+                            _showSnackBar('Detail layanan belum tersedia.');
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFFEAF1FF),
+                          foregroundColor: const Color(0xFF1665F5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
-
-                        borderRadius:
-                            BorderRadius.circular(
-                          30,
-                        ),
-                      ),
-
-                      child: const Center(
-                        child: Text(
+                        child: const Text(
                           "Detail Layanan",
-
                           style: TextStyle(
-                            color:
-                                Color(0xFF1665F5),
-                            fontWeight:
-                                FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 14),
-
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 54,
-
-                      decoration: BoxDecoration(
-                        color: const Color(
-                          0xFF1665F5,
+                      child: ElevatedButton(
+                        onPressed: service.isInstalled
+                            ? null
+                            : () {
+                                Navigator.pop(sheetContext);
+                                _installService(service);
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1665F5),
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: const Color(0xFFE4E8F1),
+                          disabledForegroundColor: Colors.grey,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
-
-                        borderRadius:
-                            BorderRadius.circular(
-                          30,
-                        ),
-                      ),
-
-                      child: const Center(
                         child: Text(
-                          "Install",
-
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight:
-                                FontWeight.bold,
+                          service.isInstalled ? "Terinstall" : "Install",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
@@ -466,7 +478,6 @@ class _SemuaLayananDaerahScreenState
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
             ],
           ),

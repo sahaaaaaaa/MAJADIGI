@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../service_model.dart';
+import '../../services/layanan_service.dart';
 
 class LayananSheetContent extends StatefulWidget {
   final String kategori;
@@ -35,13 +36,11 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
     // Filter data berdasarkan kategori DAN search query
     final filteredList = widget.allData.where((item) {
       final matchKategori = item.kategori == widget.kategori;
-      final matchSearch = item.title.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchSearch = item.title.toLowerCase().contains(
+        _searchQuery.toLowerCase(),
+      );
       return matchKategori && matchSearch;
     }).toList();
-
-    for (var item in widget.allData) {
-      print(item.kategori);
-    }
 
     return Container(
       // 1. Latar belakang putih dengan sudut oval di kanan & kiri atas
@@ -54,7 +53,7 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
       ),
       // 2. Mengatur agar tinggi hanya 70-80% layar (tidak menutupi seluruh halaman)
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.94, 
+        maxHeight: MediaQuery.of(context).size.height * 0.94,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min, // Agar tinggi mengikuti isi konten
@@ -85,15 +84,17 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
   // 2. Bagian Gambar Tas dan Judul Kategori
   Widget _buildHeaderSection() {
     String fileName = widget.kategori.toLowerCase().replaceAll(' ', '_');
-    print(fileName);
     return Column(
       children: [
         const SizedBox(height: 8),
         Image.asset(
           'assets/images/kategori/$fileName.png', // Pastikan asset ini ada
           height: 90,
-          errorBuilder: (context, error, stackTrace) => 
-              const Icon(Icons.wallet_travel_rounded, size: 80, color: Colors.orange),
+          errorBuilder: (context, error, stackTrace) => const Icon(
+            Icons.wallet_travel_rounded,
+            size: 80,
+            color: Colors.orange,
+          ),
         ),
         Text(
           widget.kategori,
@@ -122,10 +123,7 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
           contentPadding: const EdgeInsets.symmetric(vertical: 0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(
-            color: Color(0xFFE2E2E2),
-            width: 0.8,
-            ),
+            borderSide: const BorderSide(color: Color(0xFFE2E2E2), width: 0.8),
           ),
         ),
       ),
@@ -135,24 +133,24 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
   // 4. Grid Kotak-kotak Layanan
   Widget _buildGridView(List<Recommendation> data) {
     return Expanded(
-      child: data.isEmpty 
-      ? const Center(child: Text("Layanan tidak ditemukan"))
-      : GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 14,
-            crossAxisSpacing: 14,
-            childAspectRatio: 1.05 // Atur agar kotak proporsional
-          ),
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            final item = data[index];
-            final bool isSelected = _tempSelectedIds.contains(item.id);
+      child: data.isEmpty
+          ? const Center(child: Text("Layanan tidak ditemukan"))
+          : GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childAspectRatio: 1.05, // Atur agar kotak proporsional
+              ),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final item = data[index];
+                final bool isSelected = _tempSelectedIds.contains(item.id);
 
-            return _buildServiceCard(item, isSelected);
-          },
-        ),
+                return _buildServiceCard(item, isSelected);
+              },
+            ),
     );
   }
 
@@ -160,6 +158,13 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
   Widget _buildServiceCard(Recommendation item, bool isSelected) {
     return GestureDetector(
       onTap: () {
+        if (!isInstallableLayananName(item.title)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Layanan belum tersedia')),
+          );
+          return;
+        }
+
         setState(() {
           if (isSelected) {
             _tempSelectedIds.remove(item.id);
@@ -175,7 +180,9 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color(0xFF0E63FF) : const Color(0xFFE2E2E2),
+            color: isSelected
+                ? const Color(0xFF0E63FF)
+                : const Color(0xFFE2E2E2),
             width: isSelected ? 1.8 : 1.0,
           ),
         ),
@@ -202,14 +209,22 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
                   item.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   item.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey, height: 1.3,fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    height: 1.3,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -217,7 +232,11 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
               const Positioned(
                 top: 0,
                 right: 0,
-                child: Icon(Icons.check_circle, color: Color(0xFF0E63FF), size: 22),
+                child: Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF0E63FF),
+                  size: 22,
+                ),
               ),
           ],
         ),
@@ -229,7 +248,10 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
   Widget _buildFooterButton() {
     // Hitung berapa banyak yang dipilih khusus di kategori ini
     int currentCatCount = widget.allData
-        .where((r) => r.kategori == widget.kategori && _tempSelectedIds.contains(r.id))
+        .where(
+          (r) =>
+              r.kategori == widget.kategori && _tempSelectedIds.contains(r.id),
+        )
         .length;
 
     return Padding(
@@ -241,12 +263,18 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF0E63FF),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
             elevation: 0,
           ),
           child: Text(
             'Pilih ($currentCatCount)',
-            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
