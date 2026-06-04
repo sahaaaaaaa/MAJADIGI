@@ -300,29 +300,38 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      
+                      const SizedBox(height: 16),
+                      
+                    Row(
+                      children: const [
+                        Expanded(
+                          child: _StatCard(
+                            "42.089.271",
+                            "Jumlah Penduduk",
+                            "assets/images/icon_user.svg",
+                          ),
                         ),
                       ),
 
                       const SizedBox(height: 16),
 
-                      Row(
-                        children: const [
-                          Expanded(
-                            child: _StatCard(
-                              "42.089.271",
-                              "Jumlah Penduduk",
-                              "assets/images/icon_user.png",
-                            ),
+                        Expanded(
+                          child: _StatCard(
+                            "0,73 %",
+                            "Pertumbuhan Penduduk",
+                            "assets/images/icon_penduduk.svg",
                           ),
 
                           SizedBox(width: 12),
 
-                          Expanded(
-                            child: _StatCard(
-                              "0,73 %",
-                              "Pertumbuhan Penduduk",
-                              "assets/images/icon_penduduk.png",
-                            ),
+                        Expanded(
+                          child: _StatCard(
+                            "9,56 %",
+                            "Presentase Penduduk Miskin",
+                            "assets/images/icon_ekonomi.svg",
                           ),
 
                           SizedBox(width: 12),
@@ -404,88 +413,94 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: 20),
 
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.asset(
-                          "assets/images/mapsjatim.png",
-                          height: 220,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+                    // ================= LAYANAN ITEM =================
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "Paket Kunjungan Agrowisata",
+                      "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/islamic_center.svg",
+                      "Islamic Center",
+                      "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/open_data.svg",
+                      "Badan Pendapatan Daerah (BAPENDA) Jawa Timur",
+                      "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "Data Penerima & Info Program Bansos (SAPA BANSOS)",
+                      "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/rsud_haji.svg",
+                      "RS Paru Manguharjo Provinsi Jawa Timur",
+                      "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "RS Paru Jember",
+                      "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "Forum Konsultasi Disnak Jatim",
+                      "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "Rumah ASN",
+                      "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/rsud_haji.svg",
+                      "RSUD Haji Prov. Jatim",
+                      "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "SIMPEL K3 (Sistem Pelayanan K3L)",
+                      "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
+                    ),
+
+                    _serviceItem(
+                      context,
+                      "assets/images/logo_majadigi.svg",
+                      "Beasiswa LPPD Jatim",
+                      "Informasi dan pendaftaran program beasiswa Pemerintah Provinsi Jawa Timur.",
+                    ),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _CategoryCard(
+                            image: "assets/images/mpp.svg",
+                            title: "Mall Pelayanan Publik (MPP)",
+                            subtitle: "15 Mall Pelayanan Publik (MPP)",
+                          ),
                         ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // ================= LAYANAN ITEM =================
-                      _serviceItem(
-                        context,
-                        "assets/images/logo_majadigi.png",
-                        "Paket Kunjungan Agrowisata",
-                        "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/islamic_center.png",
-                        "Islamic Center",
-                        "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/open_data.png",
-                        "Badan Pendapatan Daerah (BAPENDA) Jawa Timur",
-                        "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/logo_majadigi.png",
-                        "Data Penerima & Info Program Bansos (SAPA BANSOS)",
-                        "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/rsud_haji.png",
-                        "RS Paru Manguharjo Provinsi Jawa Timur",
-                        "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/logo_majadigi.png",
-                        "RS Paru Jember",
-                        "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/logo_majadigi.png",
-                        "Forum Konsultasi Disnak Jatim",
-                        "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/logo_majadigi.png",
-                        "Rumah ASN",
-                        "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/rsud_haji.png",
-                        "RSUD Haji Prov. Jatim",
-                        "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
-                      ),
-
-                      _serviceItem(
-                        context,
-                        "assets/images/logo_majadigi.png",
-                        "SIMPEL K3 (Sistem Pelayanan K3L)",
-                        "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
-                      ),
 
                       _serviceItem(
                         context,
@@ -495,24 +510,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _CategoryCard(
-                              image: "assets/images/mpp.png",
-                              title: "Mall Pelayanan Publik (MPP)",
-                              subtitle: "15 Mall Pelayanan Publik (MPP)",
-                            ),
+                        Expanded(
+                          child: _CategoryCard(
+                            image: "assets/images/rs.svg",
+                            title: "Rumah Sakit",
+                            subtitle: "8 Rumah Sakit",
                           ),
 
                           const SizedBox(width: 14),
 
-                          Expanded(
-                            child: _CategoryCard(
-                              image: "assets/images/rs.png",
-                              title: "Rumah Sakit",
-                              subtitle: "8 Rumah Sakit",
-                            ),
+                        Expanded(
+                          child: _CategoryCard(
+                            image: "assets/images/sma.svg",
+                            title: "SMA/SMK",
+                            subtitle: "",
                           ),
 
                           const SizedBox(width: 14),
@@ -706,6 +717,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+  ),
               ),
             ],
           ),
@@ -981,7 +993,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onInstall,
   }) {
     final homeService = homeServiceFromLayanan(layanan);
-    final image = homeService?.image ?? 'assets/images/logo_majadigi.png';
+    final image = homeService?.image ?? 'assets/images/logo_majadigi.svg';
 
     return Material(
       color: const Color(0xFFF8FAFF),
@@ -1078,7 +1090,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _showLayananPopup(
       context: context,
       title: layanan.name,
-      image: 'assets/images/logo_majadigi.png',
+      image: 'assets/images/logo_majadigi.svg',
       desc: layanan.description.isEmpty
           ? 'Detail layanan belum tersedia.'
           : layanan.description,
@@ -1107,22 +1119,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final services = _installedLayanan;
 
-  if (services.isEmpty) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8E8E8)),
-      ),
-      child: const Text(
-        'Belum ada layanan yang dipilih.',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.grey),
-      ),
-    );
-  }
+    final hasMoreServices = services.length > 8;
+    final visibleServices = hasMoreServices
+        ? services.take(7).toList()
+        : services;
+    final serviceItems = <Widget>[
+      ...visibleServices.map(_buildInstalledLayananItem),
+    ];
+
+    if (hasMoreServices) {
+      serviceItems.add(
+        LayananItem(
+          title: 'Lainnya',
+          image: 'assets/images/icons/lainnya.svg',
+          onTap: _openLayananLain,
+        ),
+      );
+    }
 
   final hasMoreServices = services.length > 8;
 
@@ -1555,7 +1568,7 @@ Widget _agendaCard({required String title, required String location}) {
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Image.asset("assets/images/logo_majadigi.png"),
+            child: Image.asset("assets/images/logo_majadigi.svg"),
           ),
         ),
       ],

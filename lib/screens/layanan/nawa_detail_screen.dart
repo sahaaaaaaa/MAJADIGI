@@ -515,6 +515,7 @@ class _NawaDetailScreenState extends State<NawaDetailScreen> {
     }
 
     return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(10, 16, 10, 0),
       itemCount: filteredServices.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

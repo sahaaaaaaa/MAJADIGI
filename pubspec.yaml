@@ -38,7 +38,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/logo_majadigi.png
+    - assets/images/logo_majadigi.svg
     - assets/images/welcome_hero.png
     - assets/images/welcome_hero2.jpg
     - assets/images/welcome_hero3.jpg
@@ -46,52 +46,53 @@ flutter:
     - assets/images/leftbutton.png
 
     # kategori
-    - assets/images/kategori/ekonomi_&_bisnis.png
-    - assets/images/kategori/infrastruktur.png
-    - assets/images/kategori/kependudukan.png
-    - assets/images/kategori/kesehatan.png
-    - assets/images/kategori/ketenagakerjaan.png
-    - assets/images/kategori/pendidikan.png
-    - assets/images/kategori/pariwisata_&_kebudayaan.png
-    - assets/images/kategori/multisektor_(khusus).png
-    - assets/images/kategori/pemerintah_&_Desa.png
-    - assets/images/kategori/sosial.png
-    - assets/images/kategori/lingkungan_hidup.png
-    - assets/images/kategori/PPID.png
-    - assets/images/kategori/kebencanaan.png
+    - assets/images/kategori/ekonomi_&_bisnis.svg
+    - assets/images/kategori/infrastruktur.svg
+    - assets/images/kategori/kependudukan.svg
+    - assets/images/kategori/kesehatan.svg
+    - assets/images/kategori/ketenagakerjaan.svg
+    - assets/images/kategori/pendidikan.svg
+    - assets/images/kategori/pariwisata_&_kebudayaan.svg
+    - assets/images/kategori/multisektor_(khusus).svg
+    - assets/images/kategori/pemerintah_&_Desa.svg
+    - assets/images/kategori/sosial.svg
+    - assets/images/kategori/lingkungan_hidup.svg
+    - assets/images/kategori/PPID.svg
+    - assets/images/kategori/kebencanaan.svg
 
     # layanan
-    - assets/images/cak_durasim.png
-    - assets/images/destinasi_wisata.png
-    - assets/images/islamic_center.png
-    - assets/images/khas_jatim.png
-    - assets/images/klinik_hoax.png
-    - assets/images/nganjuk_smartcity.png
-    - assets/images/open_data.png
-    - assets/images/point_jatim.png
-    - assets/images/rsud_haji.png
-    - assets/images/rsud_saifulanwar.png
-    - assets/images/transjatim_ajaib.png
-    - assets/images/SKOPI.png
-    - assets/images/kidungan.jpg
-    - assets/images/LogoJawaTimur.png
-    - assets/images/siparimanta.jpg
-    - assets/images/e_kwu_cabdin_pasuruan.jpg
-    - assets/images/ruang_juru.jpg
-    - assets/images/sijawara.png
-    - assets/images/rumahAsn.png
-    - assets/images/sukma_e_jatim.jpg
-    - assets/images/panducakti.png
-    - assets/images/BNNP.png
-    - assets/images/lapor_pak.png
-    - assets/images/sipetarungsilat.png
-    - assets/images/siap_grak.jpg
-    - assets/images/Lapor_Potensi_Longsor.jpg
+    - assets/images/cak_durasim.svg
+    - assets/images/destinasi_wisata.svg
+    - assets/images/islamic_center.svg
+    - assets/images/khas_jatim.svg
+    - assets/images/klinik_hoax.svg
+    - assets/images/nganjuk_smartcity.svg
+    - assets/images/open_data.svg
+    - assets/images/point_jatim.svg
+    - assets/images/rsud_haji.svg
+    - assets/images/rsud_saifulanwar.svg
+    - assets/images/transjatim_ajaib.svg
+    - assets/images/grid_lainnya.svg
+    - assets/images/SKOPI.svg
+    - assets/images/kidungan.svg
+    - assets/images/LogoJawaTimur.svg
+    - assets/images/siparimanta.svg
+    - assets/images/e_kwu_cabdin_pasuruan.svg
+    - assets/images/ruang_juru.svg
+    - assets/images/sijawara.svg
+    - assets/images/rumahAsn.svg
+    - assets/images/sukma_e_jatim.svg
+    - assets/images/panducakti.svg
+    - assets/images/BNNP.svg
+    - assets/images/lapor_pak.svg
+    - assets/images/sipetarungsilat.svg
+    - assets/images/siap_grak.svg
+    - assets/images/Lapor_Potensi_Longsor.svg
 
     # icon dashboard
-    - assets/images/icon_ekonomi.png
-    - assets/images/icon_penduduk.png
-    - assets/images/icon_user.png
+    - assets/images/icon_user.svg
+    - assets/images/icon_penduduk.svg
+    - assets/images/icon_ekonomi.svg
 
     # wisata
     - assets/images/bromo.png
@@ -121,16 +122,16 @@ flutter:
     - assets/images/ikan.png
     - assets/images/kayu.png
     - assets/images/kol.png
-    - assets/images/siskaperbapo.png
+    - assets/images/siskaperbapo.svg
 
     # rsud
     - assets/images/rsud1.png
     - assets/images/rsud2.png
     - assets/images/rsud3.png
-    - assets/images/Top_rsudjatim.png
+    - assets/images/Top_rsudjatim.svg
 
     # rssa
-    - assets/images/Top_rssa.png
+    - assets/images/Top_rssa.svg
     - assets/images/rssa1.png
     - assets/images/rssa2.png
     - assets/images/rssa3.png
@@ -146,15 +147,15 @@ flutter:
     - assets/images/islamicCenter/masjid.png
 
     # layanan daerah
-    - assets/images/mpp.png
-    - assets/images/rs.png
-    - assets/images/sma.png
+    - assets/images/mpp.svg
+    - assets/images/rs.svg
+    - assets/images/sma.svg
 
     # nomor darurat
-    - assets/images/nomordarurat.png
+    - assets/images/nomordarurat.svg
 
     # sidita
-    - assets/images/sidita.png
+    - assets/images/sidita.svg
 
     # islamic center
     - assets/images/islamicCenter/asrama.png
@@ -162,15 +163,15 @@ flutter:
     - assets/images/islamicCenter/masjid.png
 
     # nawa bhakti satya
-    - assets/images/nawa/jatim_agro.png
-    - assets/images/nawa/jatim_akses.png
-    - assets/images/nawa/jatim_berkah.png
-    - assets/images/nawa/jatim_cerdas.png
-    - assets/images/nawa/jatim_harmoni.png
-    - assets/images/nawa/jatim_kerja.png
-    - assets/images/nawa/jatim_lestari.png
-    - assets/images/nawa/jatim_sehat.png
-    - assets/images/nawa/jatim_sejahtera.png
+    - assets/images/nawa/jatim_agro.svg
+    - assets/images/nawa/jatim_akses.svg
+    - assets/images/nawa/jatim_berkah.svg
+    - assets/images/nawa/jatim_cerdas.svg
+    - assets/images/nawa/jatim_harmoni.svg
+    - assets/images/nawa/jatim_kerja.svg
+    - assets/images/nawa/jatim_lestari.svg
+    - assets/images/nawa/jatim_sehat.svg
+    - assets/images/nawa/jatim_sejahtera.svg
 
     # point jatim
     - assets/images/pointJatim/biofarmaka.png
@@ -215,16 +216,16 @@ flutter:
     - assets/images/openData/open_data_banner1.png
     - assets/images/openData/open_data_banner2.png
     - assets/images/openData/open_data_banner3.png
-    - assets/images/openData/ekonomi.png
-    - assets/images/openData/infrastruktur.png
-    - assets/images/openData/kemiskinan.png
-    - assets/images/openData/kependudukan.png
-    - assets/images/openData/kesehatan.png
-    - assets/images/openData/lingkungan.png
-    - assets/images/openData/pemerintah.png
-    - assets/images/openData/pendidikan.png
-    - assets/images/openData/sosial.png
-    - assets/images/openData/tataruang.png
+    - assets/images/openData/ekonomi.svg
+    - assets/images/openData/infrastruktur.svg
+    - assets/images/openData/kemiskinan.svg
+    - assets/images/openData/kependudukan.svg
+    - assets/images/openData/kesehatan.svg
+    - assets/images/openData/lingkungan.svg
+    - assets/images/openData/pemerintah.svg
+    - assets/images/openData/pendidikan.svg
+    - assets/images/openData/sosial.svg
+    - assets/images/openData/tataruang.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

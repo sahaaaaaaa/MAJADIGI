@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:majadigi/services/open_data_service.dart';
 import 'fitur_detail_data_set.dart';
 import 'package:majadigi/screens/open_data/open_data_dummy.dart';
@@ -601,10 +602,7 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
                     category,
                   ).withOpacity(0.12),
 
-                  child: Icon(
-                    _getCategoryIcon(category),
-                    color: _getCategoryColor(category),
-                  ),
+                  child: _getCategoryWidget(category),
                 ),
 
                 const SizedBox(width: 14),
@@ -716,22 +714,80 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
     );
   }
 
-  IconData _getCategoryIcon(String category) {
+  Widget _getCategoryWidget(String category) {
     switch (category) {
       case "Kesehatan":
-        return Icons.local_hospital;
+        return SvgPicture.asset(
+          'assets/images/openData/kesehatan.svg',
+          width: 24,
+          height: 24,
+        );
 
       case "Kependudukan":
-        return Icons.badge;
-
-      case "Lingkungan Hidup":
-        return Icons.eco;
+        return SvgPicture.asset(
+          'assets/images/openData/kependudukan.svg',
+          width: 24,
+          height: 24,
+        );
 
       case "Ekonomi":
-        return Icons.payments;
+        return SvgPicture.asset(
+          'assets/images/openData/ekonomi.svg',
+          width: 24,
+          height: 24,
+        );
+
+      case "Lingkungan Hidup":
+        return SvgPicture.asset(
+          'assets/images/openData/lingkungan.svg',
+          width: 24,
+          height: 24,
+        );
+
+      case "Infrastruktur":
+        return SvgPicture.asset(
+          'assets/images/openData/infrastruktur.svg',
+          width: 24,
+          height: 24,
+        );
+      
+      case "Kemiskinan":
+        return SvgPicture.asset(
+          'assets/images/openData/kemiskinan.svg',
+          width: 24,
+          height: 24,
+        );
+      
+      case "Pemerintah & Desa":
+        return SvgPicture.asset(
+          'assets/images/openData/pemerintah.svg',
+          width: 24,
+          height: 24,
+        );
+      
+      case "Pendidikan":
+        return SvgPicture.asset(
+          'assets/images/openData/pendidikan.svg',
+          width: 24,
+          height: 24,
+        );
+      
+      case "Sosial":
+        return SvgPicture.asset(
+          'assets/images/openData/sosial.svg',
+          width: 24,
+          height: 24,
+        );
+
+      case "Tata Ruang":
+        return SvgPicture.asset(
+          'assets/images/openData/tataruang.svg',
+          width: 24,
+          height: 24,
+        );
 
       default:
-        return Icons.dataset;
+        return const Icon(Icons.dataset);
     }
   }
 
