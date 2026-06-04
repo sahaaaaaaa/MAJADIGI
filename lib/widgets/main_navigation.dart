@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:majadigi/features/chatbot/presentation/views/chatbot_screen.dart';
+import 'package:majadigi/services/auth_service.dart';
 
 import '../screens/beranda/home_screen.dart';
 import '../screens/layanan/layanan_screen.dart';
@@ -26,9 +28,49 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final session = AuthService.currentSession;
+    final String? token = session?.authorizationHeader;
+    final bool isTabValid =
+        _currentIndex == 0 || _currentIndex == 1 || _currentIndex == 2;
+    final bool isLoggedIn = token != null && token.isNotEmpty;
+    final bool showChatbot = isTabValid && isLoggedIn;
+
     return Scaffold(
       extendBody: true,
       body: IndexedStack(index: _currentIndex, children: _pages),
+
+      floatingActionButton: showChatbot
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 10, right: 10),
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatbotScreen(token: token),
+                      ),
+                    );
+                  },
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  focusElevation: 0,
+                  hoverElevation: 0,
+                  highlightElevation: 0,
+                  disabledElevation: 0,
+                  shape: const RoundedRectangleBorder(),
+                  child: Image.asset(
+                    'assets/images/icons/chatbot.png',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            )
+          : null,
 
       bottomNavigationBar: SafeArea(
         child: Container(
