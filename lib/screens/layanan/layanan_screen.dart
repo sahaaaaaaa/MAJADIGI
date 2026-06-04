@@ -290,32 +290,32 @@ class _LayananScreenState extends State<LayananScreen> {
   String _categoryImage(String title) {
     switch (title) {
       case 'Pariwisata & Kebudayaan':
-        return 'assets/images/kategori/pariwisata_&_kebudayaan.png';
+        return 'assets/images/kategori/pariwisata_&_kebudayaan.svg';
       case 'Pendidikan':
-        return 'assets/images/kategori/pendidikan.png';
+        return 'assets/images/kategori/pendidikan.svg';
       case 'Ketenagakerjaan':
-        return 'assets/images/kategori/ketenagakerjaan.png';
+        return 'assets/images/kategori/ketenagakerjaan.svg';
       case 'Ekonomi & Bisnis':
-        return 'assets/images/kategori/ekonomi_&_bisnis.png';
+        return 'assets/images/kategori/ekonomi_&_bisnis.svg';
       case 'Kesehatan':
-        return 'assets/images/kategori/kesehatan.png';
+        return 'assets/images/kategori/kesehatan.svg';
       case 'Kependudukan':
-        return 'assets/images/kategori/kependudukan.png';
+        return 'assets/images/kategori/kependudukan.svg';
       case 'Multisektor (Khusus)':
-        return 'assets/images/kategori/multisektor_(khusus).png';
+        return 'assets/images/kategori/multisektor_(khusus).svg';
       case 'Infrastruktur':
-        return 'assets/images/kategori/infrastruktur.png';
+        return 'assets/images/kategori/infrastruktur.svg';
       case 'Sosial':
-        return 'assets/images/kategori/sosial.png';
+        return 'assets/images/kategori/sosial.svg';
       case 'Lingkungan Hidup':
-        return 'assets/images/kategori/lingkungan_hidup.png';
+        return 'assets/images/kategori/lingkungan_hidup.svg';
       case 'Kebencanaan':
-        return 'assets/images/kategori/kebencanaan.png';
+        return 'assets/images/kategori/kebencanaan.svg';
       case 'Pemerintahan & Desa':
       case 'Pemerintah & Desa':
-        return 'assets/images/kategori/pemerintah_&_Desa.png';
+        return 'assets/images/kategori/pemerintah_&_Desa.svg';
       default:
-        return 'assets/images/kategori/PPID.png';
+        return 'assets/images/kategori/PPID.svg';
     }
   }
 
@@ -377,7 +377,7 @@ class _LayananScreenState extends State<LayananScreen> {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -527,6 +527,7 @@ class _LayananScreenState extends State<LayananScreen> {
     return RefreshIndicator(
       onRefresh: _loadCategories,
       child: GridView.builder(
+        shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: _categories.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
