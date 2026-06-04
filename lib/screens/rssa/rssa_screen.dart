@@ -181,7 +181,7 @@ class _RssaScreenState extends State<RssaScreen> {
           // 🔵 HEADER BG
           Container(
             width: double.infinity,
-            height: 320,
+            height: 600,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/latar_belakang.png"),
@@ -396,51 +396,76 @@ class _RssaScreenState extends State<RssaScreen> {
                                 const SizedBox(height: 16),
 
                                 Row(
-                                  children: _rooms
-                                      .asMap()
-                                      .keys
-                                      .map((index) => _bar(_roomColor(index)))
-                                      .toList(),
-                                ),
+  children: [
+    _barColor(const Color(0xFF27AE60)),
+    _barColor(const Color(0xFF1565FF)),
+    _barColor(const Color(0xFFA142F4)),
+    _barColor(const Color(0xFFF5A623)),
+    _barColor(const Color(0xFF149CE6)),
+    _barColor(const Color(0xFFFF0054)),
+    _barColor(const Color(0xFF0050C8)),
+  ],
+),
 
                                 const SizedBox(height: 14),
 
                                 // 🔥 TABLE
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
+                                // 🔥 TABLE
+Container(
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(
+      color: Colors.grey.shade300,
+    ),
+  ),
 
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: DataTable(
-                                      columns: const [
-                                        DataColumn(label: Text("Ruang")),
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // ===== KOLOM RUANG (STICKY) =====
+      Container(
+        width: 250,
+        decoration: BoxDecoration(
+          border: Border(
+            right: BorderSide(
+              color: Colors.grey.shade300,
+            ),
+          ),
+        ),
 
-                                        DataColumn(label: Text("Kapasitas")),
+        child: Column(
+          children: [
+            _roomHeader(),
 
-                                        DataColumn(label: Text("Terisi")),
+            ..._rooms.asMap().entries.map(
+              (entry) => _roomNameCell(
+                entry.value,
+                _roomColor(entry.key),
+              ),
+            ),
+          ],
+        ),
+      ),
 
-                                        DataColumn(label: Text("Tersedia")),
-                                      ],
+      // ===== KOLOM ANGKA (SCROLLABLE) =====
+      Expanded(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            children: [
+              _tableHeader(),
 
-                                      rows: _rooms
-                                          .asMap()
-                                          .entries
-                                          .map(
-                                            (entry) => _roomRow(
-                                              entry.value,
-                                              _roomColor(entry.key),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ),
-                                ),
+              ..._rooms.map(
+                (room) => _tableRow(room),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  ),
+),
 
                                 const SizedBox(height: 30),
                               ],
@@ -459,9 +484,14 @@ class _RssaScreenState extends State<RssaScreen> {
     );
   }
 
-  Widget _bar(Color color) {
-    return Expanded(child: Container(height: 16, color: color));
-  }
+  Widget _barColor(Color color) {
+  return Expanded(
+    child: Container(
+      height: 16,
+      color: color,
+    ),
+  );
+}
 
   Widget _bigCard() {
     return Container(
@@ -536,6 +566,165 @@ class _RssaScreenState extends State<RssaScreen> {
       ),
     );
   }
+Widget _roomHeader() {
+  return Container(
+    height: 56,
+    alignment: Alignment.centerLeft,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+
+    child: const Text(
+      "Ruang",
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
+      ),
+    ),
+  );
+}
+
+Widget _roomNameCell(
+  RsudSaifulAnwarRoom room,
+  Color color,
+) {
+  return Container(
+    height: 72,
+    padding: const EdgeInsets.symmetric(
+      horizontal: 16,
+    ),
+
+    decoration: BoxDecoration(
+      border: Border(
+        top: BorderSide(
+          color: Colors.grey.shade300,
+        ),
+      ),
+    ),
+
+    child: Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+
+        const SizedBox(width: 12),
+
+        Expanded(
+          child: Text(
+            room.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _tableHeader() {
+  return Container(
+    height: 56,
+
+    child: const Row(
+      children: [
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              "Kapasitas",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              "Terisi",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              "Tersedia",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _tableRow(
+  RsudSaifulAnwarRoom room,
+) {
+  return Container(
+    height: 72,
+
+    decoration: BoxDecoration(
+      border: Border(
+        top: BorderSide(
+          color: Colors.grey.shade300,
+        ),
+      ),
+    ),
+
+    child: Row(
+      children: [
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              room.total.toString(),
+            ),
+          ),
+        ),
+
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              room.occupied.toString(),
+              style: TextStyle(
+                color: Colors.orange.shade700,
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              room.available.toString(),
+              style: const TextStyle(
+                color: Colors.green,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   DataRow _roomRow(RsudSaifulAnwarRoom room, Color color) {
     return DataRow(

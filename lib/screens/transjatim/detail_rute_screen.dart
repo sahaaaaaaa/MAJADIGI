@@ -542,7 +542,10 @@ class _DetailRuteScreenState extends State<DetailRuteScreen> {
     final activePoint = stopPoints[activeIndex];
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
       child: SizedBox(
         height: mapHeight,
         width: double.infinity,
@@ -658,9 +661,18 @@ class _DetailRuteScreenState extends State<DetailRuteScreen> {
     final left = (offset.dx - labelWidth / 2)
         .clamp(16.0, math.max(16.0, width - labelWidth - 16))
         .toDouble();
-    final rawTop = offset.dy > height * 0.36 ? offset.dy - 78 : offset.dy + 28;
-    final top = rawTop.clamp(16.0, height - 96).toDouble();
+    final spaceAbove = offset.dy;
+final spaceBelow = height - offset.dy;
 
+double top;
+
+if (spaceAbove > 120) {
+  // tampilkan di atas marker
+  top = offset.dy - 120;
+} else {
+  // tampilkan di bawah marker
+  top = offset.dy + 25;
+}
     return Positioned(
       left: left,
       top: top,

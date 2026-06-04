@@ -122,19 +122,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  extendBody: true,
-  backgroundColor: Colors.transparent,
-  body: SafeArea(
+      extendBody: true,
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           child: Column(
             children: [
               // HEADER + SLIDER
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(
-                  top: 20,
-                  bottom: 70,
-                ),
+                padding: const EdgeInsets.only(top: 20, bottom: 70),
 
                 decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -147,13 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     // HEADER TOP
-            Padding(
-  padding: const EdgeInsets.fromLTRB(
-    16,
-    12,
-    16,
-    0,
-  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                       child: Row(
                         children: [
                           const CircleAvatar(
@@ -257,61 +250,61 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // MAIN CONTENT
               Transform.translate(
-  offset: const Offset(0, -30),
+                offset: const Offset(0, -30),
 
-  child: Container(
-    padding: const EdgeInsets.all(20),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
 
-    decoration: const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(30),
-      ),
-    ),
-    
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // TITLE
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Layanan",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        GestureDetector(
-                          onTap: _openLayananLain,
-                          child: const Text(
-                            "Semua layanan",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ],
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
                     ),
+                  ),
 
-                    const SizedBox(height: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // TITLE
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Layanan",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
 
-                    // GRID MENU
-                    _buildLayananSection(),
-
-                    const SizedBox(height: 28),
-
-                    // JATIM DALAM ANGKA
-                    const Text(
-                      "Jatim Dalam Angka",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: _openLayananLain,
+                            child: const Text(
+                              "Semua layanan",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
 
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 20),
 
+                      // GRID MENU
+                      _buildLayananSection(),
+
+                      const SizedBox(height: 28),
+
+                      // JATIM DALAM ANGKA
+                      const Text(
+                        "Jatim Dalam Angka",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      
+                      const SizedBox(height: 16),
+                      
                     Row(
                       children: const [
                         Expanded(
@@ -321,8 +314,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             "assets/images/icon_user.svg",
                           ),
                         ),
+                      ),
 
-                        SizedBox(width: 12),
+                      const SizedBox(height: 16),
 
                         Expanded(
                           child: _StatCard(
@@ -330,9 +324,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             "Pertumbuhan Penduduk",
                             "assets/images/icon_penduduk.svg",
                           ),
-                        ),
 
-                        SizedBox(width: 12),
+                          SizedBox(width: 12),
 
                         Expanded(
                           child: _StatCard(
@@ -340,88 +333,85 @@ class _HomeScreenState extends State<HomeScreen> {
                             "Presentase Penduduk Miskin",
                             "assets/images/icon_ekonomi.svg",
                           ),
-                        ),
-                      ],
-                    ),
 
-                    const SizedBox(height: 28),
+                          SizedBox(width: 12),
 
-                    // LAYANAN DAERAH
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(
-                              Icons.layers_outlined,
-                              color: Color(0xFFFF2E63),
-                              size: 20,
+                          Expanded(
+                            child: _StatCard(
+                              "9,56 %",
+                              "Presentase Penduduk Miskin",
+                              "assets/images/icon_ekonomi.png",
                             ),
-
-                            SizedBox(width: 8),
-
-                            Text(
-                              "Layanan Daerah",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    const SemuaLayananDaerahScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            "Lihat semua",
-                            style: TextStyle(color: Colors.blue),
                           ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        _chip("Jawa Timur", true),
-
-                        _chip("Kabupaten Banyuwangi", false),
-
-                        _chip("Kabupaten Tuban", false),
-
-                        _chip("Kota Surabaya", false),
-
-                        _chip("Kabupaten Lamongan", false),
-
-                        _chip("Kabupaten Tulungagung", false),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    const SizedBox(height: 20),
-
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        "assets/images/mapsjatim.png",
-                        height: 220,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                        ],
                       ),
-                    ),
 
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 28),
+
+                      // LAYANAN DAERAH
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.layers_outlined,
+                                color: Color(0xFFFF2E63),
+                                size: 20,
+                              ),
+
+                              SizedBox(width: 8),
+
+                              Text(
+                                "Layanan Daerah",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const SemuaLayananDaerahScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "Lihat semua",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          _chip("Jawa Timur", true),
+
+                          _chip("Kabupaten Banyuwangi", false),
+
+                          _chip("Kabupaten Tuban", false),
+
+                          _chip("Kota Surabaya", false),
+
+                          _chip("Kabupaten Lamongan", false),
+
+                          _chip("Kabupaten Tulungagung", false),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      const SizedBox(height: 20),
 
                     // ================= LAYANAN ITEM =================
                     _serviceItem(
@@ -512,7 +502,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
 
-                        const SizedBox(width: 14),
+                      _serviceItem(
+                        context,
+                        "assets/images/logo_majadigi.png",
+                        "Beasiswa LPPD Jatim",
+                        "Informasi dan pendaftaran program beasiswa Pemerintah Provinsi Jawa Timur.",
+                      ),
+                      const SizedBox(height: 20),
 
                         Expanded(
                           child: _CategoryCard(
@@ -520,9 +516,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: "Rumah Sakit",
                             subtitle: "8 Rumah Sakit",
                           ),
-                        ),
 
-                        const SizedBox(width: 14),
+                          const SizedBox(width: 14),
 
                         Expanded(
                           child: _CategoryCard(
@@ -530,186 +525,197 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: "SMA/SMK",
                             subtitle: "",
                           ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    // AGENDA
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(
-                              Icons.campaign_outlined,
-                              color: Color(0xFFFF2E63),
-                              size: 20,
-                            ),
-
-                            SizedBox(width: 8),
-
-                            Text(
-                              "Agenda Jawa Timur",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const Text(
-                          "Lihat semua",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    _agendaCard(
-                      title: "BAHANA BERSAHAJA",
-                      location: "Kabupaten Madiun",
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    _agendaCard(
-                      title: "Gelar kesenian dan Pameran Produk Ekraf",
-                      location: "Kabupaten Tulungagung",
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    _agendaCard(
-                      title: "Vespa Portugis",
-                      location: "Kabupaten Kediri",
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    // BERITA
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(
-                              Icons.newspaper,
-                              color: Color(0xFFFF2E63),
-                              size: 20,
-                            ),
-
-                            SizedBox(width: 8),
-
-                            Text(
-                              "Berita Jawa Timur",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const Text(
-                          "Lihat semua",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    SizedBox(
-                      height: 260,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _newsCard(
-                            "assets/images/berita1.png",
-                            "Kepala Bakorwil Malang Hadiri Pelantikan DPD IKADIN Jatim",
-                            "https://kominfo.jatimprov.go.id/berita/kepala-bakorwil-malang-hadiri-pelantikan-dpd-ikadin-jatim",
-                          ),
 
                           const SizedBox(width: 14),
 
-                          _newsCard(
-                            "assets/images/berita2.png",
-                            "Gubernur Khofifah Apresiasi Mitra Usaha pada 50 Tahun PT Dharma Lautan Utama",
-                            "https://kominfo.jatimprov.go.id/berita/gubernur-khofifah-apresiasi-mitra-usaha-pada-50-tahun-pt-dharma-lautan-utama",
-                          ),
-
-                          const SizedBox(width: 14),
-
-                          _newsCard(
-                            "assets/images/berita3.png",
-                            "Jaga Infrastruktur Sumber Daya Air",
-                            "https://kominfo.jatimprov.go.id/berita/jaga-infrastruktur-sumber-daya-air-pjt-i-jadwalkan-flushing-bendungan-wlingi-dan-lodoyo",
+                          Expanded(
+                            child: _CategoryCard(
+                              image: "assets/images/sma.png",
+                              title: "SMA/SMK",
+                              subtitle: "",
+                            ),
                           ),
                         ],
                       ),
-                    ),
 
-                    const SizedBox(height: 30),
+                      const SizedBox(height: 30),
 
-                    // CUACA
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(
-                              Icons.wb_sunny_outlined,
-                              color: Color(0xFFFF2E63),
-                              size: 20,
+                      // AGENDA
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.campaign_outlined,
+                                color: Color(0xFFFF2E63),
+                                size: 20,
+                              ),
+
+                              SizedBox(width: 8),
+
+                              Text(
+                                "Agenda Jawa Timur",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const Text(
+                            "Lihat semua",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      _agendaCard(
+                        title: "BAHANA BERSAHAJA",
+                        location: "Kabupaten Madiun",
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      _agendaCard(
+                        title: "Gelar kesenian dan Pameran Produk Ekraf",
+                        location: "Kabupaten Tulungagung",
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      _agendaCard(
+                        title: "Vespa Portugis",
+                        location: "Kabupaten Kediri",
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // BERITA
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.newspaper,
+                                color: Color(0xFFFF2E63),
+                                size: 20,
+                              ),
+
+                              SizedBox(width: 8),
+
+                              Text(
+                                "Berita Jawa Timur",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const Text(
+                            "Lihat semua",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        height: 260,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            _newsCard(
+                              "assets/images/berita1.png",
+                              "Kepala Bakorwil Malang Hadiri Pelantikan DPD IKADIN Jatim",
+                              "https://kominfo.jatimprov.go.id/berita/kepala-bakorwil-malang-hadiri-pelantikan-dpd-ikadin-jatim",
                             ),
 
-                            SizedBox(width: 8),
+                            const SizedBox(width: 14),
 
-                            Text(
-                              "Perkiraan Cuaca Jawa Timur",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            _newsCard(
+                              "assets/images/berita2.png",
+                              "Gubernur Khofifah Apresiasi Mitra Usaha pada 50 Tahun PT Dharma Lautan Utama",
+                              "https://kominfo.jatimprov.go.id/berita/gubernur-khofifah-apresiasi-mitra-usaha-pada-50-tahun-pt-dharma-lautan-utama",
+                            ),
+
+                            const SizedBox(width: 14),
+
+                            _newsCard(
+                              "assets/images/berita3.png",
+                              "Jaga Infrastruktur Sumber Daya Air",
+                              "https://kominfo.jatimprov.go.id/berita/jaga-infrastruktur-sumber-daya-air-pjt-i-jadwalkan-flushing-bendungan-wlingi-dan-lodoyo",
                             ),
                           ],
                         ),
+                      ),
 
-                        const Text(
-                          "Lihat semua",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ],
-                    ),
+                      const SizedBox(height: 30),
 
-                    const SizedBox(height: 16),
-
-                    SizedBox(
-                      height: 210,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
+                      // CUACA
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _weatherCard("Jombang"),
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.wb_sunny_outlined,
+                                color: Color(0xFFFF2E63),
+                                size: 20,
+                              ),
 
-                          const SizedBox(width: 14),
+                              SizedBox(width: 8),
 
-                          _weatherCard("Bojonegoro"),
+                              Text(
+                                "Perkiraan Cuaca Jawa Timur",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
 
-                          const SizedBox(width: 14),
-
-                          _weatherCard("Tuban"),
-
-                          const SizedBox(width: 14),
-
-                          _weatherCard("Lamongan"),
+                          const Text(
+                            "Lihat semua",
+                            style: TextStyle(color: Colors.blue),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        height: 260,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(bottom: 60),
+                          children: [
+                            _weatherCard("Jombang"),
+
+                            const SizedBox(width: 14),
+
+                            _weatherCard("Bojonegoro"),
+
+                            const SizedBox(width: 14),
+
+                            _weatherCard("Tuban"),
+
+                            const SizedBox(width: 14),
+
+                            _weatherCard("Lamongan"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
   ),
               ),
@@ -1102,30 +1108,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLayananSection() {
-    if (!_hasLoadedLayanan) {
-      return const SizedBox(
-        height: 96,
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-      );
-    }
+  if (!_hasLoadedLayanan) {
+    return const SizedBox(
+      height: 96,
+      child: Center(
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+    );
+  }
 
-    final services = _installedLayanan;
-    if (services.isEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF7F7F7),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFE8E8E8)),
-        ),
-        child: const Text(
-          'Belum ada layanan yang dipilih.',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
+  final services = _installedLayanan;
 
     final hasMoreServices = services.length > 8;
     final visibleServices = hasMoreServices
@@ -1145,13 +1137,43 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: serviceItems,
+  final hasMoreServices = services.length > 8;
+
+  final visibleServices = hasMoreServices
+      ? services.take(7).toList()
+      : services;
+
+  final serviceItems = <Widget>[
+    ...visibleServices.map(_buildInstalledLayananItem),
+  ];
+
+  if (hasMoreServices) {
+    serviceItems.add(
+      LayananItem(
+        title: 'Lainnya',
+        image: 'assets/images/icons/lainnya.svg',
+        iconScale: 0.5,
+        onTap: _openLayananLain,
+      ),
     );
   }
+
+  return GridView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    padding: EdgeInsets.zero,
+    itemCount: serviceItems.length,
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 4,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 8,
+      childAspectRatio: 0.85,
+    ),
+    itemBuilder: (context, index) {
+      return serviceItems[index];
+    },
+  );
+}
 
   LayananItem _buildInstalledLayananItem(LayananModel layanan) {
     final homeService = homeServiceFromLayanan(layanan);
@@ -1626,27 +1648,32 @@ Widget _weatherCard(String city) {
   return Container(
     width: 180,
     padding: const EdgeInsets.all(16),
+
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(18),
       border: Border.all(color: const Color(0xFFE8E8E8)),
     ),
+
     child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           city,
+          textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
 
-        const SizedBox(height: 24),
+        const SizedBox(height: 12),
 
-        const Icon(Icons.cloud_outlined, size: 80, color: Color(0xFF7AA6D9)),
+        const Icon(Icons.cloud_outlined, size: 70, color: Color(0xFF7AA6D9)),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 12),
 
         const Text(
           "Berawan",
-          style: TextStyle(color: Colors.grey, fontSize: 18),
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey, fontSize: 16),
         ),
       ],
     ),

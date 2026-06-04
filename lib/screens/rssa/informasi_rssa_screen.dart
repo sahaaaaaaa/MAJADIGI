@@ -285,11 +285,39 @@ class _InformasiRssaScreenState extends State<InformasiRssaScreen> {
 
                           const SizedBox(height: 20),
 
-                          _expandCard("Manfaat", manfaatOpen, () {
-                            setState(() {
-                              manfaatOpen = !manfaatOpen;
-                            });
-                          }),
+                          _expandCard(
+                            "Manfaat",
+                            manfaatOpen,
+                            () {
+                              setState(() {
+                                manfaatOpen = !manfaatOpen;
+                              });
+                            },
+                            content: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "1. Memudahkan pasien memantau ketersediaan kamar rawat inap secara real-time.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "2. Membantu pasien dan keluarga mencari kamar sesuai kebutuhan tanpa harus datang langsung ke rumah sakit.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "3. Menghemat waktu pencarian informasi ketersediaan kamar.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "4. Menyediakan informasi resmi yang terintegrasi dengan sistem RSUD Dr. Saiful Anwar.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                              ],
+                            ),
+                          ),
 
                           const SizedBox(height: 16),
 
@@ -301,6 +329,57 @@ class _InformasiRssaScreenState extends State<InformasiRssaScreen> {
                                 sistemOpen = !sistemOpen;
                               });
                             },
+                            content: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Persyaratan Umum",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+
+                                Text(
+                                  "1. Pasien atau keluarga memiliki akses internet untuk membuka layanan informasi.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                Text(
+                                  "2. Informasi ketersediaan kamar digunakan sebagai referensi awal sebelum melakukan pendaftaran atau konfirmasi ke rumah sakit.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+
+                                SizedBox(height: 20),
+
+                                Text(
+                                  "Mekanisme Penggunaan",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+
+                                SizedBox(height: 12),
+
+                                Text(
+                                  "1. Buka layanan informasi RSUD Dr. Saiful Anwar.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                Text(
+                                  "2. Pilih menu informasi ketersediaan kamar rawat inap.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                Text(
+                                  "3. Sistem akan menampilkan jumlah kamar yang tersedia pada masing-masing kelas perawatan.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                                Text(
+                                  "4. Hubungi pihak rumah sakit untuk konfirmasi dan proses pelayanan lebih lanjut.",
+                                  style: TextStyle(height: 1.6),
+                                ),
+                              ],
+                            ),
                           ),
 
                           const SizedBox(height: 30),
@@ -351,7 +430,12 @@ class _InformasiRssaScreenState extends State<InformasiRssaScreen> {
     );
   }
 
-  Widget _expandCard(String title, bool isOpen, VoidCallback onTap) {
+  Widget _expandCard(
+    String title,
+    bool isOpen,
+    VoidCallback onTap, {
+    required Widget content,
+  }) {
     return Container(
       width: double.infinity,
 
@@ -391,11 +475,7 @@ class _InformasiRssaScreenState extends State<InformasiRssaScreen> {
             ),
           ),
 
-          if (isOpen) ...[
-            const SizedBox(height: 20),
-
-            const Text("Isi informasi..."),
-          ],
+          if (isOpen) ...[const SizedBox(height: 20), content],
         ],
       ),
     );

@@ -52,7 +52,7 @@ class _TransjatimScreenState extends State<TransjatimScreen> {
           // 🔵 HEADER
           Container(
             width: double.infinity,
-            height: 320,
+            height: 450,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/latar_belakang.png"),
@@ -177,41 +177,41 @@ class _TransjatimScreenState extends State<TransjatimScreen> {
 
                         const SizedBox(height: 18),
 
-                        // SEARCH
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 18,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(18),
-                            ),
+                        // // SEARCH
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                        //   child: Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //       horizontal: 16,
+                        //       vertical: 18,
+                        //     ),
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //       borderRadius: BorderRadius.circular(18),
+                        //     ),
 
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/icons/marker-pin-01.svg',
-                                  width: 22,
-                                ),
+                        //     child: Row(
+                        //       children: [
+                        //         SvgPicture.asset(
+                        //           'assets/images/icons/marker-pin-01.svg',
+                        //           width: 22,
+                        //         ),
 
-                                const SizedBox(width: 12),
+                        //         const SizedBox(width: 12),
 
-                                const Text(
-                                  "Mau kemana hari ini?",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        //         const Text(
+                        //           "Mau kemana hari ini?",
+                        //           style: TextStyle(
+                        //             color: Colors.grey,
+                        //             fontSize: 16,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
 
-                        const SizedBox(height: 18),
+                        // const SizedBox(height: 18),
 
                         // CONTENT
                         Container(
