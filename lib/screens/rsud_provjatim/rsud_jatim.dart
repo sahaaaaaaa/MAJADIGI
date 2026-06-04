@@ -128,7 +128,7 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
           // 🔵 HEADER BACKGROUND
           Container(
             width: double.infinity,
-            height: 320,
+            height: 600,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/latar_belakang.png'),
@@ -411,74 +411,48 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
                                     ),
                                   ),
 
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: DataTable(
-                                      headingRowHeight: 50,
-                                      columnSpacing: 30,
-
-                                      columns: const [
-                                        DataColumn(label: Text("Ruang")),
-
-                                        DataColumn(label: Text("Kapasitas")),
-
-                                        DataColumn(label: Text("Terisi")),
-
-                                        DataColumn(label: Text("Tersedia")),
-                                      ],
-
-                                      rows: _rooms.asMap().entries.map((entry) {
-                                        final item = entry.value;
-                                        final color = _roomColor(entry.key);
-                                        return DataRow(
-                                          cells: [
-                                            DataCell(
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      color: color,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20,
-                                                          ),
-                                                    ),
-                                                  ),
-
-                                                  const SizedBox(width: 12),
-
-                                                  Text(item.name),
-                                                ],
-                                              ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // ===== RUANG (STICKY) =====
+                                      Container(
+                                        width: 250,
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            right: BorderSide(
+                                              color: Colors.grey.shade300,
                                             ),
-
-                                            DataCell(
-                                              Text(item.total.toString()),
-                                            ),
-
-                                            DataCell(
-                                              Text(
-                                                item.occupied.toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xFFFF6B00),
-                                                ),
-                                              ),
-                                            ),
-
-                                            DataCell(
-                                              Text(
-                                                item.available.toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xFF27AE60),
-                                                ),
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            _roomHeader(),
+                                            ..._rooms.asMap().entries.map(
+                                              (entry) => _roomNameCell(
+                                                entry.value,
+                                                _roomColor(entry.key),
                                               ),
                                             ),
                                           ],
-                                        );
-                                      }).toList(),
-                                    ),
+                                        ),
+                                      ),
+
+                                      // ===== DATA SCROLL =====
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Column(
+                                            children: [
+                                              _tableHeader(),
+                                              ..._rooms.map(
+                                                (room) => _tableRow(room),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
 
@@ -541,6 +515,120 @@ class _RsudHajiScreenState extends State<RsudHajiScreen> {
           Text(
             label,
             style: const TextStyle(fontSize: 14, color: Color(0xFF121938)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _roomHeader() {
+    return Container(
+      height: 56,
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: const Text(
+        "Ruang",
+        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget _roomNameCell(RsudHajiRoom room, Color color) {
+    return Container(
+      height: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey.shade300)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              room.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _tableHeader() {
+    return Container(
+      height: 56,
+      child: const Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Center(
+              child: Text(
+                "Kapasitas",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 120,
+            child: Center(
+              child: Text(
+                "Terisi",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 120,
+            child: Center(
+              child: Text(
+                "Tersedia",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _tableRow(RsudHajiRoom room) {
+    return Container(
+      height: 72,
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey.shade300)),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Center(child: Text(room.total.toString())),
+          ),
+          SizedBox(
+            width: 120,
+            child: Center(
+              child: Text(
+                room.occupied.toString(),
+                style: const TextStyle(color: Color(0xFFFF6B00)),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 120,
+            child: Center(
+              child: Text(
+                room.available.toString(),
+                style: const TextStyle(color: Color(0xFF27AE60)),
+              ),
+            ),
           ),
         ],
       ),

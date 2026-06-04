@@ -8,8 +8,8 @@ class InfoHargaScreen extends StatefulWidget {
 }
 
 class _InfoHargaScreenState extends State<InfoHargaScreen> {
-  bool manfaatOpen = true;
-  bool sistemOpen = true;
+  bool manfaatOpen = false;
+  bool sistemOpen = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

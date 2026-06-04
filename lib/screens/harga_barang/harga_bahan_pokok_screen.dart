@@ -221,7 +221,7 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
         children: [
           // HEADER
           Container(
-            height: 180,
+            height: 380,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/latar_belakang.png"),
@@ -315,303 +315,322 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
                 const SizedBox(height: 20),
 
                 Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30),
-                      ),
-                    ),
-                    child: ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
-                        // ========================
-                        // PERBANDINGAN HARGA
-                        // ========================
-                        const Text(
-                          "Perbandingan Harga",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF121938),
+  child: Container(
+    margin: const EdgeInsets.only(top: 30),
+
+    width: double.infinity,
+
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(30),
+      ),
+    ),
+
+    child: ClipRRect(
+      borderRadius: const BorderRadius.vertical(
+        top: Radius.circular(30),
+      ),
+
+      child: ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: [
+                          // ========================
+                          // PERBANDINGAN HARGA
+                          // ========================
+                          const Text(
+                            "Perbandingan Harga",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF121938),
+                            ),
                           ),
-                        ),
 
-                        const SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
-                        SizedBox(
-                          height: 215,
-                          child: PageView(
-                            controller: _pageController,
+                          SizedBox(
+                            height: 230,
+                            child: PageView(
+                              controller: _pageController,
 
-                            onPageChanged: (index) {
-                              setState(() {
-                                currentPage = index;
-                              });
-                            },
+                              onPageChanged: (index) {
+                                setState(() {
+                                  currentPage = index;
+                                });
+                              },
 
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 14),
-                                child: _cityCard("Jember", false),
-                              ),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 14),
+                                  child: _cityCard("Jember", false),
+                                ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(right: 14),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => DetailHargaMalangScreen(
-                                          items: priceItems,
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 14),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              DetailHargaMalangScreen(
+                                                items: priceItems,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: _cityCard("Malang", true),
+                                  ),
+                                ),
+
+                                _cityCard("Kediri", false),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // DOT
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              3,
+                              (index) => _dot(currentPage == index),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // ========================
+                          // REKOMENDASI
+                          // ========================
+                          const Text(
+                            "Rekomendasi",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF121938),
+                            ),
+                          ),
+
+                          const SizedBox(height: 14),
+
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFEEF3),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: Colors.pink.shade100),
+                            ),
+                            child: Row(
+                              children: [
+                                _commodityImage(recommendation, width: 50),
+
+                                const SizedBox(width: 14),
+
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "Naik Signifikan",
+                                        style: TextStyle(
+                                          color: Colors.pink,
+                                          fontSize: 13,
                                         ),
                                       ),
-                                    );
-                                  },
-                                  child: _cityCard("Malang", true),
-                                ),
-                              ),
-
-                              _cityCard("Kediri", false),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // DOT
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            3,
-                            (index) => _dot(currentPage == index),
-                          ),
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // ========================
-                        // REKOMENDASI
-                        // ========================
-                        const Text(
-                          "Rekomendasi",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF121938),
-                          ),
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFEEF3),
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: Colors.pink.shade100),
-                          ),
-                          child: Row(
-                            children: [
-                              _commodityImage(recommendation, width: 50),
-
-                              const SizedBox(width: 14),
-
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Naik Signifikan",
-                                      style: TextStyle(
-                                        color: Colors.pink,
-                                        fontSize: 13,
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        recommendation.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Color(0xFF121938),
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      recommendation.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color: Color(0xFF121938),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: "Rata-rata naik ",
-                                            style: TextStyle(
-                                              color: Colors.grey,
+                                      const SizedBox(height: 4),
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: "Rata-rata naik ",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                              ),
                                             ),
-                                          ),
-                                          TextSpan(
-                                            text: _formatPercent(
-                                              recommendation.diffPercent,
+                                            TextSpan(
+                                              text: _formatPercent(
+                                                recommendation.diffPercent,
+                                              ),
+                                              style: const TextStyle(
+                                                color: Colors.pink,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                            style: const TextStyle(
-                                              color: Colors.pink,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              SizedBox(
-                                width: 72,
-                                height: 42,
-                                child: LineChart(
-                                  LineChartData(
-                                    minX: 0,
-                                    maxX: 5,
-
-                                    minY: 0,
-                                    maxY: 5,
-
-                                    titlesData: const FlTitlesData(show: false),
-
-                                    borderData: FlBorderData(show: false),
-
-                                    gridData: const FlGridData(show: false),
-
-                                    lineBarsData: [
-                                      LineChartBarData(
-                                        spots: const [
-                                          FlSpot(0, 1),
-                                          FlSpot(1, 2),
-                                          FlSpot(2, 2),
-                                          FlSpot(3, 3),
-                                          FlSpot(4, 3),
-                                          FlSpot(5, 4),
-                                        ],
-
-                                        isCurved: false,
-
-                                        color: Colors.pink,
-
-                                        barWidth: 2,
-
-                                        dotData: const FlDotData(show: false),
-
-                                        belowBarData: BarAreaData(
-                                          show: true,
-                                          color: Colors.pink.withOpacity(0.10),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
 
-                        const SizedBox(height: 26),
+                                SizedBox(
+                                  width: 72,
+                                  height: 42,
+                                  child: LineChart(
+                                    LineChartData(
+                                      minX: 0,
+                                      maxX: 5,
 
-                        // ========================
-                        // KATEGORI
-                        // ========================
-                        const Text(
-                          "Kategori",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF121938),
-                          ),
-                        ),
+                                      minY: 0,
+                                      maxY: 5,
 
-                        const SizedBox(height: 16),
+                                      titlesData: const FlTitlesData(
+                                        show: false,
+                                      ),
 
-                        GridView.count(
-                          crossAxisCount: 3,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          mainAxisSpacing: 14,
-                          crossAxisSpacing: 14,
-                          childAspectRatio: 0.82,
-                          children: [
-                            _categoryItem("assets/images/beras.png", "Sembako"),
-                            _categoryItem("assets/images/kol.png", "Sayuran"),
-                            _categoryItem(
-                              "assets/images/cabe.png",
-                              "Buah -\nBuahan",
-                            ),
-                            _categoryItem(
-                              "assets/images/daging.png",
-                              "Daging &\nTelur",
-                            ),
-                            _categoryItem(
-                              "assets/images/ikan.png",
-                              "Ikan &\nSeafood",
-                            ),
-                            _categoryItem(
-                              "assets/images/kayu.png",
-                              "Bahan\nLainnya",
-                            ),
-                          ],
-                        ),
+                                      borderData: FlBorderData(show: false),
 
-                        const SizedBox(height: 28),
+                                      gridData: const FlGridData(show: false),
 
-                        // ========================
-                        // DAFTAR
-                        // ========================
-                        const Text(
-                          "Daftar Bahan Pokok",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF121938),
-                          ),
-                        ),
+                                      lineBarsData: [
+                                        LineChartBarData(
+                                          spots: const [
+                                            FlSpot(0, 1),
+                                            FlSpot(1, 2),
+                                            FlSpot(2, 2),
+                                            FlSpot(3, 3),
+                                            FlSpot(4, 3),
+                                            FlSpot(5, 4),
+                                          ],
 
-                        const SizedBox(height: 16),
+                                          isCurved: false,
 
-                        ...priceItems.map(_productItem),
+                                          color: Colors.pink,
 
-                        const SizedBox(height: 16),
+                                          barWidth: 2,
 
-                        GestureDetector(
-                          onTap: _loadMoreHargaPokok,
-                          child: Container(
-                            height: 52,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                color: const Color(0xFFE5E7EB),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.03),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
+                                          dotData: const FlDotData(show: false),
+
+                                          belowBarData: BarAreaData(
+                                            show: true,
+                                            color: Colors.pink.withOpacity(
+                                              0.10,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            child: const Center(
-                              child: Text(
-                                "Bahan Lainnya",
-                                style: TextStyle(
-                                  color: Color(0xFF121938),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                          ),
+
+                          const SizedBox(height: 26),
+
+                          // ========================
+                          // KATEGORI
+                          // ========================
+                          const Text(
+                            "Kategori",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF121938),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          GridView.count(
+                            crossAxisCount: 3,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: 14,
+                            crossAxisSpacing: 14,
+                            childAspectRatio: 0.82,
+                            children: [
+                              _categoryItem(
+                                "assets/images/beras.png",
+                                "Sembako",
+                              ),
+                              _categoryItem("assets/images/kol.png", "Sayuran"),
+                              _categoryItem(
+                                "assets/images/cabe.png",
+                                "Buah -\nBuahan",
+                              ),
+                              _categoryItem(
+                                "assets/images/daging.png",
+                                "Daging &\nTelur",
+                              ),
+                              _categoryItem(
+                                "assets/images/ikan.png",
+                                "Ikan &\nSeafood",
+                              ),
+                              _categoryItem(
+                                "assets/images/kayu.png",
+                                "Bahan\nLainnya",
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // ========================
+                          // DAFTAR
+                          // ========================
+                          const Text(
+                            "Daftar Bahan Pokok",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF121938),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          ...priceItems.map(_productItem),
+
+                          const SizedBox(height: 16),
+
+                          GestureDetector(
+                            onTap: _loadMoreHargaPokok,
+                            child: Container(
+                              height: 52,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(
+                                  color: const Color(0xFFE5E7EB),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.03),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "Bahan Lainnya",
+                                  style: TextStyle(
+                                    color: Color(0xFF121938),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
+                          // const SizedBox(height: 120),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -687,7 +706,7 @@ class _HargaBahanPokokScreenState extends State<HargaBahanPokokScreen> {
           const Divider(),
           _priceRow("Telur", "Rp20.000", true),
 
-          const Spacer(),
+          const SizedBox(height: 16),
 
           const Row(
             children: [
