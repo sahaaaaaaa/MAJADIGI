@@ -235,7 +235,9 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
   void _goToLogin() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(builder: (_) => const LoginScreen(
+        showBackButton: false,
+      )),
       (route) => false,
     );
   }
@@ -264,6 +266,7 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
             ),
           ),
           SafeArea(
+            bottom: false,
             child: Column(
               children: [
                 Padding(
@@ -333,6 +336,7 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
                       ),
                     ),
                     child: ListView(
+                      padding: const EdgeInsets.only(bottom: 120),
                       children: [
                         const Text(
                           'Informasi Lain',

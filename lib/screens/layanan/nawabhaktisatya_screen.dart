@@ -13,7 +13,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Pengembangan komoditas unggulan dan dukungan infrastruktur untuk mencapai ketahanan pangan nasional",
 
-        "image": "assets/images/nawa/jatim_agro.png",
+        "image": "assets/images/nawa/jatim_agro.svg",
       },
 
       {
@@ -22,7 +22,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Peningkatan layanan kesehatan yang mudah diakses dan berkualitas bagi masyarakat Jawa Timur",
 
-        "image": "assets/images/nawa/jatim_sehat.png",
+        "image": "assets/images/nawa/jatim_sehat.svg",
       },
 
       {
@@ -31,7 +31,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Pelayanan dan akses pendidikan yang lebih merata untuk seluruh masyarakat",
 
-        "image": "assets/images/nawa/jatim_cerdas.png",
+        "image": "assets/images/nawa/jatim_cerdas.svg",
       },
 
       {
@@ -40,7 +40,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Percepatan pengentasan kemiskinan dan peningkatan kesejahteraan masyarakat",
 
-        "image": "assets/images/nawa/jatim_sejahtera.png",
+        "image": "assets/images/nawa/jatim_sejahtera.svg",
       },
 
       {
@@ -49,7 +49,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Perkuat konektivitas dan aglomerasi antar wilayah di Jawa Timur",
 
-        "image": "assets/images/nawa/jatim_akses.png",
+        "image": "assets/images/nawa/jatim_akses.svg",
       },
 
       {
@@ -58,7 +58,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Optimalisasi pemerintahan efektif, efisien, dan anti korupsi",
 
-        "image": "assets/images/nawa/jatim_berkah.png",
+        "image": "assets/images/nawa/jatim_berkah.svg",
       },
 
       {
@@ -67,7 +67,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Harmoni dalam toleransi, kesetaraan, dan kehidupan sosial masyarakat",
 
-        "image": "assets/images/nawa/jatim_harmoni.png",
+        "image": "assets/images/nawa/jatim_harmoni.svg",
       },
 
       {
@@ -76,7 +76,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Pengembangan ekonomi hijau dan keberlanjutan lingkungan hidup",
 
-        "image": "assets/images/nawa/jatim_lestari.png",
+        "image": "assets/images/nawa/jatim_lestari.svg",
       },
 
       {
@@ -85,7 +85,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         "description":
             "Ekonomi inklusif dan lapangan pekerjaan yang lebih luas",
 
-        "image": "assets/images/nawa/jatim_kerja.png",
+        "image": "assets/images/nawa/jatim_kerja.svg",
       },
     ];
 
@@ -100,7 +100,7 @@ class NawaBhaktiScreen extends StatelessWidget {
         crossAxisSpacing: 14,
         mainAxisSpacing: 14,
 
-        childAspectRatio: 0.68,
+        childAspectRatio: 0.78,
       ),
 
       itemBuilder: (context, index) {
@@ -122,7 +122,7 @@ class NawaBhaktiScreen extends StatelessWidget {
           },
 
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
 
             decoration: BoxDecoration(
               color: Colors.white,
