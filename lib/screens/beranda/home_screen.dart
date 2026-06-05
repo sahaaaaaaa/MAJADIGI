@@ -122,16 +122,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
-
-      body: SafeArea(
+  extendBody: true,
+  backgroundColor: Colors.transparent,
+  body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               // HEADER + SLIDER
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(
+                  top: 20,
+                  bottom: 70,
+                ),
 
                 decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -144,9 +147,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     // HEADER TOP
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-
+            Padding(
+  padding: const EdgeInsets.fromLTRB(
+    16,
+    12,
+    16,
+    0,
+  ),
                       child: Row(
                         children: [
                           const CircleAvatar(
@@ -249,12 +256,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // MAIN CONTENT
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                ),
+              Transform.translate(
+  offset: const Offset(0, -30),
+
+  child: Container(
+    padding: const EdgeInsets.all(20),
+
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(30),
+      ),
+    ),
+    
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -304,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: _StatCard(
                             "42.089.271",
                             "Jumlah Penduduk",
-                            "assets/images/icon_user.png",
+                            "assets/images/icon_user.svg",
                           ),
                         ),
 
@@ -314,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: _StatCard(
                             "0,73 %",
                             "Pertumbuhan Penduduk",
-                            "assets/images/icon_penduduk.png",
+                            "assets/images/icon_penduduk.svg",
                           ),
                         ),
 
@@ -324,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: _StatCard(
                             "9,56 %",
                             "Presentase Penduduk Miskin",
-                            "assets/images/icon_ekonomi.png",
+                            "assets/images/icon_ekonomi.svg",
                           ),
                         ),
                       ],
@@ -412,77 +426,77 @@ class _HomeScreenState extends State<HomeScreen> {
                     // ================= LAYANAN ITEM =================
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "Paket Kunjungan Agrowisata",
                       "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/islamic_center.png",
+                      "assets/images/islamic_center.svg",
                       "Islamic Center",
                       "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/open_data.png",
+                      "assets/images/open_data.svg",
                       "Badan Pendapatan Daerah (BAPENDA) Jawa Timur",
                       "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "Data Penerima & Info Program Bansos (SAPA BANSOS)",
                       "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/rsud_haji.png",
+                      "assets/images/rsud_haji.svg",
                       "RS Paru Manguharjo Provinsi Jawa Timur",
                       "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "RS Paru Jember",
                       "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "Forum Konsultasi Disnak Jatim",
                       "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "Rumah ASN",
                       "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/rsud_haji.png",
+                      "assets/images/rsud_haji.svg",
                       "RSUD Haji Prov. Jatim",
                       "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "SIMPEL K3 (Sistem Pelayanan K3L)",
                       "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
                     ),
 
                     _serviceItem(
                       context,
-                      "assets/images/logo_majadigi.png",
+                      "assets/images/logo_majadigi.svg",
                       "Beasiswa LPPD Jatim",
                       "Informasi dan pendaftaran program beasiswa Pemerintah Provinsi Jawa Timur.",
                     ),
@@ -492,7 +506,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           child: _CategoryCard(
-                            image: "assets/images/mpp.png",
+                            image: "assets/images/mpp.svg",
                             title: "Mall Pelayanan Publik (MPP)",
                             subtitle: "15 Mall Pelayanan Publik (MPP)",
                           ),
@@ -502,7 +516,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Expanded(
                           child: _CategoryCard(
-                            image: "assets/images/rs.png",
+                            image: "assets/images/rs.svg",
                             title: "Rumah Sakit",
                             subtitle: "8 Rumah Sakit",
                           ),
@@ -512,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Expanded(
                           child: _CategoryCard(
-                            image: "assets/images/sma.png",
+                            image: "assets/images/sma.svg",
                             title: "SMA/SMK",
                             subtitle: "",
                           ),
@@ -697,6 +711,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
+  ),
               ),
             ],
           ),
@@ -972,7 +987,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onInstall,
   }) {
     final homeService = homeServiceFromLayanan(layanan);
-    final image = homeService?.image ?? 'assets/images/logo_majadigi.png';
+    final image = homeService?.image ?? 'assets/images/logo_majadigi.svg';
 
     return Material(
       color: const Color(0xFFF8FAFF),
@@ -1069,7 +1084,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _showLayananPopup(
       context: context,
       title: layanan.name,
-      image: 'assets/images/logo_majadigi.png',
+      image: 'assets/images/logo_majadigi.svg',
       desc: layanan.description.isEmpty
           ? 'Detail layanan belum tersedia.'
           : layanan.description,
@@ -1124,7 +1139,7 @@ class _HomeScreenState extends State<HomeScreen> {
       serviceItems.add(
         LayananItem(
           title: 'Lainnya',
-          image: 'assets/images/grid_lainnya.png',
+          image: 'assets/images/icons/lainnya.svg',
           onTap: _openLayananLain,
         ),
       );
@@ -1531,7 +1546,7 @@ Widget _agendaCard({required String title, required String location}) {
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Image.asset("assets/images/logo_majadigi.png"),
+            child: Image.asset("assets/images/logo_majadigi.svg"),
           ),
         ),
       ],
