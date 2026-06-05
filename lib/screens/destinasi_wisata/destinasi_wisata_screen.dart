@@ -14,7 +14,7 @@ class DestinasiWisataScreen extends StatefulWidget {
 class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
   static const Color _favoriteColor = Color(0xFFE53935);
 
-  String lokasi = "Malang, Jawa Timur";
+  String lokasi = "Cari lokasi wisata...";
   late final DestinasiWisataService _wisataService;
   late final TextEditingController _searchController;
   bool _isLoading = true;
@@ -491,13 +491,20 @@ class _DestinasiWisataScreenState extends State<DestinasiWisataScreen> {
                       });
                     },
                     decoration: InputDecoration(
-                      hintText: "Malang, Jawa Timur",
+                      hintText: "Cari lokasi wisata...",
 
-                      prefixIcon: const Icon(Icons.location_on_outlined),
+                      hintStyle: TextStyle(
+                        color: Colors.black.withOpacity(0.35),
+                        fontSize: 15,
+                      ),
+
+                      prefixIcon: Icon(
+                        Icons.location_on_outlined,
+                        color: Colors.black.withOpacity(0.35),
+                      ),
 
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22),
-
                         borderSide: BorderSide.none,
                       ),
                     ),

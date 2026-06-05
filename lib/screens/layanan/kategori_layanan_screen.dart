@@ -426,7 +426,7 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -434,6 +434,7 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
                         topRight: Radius.circular(35),
                       ),
                     ),
+                    clipBehavior: Clip.hardEdge,
                     child: _buildContent(),
                   ),
                 ),
@@ -472,6 +473,8 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
     }
 
     return GridView.builder(
+    padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
+  physics: const AlwaysScrollableScrollPhysics(),
       itemCount: filteredServices.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -541,12 +544,11 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              Flexible(
-                child: Text(
-                  item.description.isEmpty
-                      ? 'Detail layanan belum tersedia.'
-                      : item.description,
-                  maxLines: 3,
+              Text(
+                item.description.isEmpty
+                    ? 'Detail layanan belum tersedia.'
+                    : item.description,
+                maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 13,
@@ -554,8 +556,7 @@ class _KategoriLayananScreenState extends State<KategoriLayananScreen> {
                     color: Colors.grey.shade600,
                   ),
                 ),
-              ),
-            ],
+              ],
           ),
         ),
       ),
