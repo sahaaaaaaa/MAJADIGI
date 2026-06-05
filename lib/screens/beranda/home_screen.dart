@@ -706,6 +706,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+  ),
               ),
             ],
           ),
@@ -981,7 +982,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onInstall,
   }) {
     final homeService = homeServiceFromLayanan(layanan);
-    final image = homeService?.image ?? 'assets/images/logo_majadigi.png';
+    final image = homeService?.image ?? 'assets/images/logo_majadigi.svg';
 
     return Material(
       color: const Color(0xFFF8FAFF),
@@ -1078,7 +1079,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _showLayananPopup(
       context: context,
       title: layanan.name,
-      image: 'assets/images/logo_majadigi.png',
+      image: 'assets/images/logo_majadigi.svg',
       desc: layanan.description.isEmpty
           ? 'Detail layanan belum tersedia.'
           : layanan.description,
@@ -1555,7 +1556,7 @@ Widget _agendaCard({required String title, required String location}) {
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Image.asset("assets/images/logo_majadigi.png"),
+            child: Image.asset("assets/images/logo_majadigi.svg"),
           ),
         ),
       ],

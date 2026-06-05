@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     opacity: _showLogo ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 800),
                     child: Image.asset(
-                      'assets/images/logo_majadigi.png',
+                      'assets/images/logo_majadigi.svg',
                       width: 120, // Ukuran disesuaikan
                     ),
                   ),
