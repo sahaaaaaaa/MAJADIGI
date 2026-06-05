@@ -30,49 +30,49 @@ HomeServiceItem? homeServiceFromLayanan(LayananModel layanan) {
   if (normalized.contains('klinik hoaks')) {
     return HomeServiceItem(
       title: 'Klinik Hoaks',
-      image: 'assets/images/klinik_hoax.png',
+      image: 'assets/images/klinik_hoax.svg',
       builder: (_) => const KlinikHoaksHomeScreen(),
     );
   }
   if (normalized.contains('destinasi')) {
     return HomeServiceItem(
       title: 'Destinasi',
-      image: 'assets/images/destinasi_wisata.png',
+      image: 'assets/images/destinasi_wisata.svg',
       builder: (_) => const DestinasiWisataScreen(),
     );
   }
   if (normalized.contains('open data')) {
     return HomeServiceItem(
       title: 'Open Data',
-      image: 'assets/images/open_data.png',
+      image: 'assets/images/open_data.svg',
       builder: (_) => const OpenDataScreen(),
     );
   }
   if (normalized.contains('harga')) {
     return HomeServiceItem(
       title: 'Harga',
-      image: 'assets/images/khas_jatim.png',
+      image: 'assets/images/khas_jatim.svg',
       builder: (_) => const HargaBahanPokokScreen(),
     );
   }
   if (normalized.contains('rsud haji')) {
     return HomeServiceItem(
       title: 'RSUD Haji',
-      image: 'assets/images/rsud_haji.png',
+      image: 'assets/images/rsud_haji.svg',
       builder: (_) => const RsudHajiScreen(),
     );
   }
   if (normalized.contains('transjatim')) {
     return HomeServiceItem(
       title: 'Transjatim',
-      image: 'assets/images/transjatim_ajaib.png',
+      image: 'assets/images/transjatim_ajaib.svg',
       builder: (_) => const TransjatimScreen(),
     );
   }
   if (normalized.contains('saiful anwar')) {
     return HomeServiceItem(
       title: 'RSSA',
-      image: 'assets/images/rsud_saifulanwar.png',
+      image: 'assets/images/rsud_saifulanwar.svg',
       builder: (_) => const RssaScreen(),
     );
   }
@@ -86,14 +86,14 @@ HomeServiceItem? homeServiceFromLayanan(LayananModel layanan) {
   if (normalized.contains('point jatim')) {
     return HomeServiceItem(
       title: 'Point Jatim',
-      image: 'assets/images/point_jatim.png',
+      image: 'assets/images/point_jatim.svg',
       builder: (_) => const PointJatimHomeScreen(),
     );
   }
   if (normalized.contains('islamic')) {
     return HomeServiceItem(
       title: 'Islamic Center',
-      image: 'assets/images/islamic_center.png',
+      image: 'assets/images/islamic_center.svg',
       builder: (_) => const IslamicCenterHomeScreen(),
     );
   }

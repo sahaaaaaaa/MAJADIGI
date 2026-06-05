@@ -306,32 +306,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 16),
 
                       Row(
-                        children: const [
+                        children: [
                           Expanded(
-                            child: _StatCard(
+                            child: const _StatCard(
                               "42.089.271",
                               "Jumlah Penduduk",
-                              "assets/images/icon_user.png",
+                              "assets/images/icon_user.svg",
                             ),
                           ),
 
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
 
                           Expanded(
-                            child: _StatCard(
+                            child: const _StatCard(
                               "0,73 %",
                               "Pertumbuhan Penduduk",
-                              "assets/images/icon_penduduk.png",
+                              "assets/images/icon_penduduk.svg",
                             ),
                           ),
 
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
 
                           Expanded(
-                            child: _StatCard(
+                            child: const _StatCard(
                               "9,56 %",
                               "Presentase Penduduk Miskin",
-                              "assets/images/icon_ekonomi.png",
+                              "assets/images/icon_ekonomi.svg",
                             ),
                           ),
                         ],
@@ -419,77 +419,77 @@ class _HomeScreenState extends State<HomeScreen> {
                       // ================= LAYANAN ITEM =================
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "Paket Kunjungan Agrowisata",
                         "Layanan wisata agro Jawa Timur untuk edukasi dan kunjungan perkebunan.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/islamic_center.png",
+                        "assets/images/islamic_center.svg",
                         "Islamic Center",
                         "Pusat informasi dan layanan kegiatan Islami Provinsi Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/open_data.png",
+                        "assets/images/open_data.svg",
                         "Badan Pendapatan Daerah (BAPENDA) Jawa Timur",
                         "Layanan informasi pajak daerah dan pendapatan Provinsi Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "Data Penerima & Info Program Bansos (SAPA BANSOS)",
                         "Informasi penerima bantuan sosial dan program bansos Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/rsud_haji.png",
+                        "assets/images/rsud_haji.svg",
                         "RS Paru Manguharjo Provinsi Jawa Timur",
-                        "Layanan kesehatan paru dan konsultasi medis Provinsi Jawa Timur.",
+                        "Layanan kesehatan paru and konsultasi medis Provinsi Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "RS Paru Jember",
                         "Rumah sakit khusus paru wilayah Jember dan sekitarnya.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "Forum Konsultasi Disnak Jatim",
                         "Forum konsultasi peternakan dan kesehatan hewan Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "Rumah ASN",
                         "Platform layanan dan informasi Aparatur Sipil Negara Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/rsud_haji.png",
+                        "assets/images/rsud_haji.svg",
                         "RSUD Haji Prov. Jatim",
                         "Layanan rumah sakit umum daerah milik Pemerintah Provinsi Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "SIMPEL K3 (Sistem Pelayanan K3L)",
                         "Sistem pelayanan keselamatan dan kesehatan kerja Provinsi Jawa Timur.",
                       ),
 
                       _serviceItem(
                         context,
-                        "assets/images/logo_majadigi.png",
+                        "assets/images/logo_majadigi.svg",
                         "Beasiswa LPPD Jatim",
                         "Informasi dan pendaftaran program beasiswa Pemerintah Provinsi Jawa Timur.",
                       ),
@@ -499,7 +499,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Expanded(
                             child: _CategoryCard(
-                              image: "assets/images/mpp.png",
+                              image: "assets/images/mpp.svg",
                               title: "Mall Pelayanan Publik (MPP)",
                               subtitle: "15 Mall Pelayanan Publik (MPP)",
                             ),
@@ -509,7 +509,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           Expanded(
                             child: _CategoryCard(
-                              image: "assets/images/rs.png",
+                              image: "assets/images/rs.svg",
                               title: "Rumah Sakit",
                               subtitle: "8 Rumah Sakit",
                             ),
@@ -519,7 +519,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           Expanded(
                             child: _CategoryCard(
-                              image: "assets/images/sma.png",
+                              image: "assets/images/sma.svg",
                               title: "SMA/SMK",
                               subtitle: "",
                             ),
@@ -706,7 +706,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-  ),
               ),
             ],
           ),
@@ -1097,71 +1096,69 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLayananSection() {
-  if (!_hasLoadedLayanan) {
-    return const SizedBox(
-      height: 96,
-      child: Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
+    if (!_hasLoadedLayanan) {
+      return const SizedBox(
+        height: 96,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    final services = _installedLayanan;
+
+    if (services.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF7F7F7),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE8E8E8)),
+        ),
+        child: const Text(
+          'Belum ada layanan yang dipilih.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    final hasMoreServices = services.length > 8;
+
+    final visibleServices = hasMoreServices
+        ? services.take(7).toList()
+        : services;
+
+    final serviceItems = <Widget>[
+      ...visibleServices.map(_buildInstalledLayananItem),
+    ];
+
+    if (hasMoreServices) {
+      serviceItems.add(
+        LayananItem(
+          title: 'Lainnya',
+          image: 'assets/images/icons/lainnya.svg',
+          iconScale: 0.5,
+          onTap: _openLayananLain,
+        ),
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemCount: serviceItems.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 8,
+        childAspectRatio: 0.85,
       ),
+      itemBuilder: (context, index) {
+        return serviceItems[index];
+      },
     );
   }
-
-  final services = _installedLayanan;
-
-  if (services.isEmpty) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8E8E8)),
-      ),
-      child: const Text(
-        'Belum ada layanan yang dipilih.',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.grey),
-      ),
-    );
-  }
-
-  final hasMoreServices = services.length > 8;
-
-  final visibleServices = hasMoreServices
-      ? services.take(7).toList()
-      : services;
-
-  final serviceItems = <Widget>[
-    ...visibleServices.map(_buildInstalledLayananItem),
-  ];
-
-  if (hasMoreServices) {
-    serviceItems.add(
-      LayananItem(
-        title: 'Lainnya',
-        image: 'assets/images/icons/lainnya.svg',
-        iconScale: 0.5,
-        onTap: _openLayananLain,
-      ),
-    );
-  }
-
-  return GridView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    padding: EdgeInsets.zero,
-    itemCount: serviceItems.length,
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 4,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 8,
-      childAspectRatio: 0.85,
-    ),
-    itemBuilder: (context, index) {
-      return serviceItems[index];
-    },
-  );
-}
 
   LayananItem _buildInstalledLayananItem(LayananModel layanan) {
     final homeService = homeServiceFromLayanan(layanan);
@@ -1215,7 +1212,7 @@ class _StatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(icon, width: 24),
+          AssetIconImage(asset: icon, width: 24),
 
           const SizedBox(height: 12),
 
@@ -1287,7 +1284,7 @@ Widget _serviceItem(
 
       child: Row(
         children: [
-          Image.asset(image, width: 40, height: 40),
+          AssetIconImage(asset: image, width: 40, height: 40),
 
           const SizedBox(width: 14),
 
@@ -1342,7 +1339,7 @@ void _showLayananPopup({
 
             const SizedBox(height: 30),
 
-            Image.asset(image, height: 90),
+            AssetIconImage(asset: image, height: 90),
 
             const SizedBox(height: 24),
 
@@ -1466,7 +1463,7 @@ class _CategoryCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Image.asset(image, height: 70),
+          AssetIconImage(asset: image, height: 70),
 
           const SizedBox(height: 14),
 
@@ -1554,9 +1551,9 @@ Widget _agendaCard({required String title, required String location}) {
             color: const Color(0xFFDDF0FF),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Image.asset("assets/images/logo_majadigi.svg"),
+          child: const Padding(
+            padding: EdgeInsets.all(10),
+            child: AssetIconImage(asset: "assets/images/logo_majadigi.svg"),
           ),
         ),
       ],

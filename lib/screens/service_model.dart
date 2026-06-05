@@ -109,37 +109,37 @@ String layananLogoAssetName(String name) {
   final normalized = name.toLowerCase();
 
   if (normalized.contains('open data')) {
-    return 'open_data.png';
+    return 'open_data.svg';
   }
   if (normalized.contains('klinik hoaks')) {
-    return 'klinik_hoax.png';
+    return 'klinik_hoax.svg';
   }
   if (normalized.contains('harga')) {
-    return 'khas_jatim.png';
+    return 'khas_jatim.svg';
   }
   if (normalized.contains('nomor darurat')) {
     return 'icons/ambulans.svg';
   }
   if (normalized.contains('rsud haji')) {
-    return 'rsud_haji.png';
+    return 'rsud_haji.svg';
   }
   if (normalized.contains('saiful anwar')) {
-    return 'rsud_saifulanwar.png';
+    return 'rsud_saifulanwar.svg';
   }
   if (normalized.contains('transjatim')) {
-    return 'transjatim_ajaib.png';
+    return 'transjatim_ajaib.svg';
   }
   if (normalized.contains('point jatim')) {
-    return 'point_jatim.png';
+    return 'point_jatim.svg';
   }
   if (normalized.contains('islamic')) {
-    return 'islamic_center.png';
+    return 'islamic_center.svg';
   }
   if (normalized.contains('destinasi')) {
-    return 'destinasi_wisata.png';
+    return 'destinasi_wisata.svg';
   }
 
-  return 'klinik_hoax.png';
+  return 'klinik_hoax.svg';
 }
 
 String layananLogoAssetPath(String logo) {
