@@ -8,8 +8,8 @@ class InfoNomorDaruratScreen extends StatefulWidget {
 }
 
 class _InfoNomorDaruratScreenState extends State<InfoNomorDaruratScreen> {
-  bool manfaatOpen = true;
-  bool sistemOpen = true;
+  bool manfaatOpen = false;
+  bool sistemOpen = false;
 
   @override
   Widget build(BuildContext context) {

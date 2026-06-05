@@ -236,7 +236,7 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen(
-        showBackButton: false,
+        // showBackButton: false,
       )),
       (route) => false,
     );
@@ -270,26 +270,49 @@ class _AkunScreenState extends ConsumerState<AkunScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(width: 24),
-                      const Text(
-                        'Akun',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: _openEditProfile,
-                        icon: const Icon(Icons.edit, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+  padding: const EdgeInsets.symmetric(horizontal: 20),
+  child: Row(
+    children: [
+      SizedBox(
+        width: 48,
+        height: 48,
+        child: Opacity(
+          opacity: 0,
+          child: Image.asset(
+            'assets/images/leftbutton.png',
+            width: 24,
+            height: 24,
+          ),
+        ),
+      ),
+
+      const Expanded(
+        child: Center(
+          child: Text(
+            'Akun',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+
+      SizedBox(
+        width: 48,
+        height: 48,
+        child: IconButton(
+          onPressed: _openEditProfile,
+          icon: const Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ],
+  ),
+),
                 const SizedBox(height: 16),
                 CircleAvatar(
                   radius: 45,

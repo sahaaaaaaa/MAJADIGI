@@ -43,6 +43,7 @@ flutter:
     - assets/images/welcome_hero2.jpg
     - assets/images/welcome_hero3.jpg
     - assets/images/latar_belakang.png
+    - assets/images/leftbutton.png
 
     # kategori
     - assets/images/kategori/ekonomi_&_bisnis.svg
@@ -209,6 +210,7 @@ flutter:
     - assets/images/icons/marker-pin-02.svg
     - assets/images/icons/ellipse2.svg
     - assets/images/icons/clock_white.svg
+    - assets/images/icons/lainnya.svg
 
     # open data
     - assets/images/openData/open_data_banner1.png
