@@ -113,7 +113,7 @@ class _InformasiRsudScreenState
                                 image:
                                     const DecorationImage(
                                   image: AssetImage(
-                                    'assets/images/Top_rsudjatim.png',
+                                    'assets/images/Top_rsudjatim.svg',
                                   ),
                                   fit: BoxFit.cover,
                                 ),

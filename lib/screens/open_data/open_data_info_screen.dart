@@ -99,7 +99,7 @@ class _OpenDataInformasiScreenState
 
                           child: Center(
                             child: Image.asset(
-                              'assets/images/open_data.png',
+                              'assets/images/open_data.svg',
                               height: 80,
                             ),
                           ),

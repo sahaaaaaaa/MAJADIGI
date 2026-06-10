@@ -161,7 +161,7 @@ class _InformasiScreenState extends State<InformasiScreen> {
                               borderRadius: BorderRadius.circular(24),
 
                               image: const DecorationImage(
-                                image: AssetImage('assets/images/sidita.png'),
+                                image: AssetImage('assets/images/sidita.svg'),
                                 fit: BoxFit.cover,
                               ),
                             ),

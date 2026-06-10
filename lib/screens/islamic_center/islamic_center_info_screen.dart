@@ -128,7 +128,7 @@ class _IslamicCenterInfoScreenState
 
                           child: Center(
                             child: Image.asset(
-                              'assets/images/islamic_center.png',
+                              'assets/images/islamic_center.svg',
                               width: 70,
                             ),
                           ),

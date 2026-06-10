@@ -92,7 +92,7 @@ class _InfoHargaScreenState extends State<InfoHargaScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(24),
                             child: Image.asset(
-                              "assets/images/siskaperbapo.png",
+                              "assets/images/siskaperbapo.svg",
                               width: double.infinity,
                               height: double.infinity,
                               fit: BoxFit.cover,

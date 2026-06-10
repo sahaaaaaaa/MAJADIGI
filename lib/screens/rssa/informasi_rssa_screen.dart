@@ -97,7 +97,7 @@ class _InformasiRssaScreenState extends State<InformasiRssaScreen> {
                               borderRadius: BorderRadius.circular(24),
 
                               image: const DecorationImage(
-                                image: AssetImage('assets/images/Top_rssa.png'),
+                                image: AssetImage('assets/images/Top_rssa.svg'),
 
                                 fit: BoxFit.cover,
                               ),

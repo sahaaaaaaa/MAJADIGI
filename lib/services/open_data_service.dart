@@ -809,27 +809,27 @@ String resolveOpenDataAssetUrl(String path) {
 String topicAssetPath(String topicName) {
   switch (topicName.toLowerCase().trim()) {
     case 'ekonomi':
-      return 'assets/images/openData/ekonomi.png';
+      return 'assets/images/openData/ekonomi.svg';
     case 'infrastruktur':
-      return 'assets/images/openData/infrastruktur.png';
+      return 'assets/images/openData/infrastruktur.svg';
     case 'kemiskinan':
-      return 'assets/images/openData/kemiskinan.png';
+      return 'assets/images/openData/kemiskinan.svg';
     case 'kependudukan':
-      return 'assets/images/openData/kependudukan.png';
+      return 'assets/images/openData/kependudukan.svg';
     case 'kesehatan':
-      return 'assets/images/openData/kesehatan.png';
+      return 'assets/images/openData/kesehatan.svg';
     case 'lingkungan hidup':
-      return 'assets/images/openData/lingkungan.png';
+      return 'assets/images/openData/lingkungan.svg';
     case 'pemerintah & desa':
-      return 'assets/images/openData/pemerintah.png';
+      return 'assets/images/openData/pemerintah.svg';
     case 'pendidikan':
-      return 'assets/images/openData/pendidikan.png';
+      return 'assets/images/openData/pendidikan.svg';
     case 'sosial':
-      return 'assets/images/openData/sosial.png';
+      return 'assets/images/openData/sosial.svg';
     case 'tata ruang':
-      return 'assets/images/openData/tataruang.png';
+      return 'assets/images/openData/tataruang.svg';
     default:
-      return 'assets/images/openData/ekonomi.png';
+      return 'assets/images/openData/ekonomi.svg';
   }
 }
 
