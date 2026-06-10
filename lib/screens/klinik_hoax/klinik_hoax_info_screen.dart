@@ -99,7 +99,7 @@ class _KlinikHoaksInformasiScreenState
 
                           child: Center(
                             child: Image.asset(
-                              'assets/images/klinik_hoax.png',
+                              'assets/images/klinik_hoax.svg',
                               height: 80,
                             ),
                           ),

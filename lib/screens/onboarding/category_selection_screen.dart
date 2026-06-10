@@ -232,7 +232,7 @@ class _PilihKategori extends ConsumerState<PilihKategori> {
                 width: 42,
                 height: 42,
                 child: Image.asset(
-                  'assets/images/logo_majadigi.png',
+                  'assets/images/logo_majadigi.svg',
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(

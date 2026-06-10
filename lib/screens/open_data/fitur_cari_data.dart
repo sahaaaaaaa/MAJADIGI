@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:majadigi/screens/open_data/fitur_data_set.dart';
 import 'package:majadigi/screens/open_data/fitur_detail_data_set.dart';
 import 'package:majadigi/screens/open_data/open_data_dummy.dart';
@@ -535,7 +536,7 @@ class _OpenDataCariDataScreenState extends State<OpenDataCariDataScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Image.asset(imagePath, fit: BoxFit.contain),
+                  child: SvgPicture.asset(imagePath, fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(height: 14),

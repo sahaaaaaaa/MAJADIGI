@@ -88,7 +88,7 @@ class _LayananSheetContentState extends State<LayananSheetContent> {
       children: [
         const SizedBox(height: 8),
         Image.asset(
-          'assets/images/kategori/$fileName.png', // Pastikan asset ini ada
+          'assets/images/kategori/$fileName.svg', // Pastikan asset ini ada
           height: 90,
           errorBuilder: (context, error, stackTrace) => const Icon(
             Icons.wallet_travel_rounded,

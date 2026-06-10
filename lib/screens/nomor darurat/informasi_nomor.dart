@@ -102,7 +102,7 @@ class _InfoNomorDaruratScreenState extends State<InfoNomorDaruratScreen> {
                             borderRadius: BorderRadius.circular(24),
 
                             child: Image.asset(
-                              "assets/images/nomordarurat.png",
+                              "assets/images/nomordarurat.svg",
                               width: double.infinity,
                               height: double.infinity,
                               fit: BoxFit.cover,

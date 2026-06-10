@@ -89,7 +89,7 @@ class _PointJatimInfoScreenState
 
                           child: Center(
                             child: Image.asset(
-                              'assets/images/point_jatim.png',
+                              'assets/images/point_jatim.svg',
                               height: 60,
                             ),
                           ),

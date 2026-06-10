@@ -649,17 +649,23 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
 
             Row(
               children: [
-                Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
+                Icon(Icons.calendar_today, size: 14),
 
                 const SizedBox(width: 6),
 
-                Text(
-                  tahun,
-
-                  style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                Expanded(
+                  child: Text(
+                    tahun,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
 
-                const Spacer(),
+                const SizedBox(width: 12),
 
                 Icon(
                   Icons.grid_view_rounded,
@@ -669,10 +675,16 @@ class _FiturDataSetScreenState extends State<FiturDataSetScreen> {
 
                 const SizedBox(width: 6),
 
-                Text(
-                  category,
-
-                  style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                Flexible(
+                  child: Text(
+                    category,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ],
             ),
