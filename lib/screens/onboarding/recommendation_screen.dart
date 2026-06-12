@@ -28,10 +28,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
   List<Recommendation> get _visibleRecommendations {
     if (widget.data.isNotEmpty) {
-      return widget.data;
+      return widget.data.where((item) => item.isFeatured).toList();
     }
     if (_layananRecommendations.isNotEmpty) {
-      return _layananRecommendations;
+      return _layananRecommendations.where((item) => item.isFeatured).toList();
     }
     return const [];
   }

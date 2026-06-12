@@ -9,6 +9,7 @@ class Recommendation {
   final String kategori;
   final String? nawaBhakti;
   final Widget? screen;
+  final bool isFeatured;
 
   Recommendation({
     required this.id,
@@ -18,6 +19,7 @@ class Recommendation {
     required this.kategori,
     this.nawaBhakti,
     this.screen,
+    this.isFeatured = false,
   });
 }
 
@@ -32,6 +34,7 @@ Recommendation recommendationFromLayanan(LayananModel layanan) {
       layanan.name,
       layanan.nawaBhaktiSatya,
     ),
+    isFeatured: layanan.isFeatured,
   );
 }
 
