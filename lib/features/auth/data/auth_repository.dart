@@ -1,5 +1,5 @@
 import 'package:majadigi/features/auth/data/auth_local_storage.dart';
-import 'package:majadigi/services/auth_service.dart';
+import 'package:majadigi/features/auth/data/auth_service.dart';
 
 class AuthRepository {
   AuthRepository({

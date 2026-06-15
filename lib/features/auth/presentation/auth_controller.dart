@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:majadigi/features/auth/data/auth_local_storage.dart';
 import 'package:majadigi/features/auth/data/auth_repository.dart';
-import 'package:majadigi/services/auth_service.dart';
+import 'package:majadigi/features/auth/data/auth_service.dart';
 
 final flutterSecureStorageProvider = Provider<FlutterSecureStorage>((ref) {
   return FlutterSecureStorage();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:majadigi/features/auth/presentation/auth_controller.dart';
-import 'package:majadigi/screens/onboarding/welcome_screen.dart';
-import 'package:majadigi/widgets/main_navigation.dart';
+import 'package:majadigi/features/onboarding/presentation/welcome_screen.dart';
+import 'package:majadigi/core/widgets/main_navigation.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});
