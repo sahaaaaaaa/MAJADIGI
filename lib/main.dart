@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:majadigi/screens/onboarding/login_screen.dart';
-import 'package:majadigi/screens/onboarding/splash_screen.dart';
+import 'package:majadigi/features/auth/presentation/login_screen.dart';
+import 'package:majadigi/features/onboarding/presentation/splash_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MajadigiApp()));

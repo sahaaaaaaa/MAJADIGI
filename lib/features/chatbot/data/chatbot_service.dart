@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:majadigi/features/chatbot/data/models/chatbot_history.dart';
 import 'package:majadigi/features/chatbot/data/models/chatbot_response.dart';
-import 'package:majadigi/services/api_config.dart';
+import 'package:majadigi/core/services/api_config.dart';
 
 class ChatbotService {
   ChatbotService({http.Client? client}) : _client = client ?? http.Client();
